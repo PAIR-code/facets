@@ -1,0 +1,532 @@
+<!--
+@license
+Copyright 2017 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<link rel="import" href="../../../polymer/polymer.html">
+<link rel="import" href="../../../iron-icons/av-icons.html">
+<link rel="import" href="../../../iron-icons/iron-icons.html">
+<link rel="import" href="../../../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../paper-input/paper-input.html">
+<link rel="import" href="../../../paper-item/paper-item.html">
+<link rel="import" href="../../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../paper-menu/paper-menu.html">
+<link rel="import" href="../../../paper-menu/paper-submenu.html">
+<link rel="import" href="../../../paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../../paper-slider/paper-slider.html">
+<link rel="import" href="../../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../facets-dive-vis/facets-dive-vis.html">
+
+<dom-module id="facets-dive-controls">
+  <template>
+    <style>
+      :host {
+        @apply(--paper-font-common-base);
+
+        box-sizing: border-box;
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+        overflow: visible;
+        width: 100%;
+      }
+
+      .layout-row {
+        display: flex;
+      }
+
+      /**
+       * Menus.
+       */
+      .menu {
+        box-sizing: border-box;
+        flex: 1;
+        overflow-y: scroll;
+      }
+      .menu-trigger {
+        border-bottom: 1px solid #ccc;
+        cursor: pointer;
+      }
+      paper-menu {
+        font-size: 14px;
+        margin: 6px;
+        padding: 0;
+        --paper-menu-focused-item: {
+          color: rgba(0,0,0,0);
+        };
+      }
+      paper-submenu .menu-trigger {
+        --paper-item: {
+          color: #44706e;
+        };
+        --paper-item-selected: {
+          color: #183232;
+        };
+      }
+      paper-submenu .menu-trigger-text {
+        font-weight: normal;
+      }
+      paper-menu .menu-content {
+        margin: 0 8px;
+        padding: 0 0 24px 0;
+      }
+      paper-submenu iron-icon {
+        margin: 16px 8px 0 0;
+      }
+      .expand-button {
+        color: #9b9b9b;
+        --paper-icon-button-ink-color: #9b9b9b;
+      }
+      paper-menu paper-checkbox {
+        display: block;
+        font-weight: normal;
+        font-size: 12.5px;
+        text-align: center;
+      }
+
+      paper-item {
+        padding: 0 14px;
+        --paper-item-min-height: 36px;
+      }
+      paper-dropdown-menu paper-item {
+        border-bottom: 1px solid #ccc;
+      }
+
+      #verticalFacet {
+        --paper-input-container-input: {
+          color: var(--grid-faceting-vertical-label-color);
+        };
+      }
+      #horizontalFacet {
+        --paper-input-container-input: {
+          color: var(--grid-faceting-horizontal-label-color);
+        };
+      }
+      #verticalPosition {
+        --paper-input-container-input: {
+          color: var(--item-positioning-vertical-label-color);
+        };
+      }
+      #horizontalPosition {
+        --paper-input-container-input: {
+          color: var(--item-positioning-horizontal-label-color);
+        };
+      }
+
+      /**
+       * Legend.
+       */
+      .legend {
+        background: #fefefe;
+        border-top: 6px solid #a09f9f;
+        box-sizing: border-box;
+        margin: 8px 0 0 0;
+        max-height: 50%;
+        overflow-y: scroll;
+        padding: 16px 8px 8px 8px;
+      }
+      .legend .layout-row {
+        margin: 0;
+      }
+      .legend .layout-row span {
+        margin: 2px 0 0 8px;
+      }
+
+      /**
+       * Legend table shim. Polymer's dom-repeat feature has a known issue in
+       * which it doesn't work with <tr> elements inside of a <table>. So
+       * instead, we use CSS with classed divs to achieve table behavior.
+       */
+      .legend-table {
+        display: table;
+        margin-left: 2px;
+      }
+      .legend-row {
+        display: table-row;
+      }
+      .legend-cell {
+        display: table-cell;
+      }
+
+      /**
+       * Color legend.
+       */
+      .legend .color {
+        font-size: 14px;
+      }
+      .legend .color iron-icon {
+        --iron-icon-width: 16px;
+        --iron-icon-height: 16px;
+        margin: 0 2px;
+      }
+      .legend .color iron-icon[fill="#ffffff"] {
+        background: #dddddd;
+      }
+      .legend .color span {
+        margin: 0;
+      }
+      .legend .special {
+        font-style: italic;
+      }
+
+      .legend h2 {
+        @apply(--paper-font-subhead);
+        color: #4f423e;
+        font-weight: bold;
+        line-height: 1;
+        margin: 0;
+      }
+      .legend .color-by-field {
+        color: #968e8c;
+        display: block;
+        font-size: 12.5px;
+        font-weight: normal;
+        margin: 2px 0 4px 20px;
+      }
+
+      .vertical-facet {
+        color: var(--grid-faceting-vertical-label-color);
+      }
+      .vertical-facet iron-icon {
+        fill: var(--grid-faceting-vertical-label-color);
+        transform: rotate(-90deg) scale(0.9, 1.1);
+      }
+      .horizontal-facet {
+        color: var(--grid-faceting-horizontal-label-color);
+      }
+      .horizontal-facet iron-icon {
+        fill: var(--grid-faceting-horizontal-label-color);
+      }
+      .vertical-position {
+        color: var(--item-positioning-vertical-label-color);
+      }
+      .vertical-position iron-icon {
+        fill: var(--item-positioning-vertical-label-color);
+        transform: rotate(-90deg);
+      }
+      .horizontal-position {
+        color: var(--item-positioning-horizontal-label-color);
+      }
+      .horizontal-position iron-icon {
+        fill: var(--item-positioning-horizontal-label-color);
+      }
+    </style>
+
+    <div class="menu">
+
+      <paper-menu multi="true">
+
+        <paper-submenu>
+
+          <paper-item class="menu-trigger">
+            <span class="menu-trigger-text">Faceting</span>
+            <span style="flex:1"></span>
+            <paper-icon-button icon="image:view-comfy" class="expand-button">
+            </paper-icon-button>
+          </paper-item>
+
+          <paper-menu
+              class="menu-content"
+              opened="{{_anyFacet(verticalFacet, horizontalFacet)}}">
+
+            <div class="layout-row vertical-facet">
+              <iron-icon icon="av:equalizer"></iron-icon>
+              <paper-dropdown-menu
+                    id="verticalFacet"
+                    label="Row-Based Faceting"
+                    class="facet-selector">
+                <paper-listbox class="dropdown-content" selected="{{verticalFacet}}"
+                    attr-for-selected="value">
+                  <paper-item value="">&lt;NONE&gt;</paper-item>
+                  <template is="dom-repeat" items="[[keys]]">
+                    <paper-item value="[[item]]">[[_breakUpAndTruncate(item)]]</paper-item>
+                  </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+            </div>
+
+            <template is="dom-if" if="[[verticalFacet]]">
+              <paper-slider
+                  pin snaps editable
+                  min="1" max="[[_maxBuckets(verticalFacet,verticalBagOfWords)]]" step="1"
+                  value="{{verticalBuckets}}"
+                  immediate-value="{{verticalBuckets}}"></paper-slider>
+            </template>
+
+            <template is="dom-if" if="[[_hasWordTree(verticalFacet)]]">
+              <paper-checkbox checked="{{verticalBagOfWords}}">
+                Bag of words
+              </paper-checkbox>
+            </template>
+
+            <div class="layout-row horizontal-facet">
+              <iron-icon icon="av:equalizer"></iron-icon>
+              <paper-dropdown-menu
+                    id="horizontalFacet"
+                    label="Column-Based Faceting"
+                    class="facet-selector">
+                <paper-listbox class="dropdown-content" selected="{{horizontalFacet}}"
+                    attr-for-selected="value">
+                  <paper-item value="">&lt;NONE&gt;</paper-item>
+                  <template is="dom-repeat" items="[[keys]]">
+                    <paper-item value="[[item]]">[[_breakUpAndTruncate(item)]]</paper-item>
+                  </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+            </div>
+
+            <template is="dom-if" if="[[horizontalFacet]]">
+              <paper-slider
+                  pin snaps editable
+                  min="1" max="[[_maxBuckets(horizontalFacet,horizontalBagOfWords)]]" step="1"
+                  value="{{horizontalBuckets}}"
+                  immediate-value="{{horizontalBuckets}}"></paper-slider>
+            </template>
+
+            <template is="dom-if" if="[[_hasWordTree(horizontalFacet)]]">
+              <paper-checkbox checked="{{horizontalBagOfWords}}">
+                Bag of words
+              </paper-checkbox>
+            </template>
+
+          </paper-menu>
+
+        </paper-submenu>
+
+      </paper-menu>
+
+      <paper-menu multi="true">
+
+        <paper-submenu>
+
+          <paper-item class="menu-trigger">
+            <span class="menu-trigger-text">Positioning</span>
+            <span style="flex:1"></span>
+            <paper-icon-button icon="image:grain" class="expand-button">
+            </paper-icon-button>
+          </paper-item>
+
+          <paper-menu class="menu-content"
+              opened="{{_anyPosition(verticalPosition,horizontalPosition,positionMode)}}">
+
+            <paper-radio-group selected="{{positionMode}}">
+              <paper-radio-button name="stacked">Stacked</paper-radio-button>
+              <paper-radio-button name="scatter">Scatter</paper-radio-button>
+            </paper-radio-group>
+
+            <template is="dom-if" if="[[_isModeScatter(positionMode)]]">
+
+              <div class="layout-row vertical-position">
+                <iron-icon icon="icons:trending-flat"></iron-icon>
+                <paper-dropdown-menu
+                      id="verticalPosition"
+                      label="Vertical Position"
+                      class="position-selector">
+                  <paper-listbox
+                      class="dropdown-content"
+                      selected="{{verticalPosition}}"
+                      attr-for-selected="value">
+                    <paper-item value="">&lt;DEFAULT&gt;</paper-item>
+                    <template is="dom-repeat" items="[[keys]]"
+                        filter="_isKeyNumeric">
+                      <paper-item value="[[item]]">[[item]]</paper-item>
+                    </template>
+                  </paper-listbox>
+                </paper-dropdown-menu>
+              </div>
+
+              <div class="layout-row horizontal-position">
+                <iron-icon icon="icons:trending-flat"></iron-icon>
+                <paper-dropdown-menu
+                      id="horizontalPosition"
+                      label="Horizontal Position"
+                      class="position-selector">
+                  <paper-listbox
+                      class="dropdown-content"
+                      selected="{{horizontalPosition}}"
+                      attr-for-selected="value">
+                    <paper-item value="">&lt;DEFAULT&gt;</paper-item>
+                    <template is="dom-repeat" items="[[keys]]"
+                        filter="_isKeyNumeric">
+                      <paper-item value="[[item]]">[[item]]</paper-item>
+                    </template>
+                  </paper-listbox>
+                </paper-dropdown-menu>
+              </div>
+
+            </template>
+
+          </paper-menu>
+
+        </paper-submenu>
+
+      </paper-menu>
+
+      <paper-menu multi="true">
+
+        <paper-submenu>
+
+          <paper-item class="menu-trigger">
+            <span class="menu-trigger-text">Color</span>
+            <span style="flex:1"></span>
+            <paper-icon-button icon="image:palette" class="expand-button">
+            </paper-icon-button>
+          </paper-item>
+
+          <paper-menu class="menu-content" opened="{{_anyColor(colorBy)}}">
+
+            <paper-dropdown-menu id="colorBy" label="Color By">
+              <paper-listbox class="dropdown-content" selected="{{colorBy}}"
+                  attr-for-selected="value">
+                <paper-item value="">&lt;NONE&gt;</paper-item>
+                <template is="dom-repeat" items="[[keys]]">
+                  <paper-item value="[[item]]">[[item]]</paper-item>
+                </template>
+              </paper-listbox>
+            </paper-dropdown-menu>
+
+            <template is="dom-if" if="{{_isKeyCategorical(colorBy)}}">
+              <paper-dropdown-menu id="paletteChoice" label="Palette">
+                <paper-listbox class="dropdown-content"
+                    selected="{{paletteChoice}}" attr-for-selected="value">
+                  <paper-item value="standard">standard</paper-item>
+                  <paper-item value="warm">warm</paper-item>
+                  <paper-item value="cool">cool</paper-item>
+                  <paper-item value="assist">assist</paper-item>
+                </paper-listbox>
+              </paper-dropdown-menu>
+            </template>
+
+          </paper-menu>
+
+        </paper-submenu>
+
+      </paper-menu>
+
+      <paper-menu multi="true">
+
+        <paper-submenu>
+
+          <paper-item class="menu-trigger">
+            <span class="menu-trigger-text">Display</span>
+            <span style="flex:1"></span>
+            <paper-icon-button icon="image:image" class="expand-button">
+            </paper-icon-button>
+          </paper-item>
+
+          <paper-menu class="menu-content" opened="">
+
+            <paper-dropdown-menu
+                id="imageFieldName"
+                label="Show for each Datapoint">
+              <paper-listbox
+                  class="dropdown-content"
+                  selected="{{imageFieldName}}"
+                  attr-for-selected="value">
+                <paper-item value="">
+                  [[_getImageFieldNameDefaultLabel(atlasUrl)]]
+                </paper-item>
+                <template is="dom-repeat" items="[[keys]]">
+                  <paper-item value="[[item]]">[[item]]</paper-item>
+                </template>
+              </paper-listbox>
+            </paper-dropdown-menu>
+
+          </paper-menu>
+
+        </paper-submenu>
+
+      </paper-menu>
+
+    </div>
+
+    <template is="dom-if"
+        if="{{_anySettings(verticalFacet,horizontalFacet,verticalPosition,horizontalPosition,colorBy,palette)}}">
+
+      <div class="legend">
+
+        <template is="dom-if"
+            if="{{_anyFacetOrPosition(verticalFacet, horizontalFacet, verticalPosition, horizontalPosition)}}">
+
+          <h2>Legend</h2>
+
+          <template is="dom-if" if="[[verticalFacet]]">
+            <div class="layout-row vertical-facet">
+              <iron-icon icon="av:equalizer"></iron-icon>
+              <span>[[_breakUpAndTruncate(verticalFacet)]]</span>
+            </div>
+          </template>
+          <template is="dom-if" if="[[horizontalFacet]]">
+            <div class="layout-row horizontal-facet">
+              <iron-icon icon="av:equalizer"></iron-icon>
+              <span>[[_breakUpAndTruncate(horizontalFacet)]]</span>
+            </div>
+          </template>
+          <template is="dom-if" if="[[_isModeScatter(positionMode)]]">
+            <template is="dom-if" if="[[verticalPosition]]">
+              <div class="layout-row vertical-position">
+                <iron-icon icon="icons:trending-flat"></iron-icon>
+                <span>[[_breakUpAndTruncate(verticalPosition)]]</span>
+              </div>
+            </template>
+            <template is="dom-if" if="[[horizontalPosition]]">
+              <div class="layout-row horizontal-position">
+                <iron-icon icon="icons:trending-flat"></iron-icon>
+                <span>[[_breakUpAndTruncate(horizontalPosition)]]</span>
+              </div>
+            </template>
+          </template>
+
+        </template>
+
+        <template is="dom-if" if="{{_anyColor(colorBy, palette)}}">
+
+          <h2>Colors</h2>
+          <span class="color-by-field">
+            by [[_breakUpAndTruncate(colorBy)]]
+            <paper-tooltip position="top">[[colorBy]]</paper-tooltip>
+          </span>
+
+          <div class="legend-table">
+          <template is="dom-repeat" items="[[palette]]">
+            <div class="legend-row color">
+              <div class="legend-cell">
+              <iron-icon
+                icon="av:fiber-manual-record"
+                fill$="[[item.color]]"
+                style$="fill:[[item.color]]"></iron-icon>
+              </div>
+              <div class="legend-cell">
+                <span class$="[[_specialClass(item.content.special)]]">
+                  [[_breakUpAndTruncate(item.content.label)]]
+                </span>
+                <paper-tooltip position="top">[[item.content.label]]</paper-tooltip>
+              </div>
+            </div>
+          </template>
+          </div>
+
+        </template>
+
+      </div>
+
+    </template>
+
+  </template>
+</dom-module>
+
+<script src="facets-dive-controls.js"></script>
