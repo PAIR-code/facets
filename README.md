@@ -42,18 +42,22 @@ cd facets
 
 ## Enabling Usage in Jupyter Notebooks
 
-Pre-built versions of the visualization code can be found in the facets-dist directory.
+Pre-built versions of the jupyter extension visualization code can be found in the facets-dist directory.
 
 To enable use of these visualizations in Jupyter notebooks:
 1. Install the jupyter notebook software: http://jupyter.org/install.html
-2. Install the visualizations into Jupyter as an nbextension: ```jupyter nbextension install facets-dist/ --user``` (run from the facets top-level directory).
+2. Install the visualizations into Jupyter as an nbextension: ```jupyter nbextension install facets-dist/ --user``` (run from the facets top-level directory). You do not need to run any follow-up ```jupyter nbextension enable``` command for this extension.
+3. To enable the Overview visualization, you must also have the Protocol Buffers python runtime library installed: https://github.com/google/protobuf/tree/master/python. If you used pip or anaconda to install Jupyter, you can use the same tool to install the runtime library.
+
+Note: When visualizing a large amount of data, as is done in the [Dive demo Jupyter notebook](./facets_dive/Dive_demo.ipynb), you will need to start the notebook server with an increased IOPub data rate.
+This can be done with the command ```jupyter notebook --NotebookApp.iopub_data_rate_limit=10000000```.
 
 ## Building the Visualizations
 
 If you make code changes to the visualization and would like to rebuild them for use in Jupyter notebooks, follow these directions:
 1. Install bazel: https://bazel.build/
-2. Build the visualizations: ```bazel build facets:facets_jupyter```
+2. Build the visualizations: ```bazel build facets:facets_jupyter``` (run from the facets top-level directory)
 3. Move the resulting vulcanized html file into the facets-dist directory.
-4. Reinstall the facets-dist jupyter extension as in the previous section
+4. Reinstall the facets-dist jupyter extension as in the previous section.
 
 **Disclaimer: This is not an official Google product**
