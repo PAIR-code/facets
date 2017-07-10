@@ -111,6 +111,11 @@ font-weight: 500;
   float: left;
 }
 
+.subhead.full-width {
+  width:100%;
+  margin-bottom: 30px;
+}
+
 .desc-copy {
  display:block;
  margin-top: 20px;
@@ -198,7 +203,7 @@ font-weight: 500;
 }
 
 .nav-link a:active {
-  color:#000;
+  color:#607D8B;
 }
 
 /*CTA Group*/
@@ -394,11 +399,28 @@ padding:4px;
   padding:40px;
 }
 
+.desc-copy.facets-quickdraw {
+  width:100%;
+}
+
 .demo-copy {
   min-height: 107px;
   min-width: 300px;
   display:inline-block;
   padding: 20px;
+}
+
+.subhead.facets-quickdraw {
+padding:none;
+margin: none;
+
+}
+
+img {
+  width:100%;
+  height:auto;
+  box-shadow: 2px 2px 3px #eaeaea;
+  border: 0.5px solid #eaeaea;
 }
 
 .col1 {
@@ -516,5 +538,11 @@ float:right;
 }
 
 a {
-  text-decoration: none;
+  text-decoration: underline;
+  color: inherit;
+}
+
+a:hover {
+  text-decoration: underline;
+  color:#607D8B;
 }
