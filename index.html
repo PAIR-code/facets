@@ -1,6 +1,302 @@
-<html>
-<header><title>Facets</title></header>
-<body>
-Documentation page for Facets project.
-</body>
+<!DOCTYPE html>
+<html class="nojs html css_verticalspacer" lang="en-US">
+ <head>
+
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
+  
+  
+  <title>Home</title>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="css/site_global.css?crc=4114105841"/>
+  <link rel="stylesheet" type="text/css" href="css/index.css?crc=4193858645" id="pagesheet"/>
+
+  <!--Fonts-->
+  <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,600,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+
+  
+  <!-- Other scripts -->
+
+  <!-- JS includes -->
+
+  <link rel="import" href="facets.html" >
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+   </head>
+
+
+ <body>
+  <!-- Top Anchor   -->
+  <a class="anchor_item colelem" id="top"></a> 
+
+  <div class="clearfix" id="page"><!-- column -->
+   <div class="position_content" id="page_position_content">
+
+
+<!-- header -->
+
+    <div class="clearfix colelem" id="pu130"><!-- group -->
+<!-- Header Bar -->
+
+     <div class="browser_width header-bar ">
+
+<!-- Navigation Menu -->
+          <div class="nav-menu">
+
+<!-- Facets Name -->
+          <div class="facets"><a href="index.html#top"><h3>Facets</h3></a></div>
+
+<!-- In=page Anchor Links -->
+          <div class= "nav-links">
+            <div class="nav-link"><a href="index.html#top">About</a></div>
+
+            <div class="nav-link"><a href="index.html#facets-overview">Facets Overview</a></div>
+
+            <div class="nav-link"><a href="index.html#facets-dive">Facets Dive</a></div>
+
+            <div class="nav-link"><a href="index.html#references">References</a></div>
+
+          </div>
+
+<!-- CTA Group -->
+          <div class= "cta-group">
+            <div class="cta" id="cta-1"><a href="https://www.github.com/PAIR-code/facets" target="_blank"><h4>Code</h4></a></div>
+            <div class="cta" id="cta-2"><a href="https://ai.google/pair" target="_blank"><h4>PAIR</h4></a></div>
+                
+
+          </div>
+        </div>
+
+    </div>
+  </div>
+
+    <div class="browser_width banner-bw">
+     <div class="banner"><!-- column -->
+     </div>
+
+    </div>
+
+    <div class="title" id="introduction"><h1>Facets - know your data</h1></div>
+
+    <div class="clearfix colelem about">
+
+     <div class="subhead">
+       <h2>Better data leads to better models.</h2>
+     </div>
+
+     <div class="desc-copy">
+      <p>The power of machine learning comes from its ability to learn patterns from large amounts of data. Understanding your data is critical to building a powerful machine learning system.</p><br><p>Facets contains two robust visualizations to aid in understanding and analyzing machine learning datasets. Get a sense of the shape of each feature of your dataset using Facets Overview, or explore individual observations using Facets Dive.</p>
+     </div>
+
+    </div>
+
+    <div class="demo-box">
+      <p class='demo-description'>Explore Facets Overview and Facets Dive on the UCI Census Income dataset, used for predicting whether an individual’s income exceeds $50K/yr based on their census data. The census data contains features such as age, education level and occupation for each individual.<span class="superscript">1</span></p>
+    </div>
+
+
+    <div class="separator" id="facets-overview"><!-- separating line --></div>
+
+    <div class="title facets-ov">
+        <h1>Facets Overview</h1>
+    </div>
+
+    <div class="subhead facets-ov">
+      <h2><span class='focus-word'>Overview</span> takes input feature data from any number of datasets, analyzes them feature by feature and visualizes the analysis.</h2>
+    </div>
+
+    <div class="desc-copy facets-ov">
+      <p>Overview gives users a quick understanding of the distribution of values across the features of their dataset(s). Uncover several uncommon and common issues such as unexpected feature values, missing feature values for a large number of observation, training/serving skew and train/test/validation set skew.</p>
+    </div>
+
+    <div class="facets-ov-demo">
+      <facets-overview id="foelem"></facets-overview>
+    </div>
+
+
+     <div class="demo-desc-box facets-ov">
+      <div class="facets-ov demo-title-bar">
+        <h5 class="demo-head">Try it out</h5>
+        <div class="demo-line facets-ov" ><!-- simple frame --></div>
+      </div>
+      <div class='demo-desc facets-ov'>
+        <div class="facets-ov demo-copy col1"><!-- content -->
+          <h6 class='summary'>Facets Overview summarizes statistics for each feature and compares the training and test datasets. It becomes easy to learn the distribution of values across the 6 numeric and 9 categorical features for both datasets.</h6>
+        </div>
+        <div class="demo-copy col2"><!-- content -->
+          <h6>Use the “Sort by” dropdown to sort features by “Distribution distance”. This sort order brings to the top of the tables, the features that are the most different between the two datasets. “Target” becomes the first feature in the table of categorical features. The chart for this feature shows that the training and test datasets actually use slightly different labels (“&gt;50K” for the training data and “&gt;50K.” for test data - notice the trailing period). This helps us uncover an unexpected difference between the training data and the test data.</h6>
+        </div>
+      </div>
+      <div class='facets-ov upload-data'>
+        <div class="facets-ov upload-data-button" id="uploadbutton1"><h4>load your own data</h4></div>
+        <div class='facets-ov upload-data-desc'><h6 class='upload'>Load one or more csv files with your first row being the header.</h6></div>
+      </div>
+    </div>
+
+ <div class="separator" id="facets-dive"><!-- separating line --></div>
+
+   <div class="title facets-dive">
+      <h1>Facets Dive</h1>
+    </div>
+
+    <div class="subhead facets-dive">
+      <h2><span class='focus-word'>Dive</span> is a tool for interactively exploring large numbers of data points at once.</h2>
+    </div>
+
+    <div class="desc-copy facets-dive">
+      <p>Dive provides an interactive interface for exploring the relationship between data points across all of the different features of a dataset. Each individual item in the visualization represents a data point. Position items by &quot;faceting&quot; or bucketing them in multiple dimensions by their feature values. Success stories of Dive include the detection of classifier failure, identification of systematic errors, evaluating ground truth and potential new signals for ranking.</p>
+    </div>
+
+    <div class="facets-dive-demo">
+      <facets-dive id="fdelem"></facets-dive>
+    </div>
+
+     <div class="demo-desc-box facets-dive">
+      <div class="facets-dive demo-title-bar">
+        <h5 class="demo-head">Try it out</h5>
+        <div class="demo-line facets-dive" ><!-- simple frame --></div>
+      </div>
+      <div class='demo-desc facets-dive'>
+        <div class="facets-dive demo-copy col1"><!-- content -->
+          <h6 class="summary">The Dive visualization shows each individual item in the training dataset. Clicking on an individual item reveals key/value pairs that represent the features of that record; values may be strings or numbers. </h6>
+        </div>
+        <div class="demo-copy col2"><!-- content -->
+          <h6>Using the menus on the left, you can change how the data is organized in order to gain insight into the dataset. Use the “Faceting” menu to do Row-based faceting” by “Education-num”. Use the “Color” menu to color by “Target”. This will show how higher levels of education are related to whether or not an individual earns more than $50K/yr.</h6>
+        </div>
+      </div>
+      <div class='facets-dive upload-data'>
+        <div class="facets-dive upload-data-button" id="uploadbutton2"><h4>load your own data</h4></div>
+        <div class='facets-dive upload-data-desc'><h6 class='upload'>Load one or more csv files with your first row being the header. </h6></div>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="separator" id="references"><!-- separating line --></div>
+    <div class="references">
+      <div class="title facets-references"><h1>References</h1></div>
+      <div class="desc-copy facets-references" ><!-- content -->
+        <p>Lichman, M. (2013). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml/datasets/Census+Income]. Irvine, CA: University of California, School of Information and Computer Science</p>
+      </div>
+    </div>
+
+   </div>
+
+  </div>
+
+
+<input type="file" id="fileupload" style="visibility:hidden" multiple/>
+  <!-- Other scripts -->
+
+  <script>
+  var fileupload = $("#fileupload")[0];
+  $("#uploadbutton1")[0].onclick = function() {
+      fileupload.click();
+  };
+  $("#uploadbutton2")[0].onclick = function() {
+      fileupload.click();
+  };
+  var readFiles = function () {
+    var count = fileupload.files.length;
+    var datasetsList = [];
+
+    var whendone = function() {
+      var overview = $("#foelem")[0];
+      var dive = $("#fdelem")[0];
+      var proto = overview.getStatsProto(datasetsList);
+      overview.protoInput = proto;
+      if (datasetsList.length < 2) {
+        dive.data = datasetsList[0].data;
+      } else {
+        var newFeatureForDive = 'csv-source';
+        var columns = datasetsList.length > 0 ? datasetsList[0].data.columns : [];
+        while (columns.indexOf(newFeatureForDive) > -1) {
+          newFeatureForDive = newFeatureForDive + newFeatureForDive;
+        }
+        datasetsList.forEach(function(dataset) {
+          dataset.data.forEach(function(datapoint) {
+            datapoint[newFeatureForDive] = dataset.name;
+          });
+        });
+        var alldata = datasetsList.reduce(function(a, b){
+          return a.concat(b.data);
+        }, []);
+        dive.data = alldata;
+        dive.colorBy = newFeatureForDive;
+      }
+    }
+    var readFile = function(file) {
+      var reader = new FileReader();
+      reader.onload = function() {
+        var parsedData = d3.csvParse(reader.result);
+        parsedData.forEach(function(row) {
+          parsedData.columns.forEach(function(column) {
+            var coercedNum = +row[column];
+            if (!isNaN(coercedNum)) {
+              row[column] = coercedNum;
+            }
+          });
+        });
+        datasetsList.push({data: parsedData, name: file.name});
+        if (!--count) {
+          whendone();
+        }
+      }
+      reader.readAsBinaryString(file);
+    };
+
+    for (var i = 0; i < count; i++) {
+      readFile(fileupload.files[i]);
+    }
+  }
+  fileupload.addEventListener('change', readFiles);
+  $.when(trainAjax(), testAjax()).done(function(trainAjax, testAjax) {
+    var overview = $("#foelem")[0];
+    var proto = overview.getStatsProto([
+      {data: trainAjax[0], name: "train"},
+      {data: testAjax[0], name: "test"}]);
+    overview.protoInput = proto;
+
+    $("#fdelem")[0].data = testAjax[0];
+  });
+  function trainAjax() {
+    return $.getJSON({url: "train.json"});
+  }
+  function testAjax() {
+    return $.getJSON({url: "test.json"});
+  }
+  $(document).on('click', 'a[href*=\\#]', function(event){
+    event.preventDefault();
+    $('html, body').animate({
+        scrollTop: $(this.hash).offset().top
+    }, 500);
+  });
+  </script>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-46457317-7', 'auto');
+    ga('send', 'pageview');
+  </script>
+   </body>
+
+  <footer>
+    <div class="footer browser_width"><!-- group -->
+      <div class= "footer-nav-menu">
+        <div class="footer-google-logo">
+        </div>
+        <div class>
+          <div class="footer-pair footer-link">
+           <a href="https://ai.google/pair" target="_blank">People + AI Research Initiative</a>
+          </div>
+
+          <div class="footer-source-code footer-link">
+            <a href="https://www.github.com/PAIR-code/facets" target="_blank">Source on Github</a>
+          </div>
+
+      </div>
+</div>
+  </footer>
 </html>
