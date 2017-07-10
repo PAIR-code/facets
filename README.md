@@ -38,7 +38,7 @@ Details about Dive usage can be found in its [README](./facets_dive/README.md).
 
 ## Installation
 ```
-git clone https://github.com/pairml/facets
+git clone https://github.com/PAIR-code/facets
 cd facets
 ```
 
