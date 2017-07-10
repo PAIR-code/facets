@@ -4,6 +4,8 @@ The facets project contains two visualizations for understanding and analyzing m
 
 The visualizations are implemented as [Polymer](https://www.polymer-project.org) web components, backed by [Typescript](https://www.typescriptlang.org) code and can be easily embedded into Jupyter notebooks or webpages.
 
+Live demos of the visualizations can be found on the [Facets project description page](https://pair-code.github.io/facets/).
+
 ## Facets Overview
 
 ![Overview visualization of UCI census data](/img/overview-census.png "Overview visualization of UCI census data -  Lichman, M. (2013). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml/datasets/Census+Income]. Irvine, CA: University of California, School of Information and Computer Science")
