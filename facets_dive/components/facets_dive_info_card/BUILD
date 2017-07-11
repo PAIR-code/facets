@@ -15,7 +15,6 @@ ts_web_library(
     deps = [
         "//facets_dive/lib:info-renderers",
         "@org_polymer_paper_card",
-        "@org_polymer_paper_material_styles",
         "@org_polymer_paper_styles",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
     ],
