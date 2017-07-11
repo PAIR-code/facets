@@ -3,6 +3,8 @@ package(default_visibility = ["//visibility:public"])
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "ts_web_library")
 
+licenses(["notice"])  # Apache 2.0
+
 closure_js_library(
     name = "externs",
     srcs = ["externs.js"],
