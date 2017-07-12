@@ -250,7 +250,7 @@ limitations under the License.
                     label="Row-Based Faceting"
                     class="facet-selector">
                 <paper-listbox class="dropdown-content" selected="{{verticalFacet}}"
-                    attr-for-selected="value">
+                    attr-for-selected="value" slot="dropdown-content">
                   <paper-item value="">&lt;NONE&gt;</paper-item>
                   <template is="dom-repeat" items="[[keys]]">
                     <paper-item value="[[item]]">[[_breakUpAndTruncate(item)]]</paper-item>
@@ -280,7 +280,7 @@ limitations under the License.
                     label="Column-Based Faceting"
                     class="facet-selector">
                 <paper-listbox class="dropdown-content" selected="{{horizontalFacet}}"
-                    attr-for-selected="value">
+                    attr-for-selected="value" slot="dropdown-content">
                   <paper-item value="">&lt;NONE&gt;</paper-item>
                   <template is="dom-repeat" items="[[keys]]">
                     <paper-item value="[[item]]">[[_breakUpAndTruncate(item)]]</paper-item>
@@ -339,7 +339,7 @@ limitations under the License.
                   <paper-listbox
                       class="dropdown-content"
                       selected="{{verticalPosition}}"
-                      attr-for-selected="value">
+                      attr-for-selected="value" slot="dropdown-content">
                     <paper-item value="">&lt;DEFAULT&gt;</paper-item>
                     <template is="dom-repeat" items="[[keys]]"
                         filter="_isKeyNumeric">
@@ -358,7 +358,7 @@ limitations under the License.
                   <paper-listbox
                       class="dropdown-content"
                       selected="{{horizontalPosition}}"
-                      attr-for-selected="value">
+                      attr-for-selected="value" slot="dropdown-content">
                     <paper-item value="">&lt;DEFAULT&gt;</paper-item>
                     <template is="dom-repeat" items="[[keys]]"
                         filter="_isKeyNumeric">
@@ -391,7 +391,7 @@ limitations under the License.
 
             <paper-dropdown-menu id="colorBy" label="Color By">
               <paper-listbox class="dropdown-content" selected="{{colorBy}}"
-                  attr-for-selected="value">
+                  attr-for-selected="value" slot="dropdown-content">
                 <paper-item value="">&lt;NONE&gt;</paper-item>
                 <template is="dom-repeat" items="[[keys]]">
                   <paper-item value="[[item]]">[[item]]</paper-item>
@@ -402,7 +402,7 @@ limitations under the License.
             <template is="dom-if" if="{{_isKeyCategorical(colorBy)}}">
               <paper-dropdown-menu id="paletteChoice" label="Palette">
                 <paper-listbox class="dropdown-content"
-                    selected="{{paletteChoice}}" attr-for-selected="value">
+                    selected="{{paletteChoice}}" attr-for-selected="value" slot="dropdown-content">
                   <paper-item value="standard">standard</paper-item>
                   <paper-item value="warm">warm</paper-item>
                   <paper-item value="cool">cool</paper-item>
@@ -436,7 +436,7 @@ limitations under the License.
               <paper-listbox
                   class="dropdown-content"
                   selected="{{imageFieldName}}"
-                  attr-for-selected="value">
+                  attr-for-selected="value" slot="dropdown-content">
                 <paper-item value="">
                   [[_getImageFieldNameDefaultLabel(atlasUrl)]]
                 </paper-item>
