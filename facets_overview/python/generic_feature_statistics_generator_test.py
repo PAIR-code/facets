@@ -12,25 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-import os
-
+from generic_feature_statistics_generator import GenericFeatureStatisticsGenerator
 import numpy as np
 import pandas as pd
-
 from tensorflow.python.platform import googletest
-
-import generic_feature_statistics_generator as gfsg
 
 
 class GenericFeatureStatisticsGeneratorTest(googletest.TestCase):
 
+  def setUp(self):
+    self.gfsg = GenericFeatureStatisticsGenerator()
+
   def testProtoFromDataFrames(self):
-    data = [[1, 'hi'],
-            [2, 'hello'],
-            [3, 'hi']]
+    data = [[1, 'hi'], [2, 'hello'], [3, 'hi']]
     df = pd.DataFrame(data, columns=['testFeatureInt', 'testFeatureString'])
     dataframes = [{'table': df, 'name': 'testDataset'}]
-    p = gfsg.ProtoFromDataFrames(dataframes)
+    p = self.gfsg.ProtoFromDataFrames(dataframes)
 
     self.assertEqual(1, len(p.datasets))
     test_data = p.datasets[0]
@@ -46,64 +43,65 @@ class GenericFeatureStatisticsGeneratorTest(googletest.TestCase):
       stringfeat = test_data.features[0]
 
     self.assertEqual('testFeatureInt', numfeat.name)
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().INT,
-                     numfeat.type)
+    self.assertEqual(self.gfsg.fs_proto.INT, numfeat.type)
     self.assertEqual(1, numfeat.num_stats.min)
     self.assertEqual(3, numfeat.num_stats.max)
     self.assertEqual('testFeatureString', stringfeat.name)
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().STRING,
-                     stringfeat.type)
+    self.assertEqual(self.gfsg.fs_proto.STRING, stringfeat.type)
     self.assertEqual(2, stringfeat.string_stats.unique)
 
   def testNdarrayToEntry(self):
     arr = np.array([1.0, 2.0, None, float('nan'), 3.0], dtype=float)
 
-    entry = gfsg.NdarrayToEntry(arr)
+    entry = self.gfsg.NdarrayToEntry(arr)
     self.assertEqual(2, entry['missing'])
 
     arr = np.array(['a', 'b', float('nan'), 'c'], dtype=str)
-    entry = gfsg.NdarrayToEntry(arr)
+    entry = self.gfsg.NdarrayToEntry(arr)
     self.assertEqual(1, entry['missing'])
 
   def testNdarrayToEntryTimeTypes(self):
-    arr = np.array([np.datetime64('2005-02-25'), np.datetime64('2006-02-25')],
-                   dtype=np.datetime64)
-    entry = gfsg.NdarrayToEntry(arr)
+    arr = np.array(
+        [np.datetime64('2005-02-25'),
+         np.datetime64('2006-02-25')],
+        dtype=np.datetime64)
+    entry = self.gfsg.NdarrayToEntry(arr)
     self.assertEqual([1109289600000000000, 1140825600000000000], entry['vals'])
 
-    arr = np.array([np.datetime64('2009-01-01') - np.datetime64('2008-01-01')],
-                   dtype=np.timedelta64)
-    entry = gfsg.NdarrayToEntry(arr)
+    arr = np.array(
+        [np.datetime64('2009-01-01') - np.datetime64('2008-01-01')],
+        dtype=np.timedelta64)
+    entry = self.gfsg.NdarrayToEntry(arr)
     self.assertEqual([31622400000000000], entry['vals'])
 
   def testDTypeToType(self):
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().INT,
-                     gfsg.DtypeToType(np.dtype(np.int32)))
+    self.assertEqual(self.gfsg.fs_proto.INT,
+                     self.gfsg.DtypeToType(np.dtype(np.int32)))
     # Boolean and time types treated as int
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().INT,
-                     gfsg.DtypeToType(np.dtype(np.bool)))
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().INT,
-                     gfsg.DtypeToType(np.dtype(np.datetime64)))
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().INT,
-                     gfsg.DtypeToType(np.dtype(np.timedelta64)))
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().FLOAT,
-                     gfsg.DtypeToType(np.dtype(np.float32)))
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().STRING,
-                     gfsg.DtypeToType(np.dtype(np.str)))
+    self.assertEqual(self.gfsg.fs_proto.INT,
+                     self.gfsg.DtypeToType(np.dtype(np.bool)))
+    self.assertEqual(self.gfsg.fs_proto.INT,
+                     self.gfsg.DtypeToType(np.dtype(np.datetime64)))
+    self.assertEqual(self.gfsg.fs_proto.INT,
+                     self.gfsg.DtypeToType(np.dtype(np.timedelta64)))
+    self.assertEqual(self.gfsg.fs_proto.FLOAT,
+                     self.gfsg.DtypeToType(np.dtype(np.float32)))
+    self.assertEqual(self.gfsg.fs_proto.STRING,
+                     self.gfsg.DtypeToType(np.dtype(np.str)))
     # Unsupported types treated as string for now
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().STRING,
-                     gfsg.DtypeToType(np.dtype(np.void)))
+    self.assertEqual(self.gfsg.fs_proto.STRING,
+                     self.gfsg.DtypeToType(np.dtype(np.void)))
 
   def testGetDatasetsProtoFromEntriesLists(self):
     entries = {}
-    entries['testFeature'] = {'vals': [1, 2, 3],
-                              'counts': [1, 1, 1],
-                              'missing': 0,
-                              'type': gfsg.GetFeatureStatsProtoDef().INT}
-    datasets = [{'entries': entries,
-                 'size': 3,
-                 'name': 'testDataset'}]
-    p = gfsg.GetDatasetsProto(datasets)
+    entries['testFeature'] = {
+        'vals': [1, 2, 3],
+        'counts': [1, 1, 1],
+        'missing': 0,
+        'type': self.gfsg.fs_proto.INT
+    }
+    datasets = [{'entries': entries, 'size': 3, 'name': 'testDataset'}]
+    p = self.gfsg.GetDatasetsProto(datasets)
 
     self.assertEqual(1, len(p.datasets))
     test_data = p.datasets[0]
@@ -112,13 +110,12 @@ class GenericFeatureStatisticsGeneratorTest(googletest.TestCase):
     self.assertEqual(1, len(test_data.features))
     numfeat = test_data.features[0]
     self.assertEqual('testFeature', numfeat.name)
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().INT,
-                     numfeat.type)
+    self.assertEqual(self.gfsg.fs_proto.INT, numfeat.type)
     self.assertEqual(1, numfeat.num_stats.min)
     self.assertEqual(3, numfeat.num_stats.max)
     hist = numfeat.num_stats.common_stats.num_values_histogram
     buckets = hist.buckets
-    self.assertEqual(gfsg.GetHistogramProtoDef().QUANTILES, hist.type)
+    self.assertEqual(self.gfsg.histogram_proto.QUANTILES, hist.type)
     self.assertEqual(10, len(buckets))
     self.assertEqual(1, buckets[0].low_value)
     self.assertEqual(1, buckets[0].high_value)
@@ -134,14 +131,14 @@ class GenericFeatureStatisticsGeneratorTest(googletest.TestCase):
         'counts': [1, 2, 1],
         'feat_lens': [1, 2, 1],
         'missing': 0,
-        'type': gfsg.GetFeatureStatsProtoDef().INT
+        'type': self.gfsg.fs_proto.INT
     }
     datasets = [{'entries': entries, 'size': 3, 'name': 'testDataset'}]
-    p = gfsg.GetDatasetsProto(datasets)
+    p = self.gfsg.GetDatasetsProto(datasets)
     hist = p.datasets[0].features[
         0].num_stats.common_stats.feature_list_length_histogram
     buckets = hist.buckets
-    self.assertEqual(gfsg.GetHistogramProtoDef().QUANTILES, hist.type)
+    self.assertEqual(self.gfsg.histogram_proto.QUANTILES, hist.type)
     self.assertEqual(10, len(buckets))
     self.assertEqual(1, buckets[0].low_value)
     self.assertEqual(1, buckets[0].high_value)
@@ -152,18 +149,20 @@ class GenericFeatureStatisticsGeneratorTest(googletest.TestCase):
 
   def testGetDatasetsProtoWithWhitelist(self):
     entries = {}
-    entries['testFeature'] = {'vals': [1, 2, 3],
-                              'counts': [1, 1, 1],
-                              'missing': 0,
-                              'type': gfsg.GetFeatureStatsProtoDef().INT}
-    entries['ignoreFeature'] = {'vals': [5, 6],
-                                'counts': [1, 1],
-                                'missing': 1,
-                                'type': gfsg.GetFeatureStatsProtoDef().INT}
-    datasets = [{'entries': entries,
-                 'size': 3,
-                 'name': 'testDataset'}]
-    p = gfsg.GetDatasetsProto(datasets, features=['testFeature'])
+    entries['testFeature'] = {
+        'vals': [1, 2, 3],
+        'counts': [1, 1, 1],
+        'missing': 0,
+        'type': self.gfsg.fs_proto.INT
+    }
+    entries['ignoreFeature'] = {
+        'vals': [5, 6],
+        'counts': [1, 1],
+        'missing': 1,
+        'type': self.gfsg.fs_proto.INT
+    }
+    datasets = [{'entries': entries, 'size': 3, 'name': 'testDataset'}]
+    p = self.gfsg.GetDatasetsProto(datasets, features=['testFeature'])
 
     self.assertEqual(1, len(p.datasets))
     test_data = p.datasets[0]

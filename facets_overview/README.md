@@ -26,16 +26,18 @@ These custom stats will be displayed alongside the standard statistics.
 The feature statistics protocol buffer can be created for datasets by the python code provided in the facets_overview/python directory.
 Datasets can be analyzed either from a TfRecord files of tensorflow Example protocol buffers, or from pandas DataFrames.
 
-To create the proto from a pandas DataFrame, use the ProtoFromDataFrames method in the file facets_overview/python/generic_feature_statistics_generator.py. 
-To create the proto from a TfRecord file, use the ProtoFromTfRecordFiles method in the file facets_overview/python/feature_statistics_generator.py (this requires having tensorflow installed for the python dependencies).
+To create the proto from a pandas DataFrame, use the `ProtoFromDataFrames` method of the [GenericFeatureStatisticsGenerator class](./facets_overview/python/generic_feature_statistics_generator.py).
+To create the proto from a TfRecord file, use the `ProtoFromTfRecordFiles` method of the [FeatureStatisticsGenerator class](./facets_overview/python/feature_statistics_generator.py).
+These generators have dependencies on the numpy and pandas python libraries.
+Use of the FeatureStatisticsGenerator class also requires having tensorflow installed.
 See those files for further documentation.
 
 Example code:
 ```python
-import generic_feature_statistics_generator as gfsg
+from generic_feature_statistics_generator import GenericFeatureStatisticsGenerator
 import pandas as pd
 df =  pd.DataFrame({‘num’ : [1, 2, 3, 4], 'str' : [‘a’, ‘a’, ‘b’, None]}
-proto = gfsg.ProtoFromDataFrames([{'name': 'test', 'table': df}])
+proto = GenericFeatureStatisticsGenerator().ProtoFromDataFrames([{'name': 'test', 'table': df}])
 ```
 # Visualization
 
@@ -61,7 +63,7 @@ The `protoInput` property accepts any of the following three forms of the Datase
 * A UInt8Array containing the serialized binary of a protocol buffer.
 * A string containing the base-64 encoded serialized protocol buffer, as shown in the code example above.
 
-###Understanding the Visualization
+### Understanding the Visualization
 
 The visualization contains two tables: one for numeric features and one for categorical (string) features.
 Each table contains a row for each feature of that type.

@@ -12,18 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-import os
-
+from feature_statistics_generator import FeatureStatisticsGenerator
 import numpy as np
 import tensorflow as tf
-
 from tensorflow.python.platform import googletest
-
-import feature_statistics_generator as fs
-import generic_feature_statistics_generator as gfsg
 
 
 class FeatureStatisticsGeneratorTest(googletest.TestCase):
+
+  def setUp(self):
+    self.fs = FeatureStatisticsGenerator()
 
   def testParseExampleInt(self):
     # Tests parsing examples of integers
@@ -35,14 +33,13 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.features.feature, [], entries, i)
+      self.fs._ParseExample(example.features.feature, [], entries, i)
 
     self.assertEqual(1, len(entries))
     self.assertIn('num', entries)
     info = entries['num']
     self.assertEqual(0, info['missing'])
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().INT,
-                     info['type'])
+    self.assertEqual(self.fs.fs_proto.INT, info['type'])
     for i in range(len(examples)):
       self.assertEqual(1, info['counts'][i])
       self.assertEqual(i, info['vals'][i])
@@ -61,13 +58,13 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.features.feature, [], entries, i)
+      self.fs._ParseExample(example.features.feature, [], entries, i)
 
     self.assertEqual(1, len(entries))
     self.assertIn('str', entries)
     info = entries['str']
     self.assertEqual(1, info['missing'])
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().STRING, info['type'])
+    self.assertEqual(self.fs.fs_proto.STRING, info['type'])
     self.assertEqual(0, info['counts'][0])
     self.assertEqual(1, info['counts'][1])
 
@@ -79,7 +76,7 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
     self.assertIn('num', entries)
     info = entries['num']
     self.assertEqual(0, info['missing'])
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().INT, info['type'])
+    self.assertEqual(self.fs.fs_proto.INT, info['type'])
     for i in range(n_examples):
       self.assertEqual(n_features, info['counts'][i])
       if feat_len is not None:
@@ -99,8 +96,8 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.context.feature,
-                       example.feature_lists.feature_list, entries, i)
+      self.fs._ParseExample(example.context.feature,
+                            example.feature_lists.feature_list, entries, i)
     self._check_sequence_example_entries(entries, 50, 1)
     self.assertEqual(1, len(entries))
 
@@ -114,8 +111,8 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.context.feature,
-                       example.feature_lists.feature_list, entries, i)
+      self.fs._ParseExample(example.context.feature,
+                            example.feature_lists.feature_list, entries, i)
     self._check_sequence_example_entries(entries, 50, 1, 1)
 
   def testParseExampleSequenceFeatureListMultipleEntriesInner(self):
@@ -129,8 +126,8 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.context.feature,
-                       example.feature_lists.feature_list, entries, i)
+      self.fs._ParseExample(example.context.feature,
+                            example.feature_lists.feature_list, entries, i)
 
     self._check_sequence_example_entries(entries, 2, 25, 1)
 
@@ -146,8 +143,8 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.context.feature,
-                       example.feature_lists.feature_list, entries, i)
+      self.fs._ParseExample(example.context.feature,
+                            example.feature_lists.feature_list, entries, i)
     self._check_sequence_example_entries(entries, 2, 25, 25)
 
   def testVaryingCountsAndMissing(self):
@@ -165,11 +162,11 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.features.feature, [], entries, i)
+      self.fs._ParseExample(example.features.feature, [], entries, i)
 
     info = entries['num']
     self.assertEqual(2, info['missing'])
-    self.assertEquals(4, len(info['counts']))
+    self.assertEqual(4, len(info['counts']))
     for i in range(4):
       self.assertEqual(i + 1, info['counts'][i])
     self.assertEqual(10, len(info['vals']))
@@ -185,18 +182,17 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.features.feature, [], entries, i)
+      self.fs._ParseExample(example.features.feature, [], entries, i)
 
     self.assertEqual(2, len(entries))
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().FLOAT,
-                     entries['float']['type'])
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().STRING,
-                     entries['str']['type'])
+    self.assertEqual(self.fs.fs_proto.FLOAT, entries['float']['type'])
+    self.assertEqual(self.fs.fs_proto.STRING, entries['str']['type'])
     for i in range(len(examples)):
       self.assertEqual(1, entries['str']['counts'][i])
       self.assertEqual(1, entries['float']['counts'][i])
       self.assertEqual(i, entries['float']['vals'][i])
-      self.assertEqual('hi', entries['str']['vals'][i].decode('UTF-8', 'strict'))
+      self.assertEqual('hi', entries['str']['vals'][i].decode(
+          'UTF-8', 'strict'))
 
   def testParseExamplesTypeMismatch(self):
     examples = []
@@ -208,21 +204,21 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
     examples.append(example)
 
     entries = {}
-    fs._ParseExample(examples[0].features.feature, [], entries, 0)
+    self.fs._ParseExample(examples[0].features.feature, [], entries, 0)
 
     with self.assertRaises(TypeError):
-      fs._ParseExample(examples[1].features.feature, [], entries, 1)
+      self.fs._ParseExample(examples[1].features.feature, [], entries, 1)
 
   def testGetDatasetsProtoFromEntriesLists(self):
     entries = {}
-    entries['testFeature'] = {'vals': [1, 2, 3],
-                              'counts': [1, 1, 1],
-                              'missing': 0,
-                              'type': gfsg.GetFeatureStatsProtoDef().INT}
-    datasets = [{'entries': entries,
-                 'size': 3,
-                 'name': 'testDataset'}]
-    p = gfsg.GetDatasetsProto(datasets)
+    entries['testFeature'] = {
+        'vals': [1, 2, 3],
+        'counts': [1, 1, 1],
+        'missing': 0,
+        'type': self.fs.fs_proto.INT
+    }
+    datasets = [{'entries': entries, 'size': 3, 'name': 'testDataset'}]
+    p = self.fs.GetDatasetsProto(datasets)
 
     self.assertEqual(1, len(p.datasets))
     test_data = p.datasets[0]
@@ -231,8 +227,7 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
     self.assertEqual(1, len(test_data.features))
     numfeat = test_data.features[0]
     self.assertEqual('testFeature', numfeat.name)
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().INT,
-                     numfeat.type)
+    self.assertEqual(self.fs.fs_proto.INT, numfeat.type)
     self.assertEqual(1, numfeat.num_stats.min)
     self.assertEqual(3, numfeat.num_stats.max)
 
@@ -249,10 +244,10 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.features.feature, [], entries, i)
+      self.fs._ParseExample(example.features.feature, [], entries, i)
 
     datasets = [{'entries': entries, 'size': len(examples), 'name': 'test'}]
-    p = gfsg.GetDatasetsProto(datasets)
+    p = self.fs.GetDatasetsProto(datasets)
 
     self.assertEqual(1, len(p.datasets))
     test_data = p.datasets[0]
@@ -262,8 +257,7 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
     numfeat = test_data.features[0] if (
         test_data.features[0].name == 'num') else test_data.features[1]
     self.assertEqual('num', numfeat.name)
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().INT,
-                     numfeat.type)
+    self.assertEqual(self.fs.fs_proto.INT, numfeat.type)
     self.assertEqual(0, numfeat.num_stats.min)
     self.assertEqual(49, numfeat.num_stats.max)
     self.assertEqual(24.5, numfeat.num_stats.mean)
@@ -274,22 +268,21 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
     self.assertEqual(50, numfeat.num_stats.common_stats.num_non_missing)
     self.assertEqual(1, numfeat.num_stats.common_stats.min_num_values)
     self.assertEqual(1, numfeat.num_stats.common_stats.max_num_values)
-    self.assertAlmostEqual(1,
-                           numfeat.num_stats.common_stats.avg_num_values, 4)
+    self.assertAlmostEqual(1, numfeat.num_stats.common_stats.avg_num_values, 4)
     hist = numfeat.num_stats.common_stats.num_values_histogram
     buckets = hist.buckets
-    self.assertEqual(gfsg.GetHistogramProtoDef().QUANTILES, hist.type)
+    self.assertEqual(self.fs.histogram_proto.QUANTILES, hist.type)
     self.assertEqual(10, len(buckets))
     self.assertEqual(1, buckets[0].low_value)
     self.assertEqual(1, buckets[0].high_value)
     self.assertEqual(5, buckets[0].sample_count)
-    self.assertEquals(1, buckets[9].low_value)
+    self.assertEqual(1, buckets[9].low_value)
     self.assertEqual(1, buckets[9].high_value)
     self.assertEqual(5, buckets[9].sample_count)
 
     self.assertEqual(2, len(numfeat.num_stats.histograms))
     buckets = numfeat.num_stats.histograms[0].buckets
-    self.assertEqual(gfsg.GetHistogramProtoDef().STANDARD,
+    self.assertEqual(self.fs.histogram_proto.STANDARD,
                      numfeat.num_stats.histograms[0].type)
     self.assertEqual(10, len(buckets))
     self.assertEqual(0, buckets[0].low_value)
@@ -300,7 +293,7 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
     self.assertEqual(5, buckets[9].sample_count)
 
     buckets = numfeat.num_stats.histograms[1].buckets
-    self.assertEqual(gfsg.GetHistogramProtoDef().QUANTILES,
+    self.assertEqual(self.fs.histogram_proto.QUANTILES,
                      numfeat.num_stats.histograms[1].type)
     self.assertEqual(10, len(buckets))
     self.assertEqual(0, buckets[0].low_value)
@@ -323,14 +316,14 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.features.feature, [], entries, i)
+      self.fs._ParseExample(example.features.feature, [], entries, i)
 
     datasets = [{'entries': entries, 'size': len(examples), 'name': 'test'}]
-    p = gfsg.GetDatasetsProto(datasets)
+    p = self.fs.GetDatasetsProto(datasets)
 
     numfeat = p.datasets[0].features[0]
     self.assertEqual(2, len(numfeat.num_stats.histograms))
-    self.assertEqual(gfsg.GetHistogramProtoDef().QUANTILES,
+    self.assertEqual(self.fs.histogram_proto.QUANTILES,
                      numfeat.num_stats.histograms[1].type)
     buckets = numfeat.num_stats.histograms[1].buckets
     self.assertEqual(10, len(buckets))
@@ -359,15 +352,15 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.features.feature, [], entries, i)
+      self.fs._ParseExample(example.features.feature, [], entries, i)
 
     datasets = [{'entries': entries, 'size': len(examples), 'name': 'test'}]
-    p = gfsg.GetDatasetsProto(datasets)
+    p = self.fs.GetDatasetsProto(datasets)
 
     numfeat = p.datasets[0].features[0]
 
     self.assertEqual('num', numfeat.name)
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().FLOAT, numfeat.type)
+    self.assertEqual(self.fs.fs_proto.FLOAT, numfeat.type)
     self.assertTrue(np.isnan(numfeat.num_stats.min))
     self.assertTrue(np.isnan(numfeat.num_stats.max))
     self.assertTrue(np.isnan(numfeat.num_stats.mean))
@@ -377,13 +370,13 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
     self.assertEqual(53, numfeat.num_stats.common_stats.num_non_missing)
     hist = buckets = numfeat.num_stats.histograms[0]
     buckets = hist.buckets
-    self.assertEqual(gfsg.GetHistogramProtoDef().STANDARD, hist.type)
+    self.assertEqual(self.fs.histogram_proto.STANDARD, hist.type)
     self.assertEqual(1, hist.num_nan)
     self.assertEqual(10, len(buckets))
     self.assertEqual(float('-inf'), buckets[0].low_value)
     self.assertEqual(4.9, buckets[0].high_value)
     self.assertEqual(6, buckets[0].sample_count)
-    self.assertEquals(44.1, buckets[9].low_value)
+    self.assertEqual(44.1, buckets[9].low_value)
     self.assertEqual(float('inf'), buckets[9].high_value)
     self.assertEqual(6, buckets[9].sample_count)
 
@@ -398,20 +391,20 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.features.feature, [], entries, i)
+      self.fs._ParseExample(example.features.feature, [], entries, i)
 
     datasets = [{'entries': entries, 'size': len(examples), 'name': 'test'}]
-    p = gfsg.GetDatasetsProto(datasets)
+    p = self.fs.GetDatasetsProto(datasets)
 
     numfeat = p.datasets[0].features[0]
     hist = buckets = numfeat.num_stats.histograms[0]
     buckets = hist.buckets
-    self.assertEqual(gfsg.GetHistogramProtoDef().STANDARD, hist.type)
+    self.assertEqual(self.fs.histogram_proto.STANDARD, hist.type)
     self.assertEqual(10, len(buckets))
     self.assertEqual(float('-inf'), buckets[0].low_value)
     self.assertEqual(0.1, buckets[0].high_value)
     self.assertEqual(1, buckets[0].sample_count)
-    self.assertEquals(0.9, buckets[9].low_value)
+    self.assertEqual(0.9, buckets[9].low_value)
     self.assertEqual(float('inf'), buckets[9].high_value)
     self.assertEqual(1, buckets[9].sample_count)
 
@@ -432,10 +425,10 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries = {}
     for i, example in enumerate(examples):
-      fs._ParseExample(example.features.feature, [], entries, i)
+      self.fs._ParseExample(example.features.feature, [], entries, i)
 
     datasets = [{'entries': entries, 'size': len(examples), 'name': 'test'}]
-    p = gfsg.GetDatasetsProto(datasets)
+    p = self.fs.GetDatasetsProto(datasets)
 
     self.assertEqual(1, len(p.datasets))
     test_data = p.datasets[0]
@@ -444,8 +437,7 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     strfeat = test_data.features[0]
     self.assertEqual('str', strfeat.name)
-    self.assertEqual(gfsg.GetFeatureStatsProtoDef().STRING,
-                     strfeat.type)
+    self.assertEqual(self.fs.fs_proto.STRING, strfeat.type)
     self.assertEqual(3, strfeat.string_stats.unique)
     self.assertAlmostEqual(19 / 6.0, strfeat.string_stats.avg_length, 4)
     self.assertEqual(0, strfeat.string_stats.common_stats.num_missing)
@@ -455,12 +447,12 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
     self.assertEqual(1, strfeat.string_stats.common_stats.avg_num_values)
     hist = strfeat.string_stats.common_stats.num_values_histogram
     buckets = hist.buckets
-    self.assertEqual(gfsg.GetHistogramProtoDef().QUANTILES, hist.type)
+    self.assertEqual(self.fs.histogram_proto.QUANTILES, hist.type)
     self.assertEqual(10, len(buckets))
     self.assertEqual(1, buckets[0].low_value)
     self.assertEqual(1, buckets[0].high_value)
     self.assertEqual(.6, buckets[0].sample_count)
-    self.assertEquals(1, buckets[9].low_value)
+    self.assertEqual(1, buckets[9].low_value)
     self.assertEqual(1, buckets[9].high_value)
     self.assertEqual(.6, buckets[9].sample_count)
 
@@ -498,14 +490,21 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
 
     entries1 = {}
     for i, example1 in enumerate(examples1):
-      fs._ParseExample(example1.features.feature, [], entries1, i)
+      self.fs._ParseExample(example1.features.feature, [], entries1, i)
     entries2 = {}
     for i, example2 in enumerate(examples2):
-      fs._ParseExample(example2.features.feature, [], entries2, i)
+      self.fs._ParseExample(example2.features.feature, [], entries2, i)
 
-    datasets = [{'entries': entries1, 'size': len(examples1), 'name': 'test1'},
-                {'entries': entries2, 'size': len(examples2), 'name': 'test2'}]
-    p = gfsg.GetDatasetsProto(datasets)
+    datasets = [{
+        'entries': entries1,
+        'size': len(examples1),
+        'name': 'test1'
+    }, {
+        'entries': entries2,
+        'size': len(examples2),
+        'name': 'test2'
+    }]
+    p = self.fs.GetDatasetsProto(datasets)
 
     self.assertEqual(2, len(p.datasets))
     test_data_1 = p.datasets[0]
@@ -519,12 +518,14 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
     self.assertEqual(1, test_data_2.features[num_feat_index].num_stats.max)
 
   def testGetEntriesNoFiles(self):
-    features, num_examples = fs._GetEntries(['test'], 10, lambda unused_path: [])
-    self.assertEquals(0, num_examples)
-    self.assertEquals({}, features)
+    features, num_examples = self.fs._GetEntries(['test'], 10,
+                                                 lambda unused_path: [])
+    self.assertEqual(0, num_examples)
+    self.assertEqual({}, features)
 
   @staticmethod
   def get_example_iter():
+
     def ex_iter(unused_filename):
       examples = []
       for i in range(50):
@@ -532,30 +533,32 @@ class FeatureStatisticsGeneratorTest(googletest.TestCase):
         example.features.feature['num'].int64_list.value.append(i)
         examples.append(example.SerializeToString())
       return examples
+
     return ex_iter
 
   def testGetEntries_one(self):
-    features, num_examples = fs._GetEntries(
-        ['test'], 1, self.get_example_iter())
-    self.assertEquals(1, num_examples)
+    features, num_examples = self.fs._GetEntries(['test'], 1,
+                                                 self.get_example_iter())
+    self.assertEqual(1, num_examples)
     self.assertTrue('num' in features)
 
   def testGetEntries_oneFile(self):
-    unused_features, num_examples = fs._GetEntries(
-        ['test'], 1000, self.get_example_iter())
-    self.assertEquals(50, num_examples)
+    unused_features, num_examples = self.fs._GetEntries(['test'], 1000,
+                                                        self.get_example_iter())
+    self.assertEqual(50, num_examples)
 
   def testGetEntries_twoFiles(self):
-    unused_features, num_examples = fs._GetEntries(
-        ['test0', 'test1'], 1000, self.get_example_iter())
-    self.assertEquals(100, num_examples)
+    unused_features, num_examples = self.fs._GetEntries(['test0', 'test1'],
+                                                        1000,
+                                                        self.get_example_iter())
+    self.assertEqual(100, num_examples)
 
   def testGetEntries_stopInSecondFile(self):
-    unused_features, num_examples = fs._GetEntries(
-        ['test@0', 'test@1', 'test@2', 'test@3', 'test@4', 'test@5', 'test@6',
-         'test@7', 'test@8', 'test@9'],
-        75, self.get_example_iter())
-    self.assertEquals(75, num_examples)
+    unused_features, num_examples = self.fs._GetEntries([
+        'test@0', 'test@1', 'test@2', 'test@3', 'test@4', 'test@5', 'test@6',
+        'test@7', 'test@8', 'test@9'
+    ], 75, self.get_example_iter())
+    self.assertEqual(75, num_examples)
 
 
 if __name__ == '__main__':
