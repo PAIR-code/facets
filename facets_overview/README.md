@@ -26,8 +26,8 @@ These custom stats will be displayed alongside the standard statistics.
 The feature statistics protocol buffer can be created for datasets by the python code provided in the facets_overview/python directory.
 Datasets can be analyzed either from a TfRecord files of tensorflow Example protocol buffers, or from pandas DataFrames.
 
-To create the proto from a pandas DataFrame, use the `ProtoFromDataFrames` method of the [GenericFeatureStatisticsGenerator class](./facets_overview/python/generic_feature_statistics_generator.py).
-To create the proto from a TfRecord file, use the `ProtoFromTfRecordFiles` method of the [FeatureStatisticsGenerator class](./facets_overview/python/feature_statistics_generator.py).
+To create the proto from a pandas DataFrame, use the `ProtoFromDataFrames` method of the [GenericFeatureStatisticsGenerator class](./python/generic_feature_statistics_generator.py).
+To create the proto from a TfRecord file, use the `ProtoFromTfRecordFiles` method of the [FeatureStatisticsGenerator class](./python/feature_statistics_generator.py).
 These generators have dependencies on the numpy and pandas python libraries.
 Use of the FeatureStatisticsGenerator class also requires having tensorflow installed.
 See those files for further documentation.
