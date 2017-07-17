@@ -36,7 +36,7 @@ Example code:
 ```python
 from generic_feature_statistics_generator import GenericFeatureStatisticsGenerator
 import pandas as pd
-df =  pd.DataFrame({‘num’ : [1, 2, 3, 4], 'str' : [‘a’, ‘a’, ‘b’, None]}
+df =  pd.DataFrame({'num' : [1, 2, 3, 4], 'str' : ['a', 'a', 'b', None]}
 proto = GenericFeatureStatisticsGenerator().ProtoFromDataFrames([{'name': 'test', 'table': df}])
 ```
 # Visualization
