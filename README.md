@@ -64,6 +64,6 @@ If you make code changes to the visualization and would like to rebuild them for
 
 ## Known Issues
 
-* The Facets visualizations currently work only in Chrome - [Issue 9](./issues/9).
+* The Facets visualizations currently work only in Chrome - [Issue 9](../../issues/9).
 
 **Disclaimer: This is not an official Google product**
