@@ -62,4 +62,8 @@ If you make code changes to the visualization and would like to rebuild them for
 3. Move the resulting vulcanized html file into the facets-dist directory.
 4. Reinstall the facets-dist jupyter extension as in the previous section.
 
+## Known Issues
+
+* The Facets visualizations currently work only in Chrome - [Issue 9](./issues/9).
+
 **Disclaimer: This is not an official Google product**
