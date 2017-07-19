@@ -40,6 +40,7 @@
 
   <!-- JS includes -->
 
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.js"></script>
   <link rel="import" href="facets.html" >
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
    </head>
@@ -130,7 +131,6 @@
     </div>
 
     <div class="facets-ov-demo">
-      <facets-overview id="foelem"></facets-overview>
     </div>
 
 
@@ -168,7 +168,6 @@
     </div>
 
     <div class="facets-dive-demo">
-      <facets-dive id="fdelem"></facets-dive>
     </div>
 
      <div class="demo-desc-box facets-dive">
@@ -220,81 +219,83 @@
   <!-- Other scripts -->
 
   <script>
-  var fileupload = $("#fileupload")[0];
-  $("#uploadbutton1")[0].onclick = function() {
-      fileupload.click();
-  };
-  $("#uploadbutton2")[0].onclick = function() {
-      fileupload.click();
-  };
-  var readFiles = function () {
-    var count = fileupload.files.length;
-    var datasetsList = [];
-
-    var whendone = function() {
-      var overview = $("#foelem")[0];
-      var dive = $("#fdelem")[0];
-      var proto = overview.getStatsProto(datasetsList);
-      overview.protoInput = proto;
-      if (datasetsList.length < 2) {
-        dive.data = datasetsList[0].data;
-      } else {
-        var newFeatureForDive = 'csv-source';
-        var columns = datasetsList.length > 0 ? datasetsList[0].data.columns : [];
-        while (columns.indexOf(newFeatureForDive) > -1) {
-          newFeatureForDive = newFeatureForDive + newFeatureForDive;
-        }
-        datasetsList.forEach(function(dataset) {
-          dataset.data.forEach(function(datapoint) {
-            datapoint[newFeatureForDive] = dataset.name;
-          });
-        });
-        var alldata = datasetsList.reduce(function(a, b){
-          return a.concat(b.data);
-        }, []);
-        dive.data = alldata;
-        dive.colorBy = newFeatureForDive;
-      }
-    }
-    var readFile = function(file) {
-      var reader = new FileReader();
-      reader.onload = function() {
-        var parsedData = d3.csvParse(reader.result);
-        parsedData.forEach(function(row) {
-          parsedData.columns.forEach(function(column) {
-            var coercedNum = +row[column];
-            if (!isNaN(coercedNum)) {
-              row[column] = coercedNum;
-            }
-          });
-        });
-        datasetsList.push({data: parsedData, name: file.name});
-        if (!--count) {
-          whendone();
-        }
-      }
-      reader.readAsBinaryString(file);
+  function setupVis() {
+    var fileupload = $("#fileupload")[0];
+    $("#uploadbutton1")[0].onclick = function() {
+        fileupload.click();
     };
+    $("#uploadbutton2")[0].onclick = function() {
+        fileupload.click();
+    };
+    var readFiles = function () {
+      var count = fileupload.files.length;
+      var datasetsList = [];
 
-    for (var i = 0; i < count; i++) {
-      readFile(fileupload.files[i]);
+      var whendone = function() {
+        var overview = $("#foelem")[0];
+        var dive = $("#fdelem")[0];
+        var proto = overview.getStatsProto(datasetsList);
+        overview.protoInput = proto;
+        if (datasetsList.length < 2) {
+          dive.data = datasetsList[0].data;
+        } else {
+          var newFeatureForDive = 'csv-source';
+          var columns = datasetsList.length > 0 ? datasetsList[0].data.columns : [];
+          while (columns.indexOf(newFeatureForDive) > -1) {
+            newFeatureForDive = newFeatureForDive + newFeatureForDive;
+          }
+          datasetsList.forEach(function(dataset) {
+            dataset.data.forEach(function(datapoint) {
+              datapoint[newFeatureForDive] = dataset.name;
+            });
+          });
+          var alldata = datasetsList.reduce(function(a, b){
+            return a.concat(b.data);
+          }, []);
+          dive.data = alldata;
+          dive.colorBy = newFeatureForDive;
+        }
+      }
+      var readFile = function(file) {
+        var reader = new FileReader();
+        reader.onload = function() {
+          var parsedData = d3.csvParse(reader.result);
+          parsedData.forEach(function(row) {
+            parsedData.columns.forEach(function(column) {
+              var coercedNum = +row[column];
+              if (!isNaN(coercedNum)) {
+                row[column] = coercedNum;
+              }
+            });
+          });
+          datasetsList.push({data: parsedData, name: file.name});
+          if (!--count) {
+            whendone();
+          }
+        }
+        reader.readAsBinaryString(file);
+      };
+
+      for (var i = 0; i < count; i++) {
+        readFile(fileupload.files[i]);
+      }
     }
-  }
-  fileupload.addEventListener('change', readFiles);
-  $.when(trainAjax(), testAjax()).done(function(trainAjax, testAjax) {
-    var overview = $("#foelem")[0];
-    var proto = overview.getStatsProto([
-      {data: trainAjax[0], name: "train"},
-      {data: testAjax[0], name: "test"}]);
-    overview.protoInput = proto;
+    fileupload.addEventListener('change', readFiles);
+    $.when(trainAjax(), testAjax()).done(function(trainAjax, testAjax) {
+      var overview = $("#foelem")[0];
+      var proto = overview.getStatsProto([
+        {data: trainAjax[0], name: "train"},
+        {data: testAjax[0], name: "test"}]);
+      overview.protoInput = proto;
 
-    $("#fdelem")[0].data = testAjax[0];
-  });
-  function trainAjax() {
-    return $.getJSON({url: "train.json"});
-  }
-  function testAjax() {
-    return $.getJSON({url: "test.json"});
+      $("#fdelem")[0].data = testAjax[0];
+    });
+    function trainAjax() {
+      return $.getJSON({url: "train.json"});
+    }
+    function testAjax() {
+      return $.getJSON({url: "test.json"});
+    }
   }
   $(document).on('click', 'a[href*=\\#]', function(event){
     event.preventDefault();
@@ -303,6 +304,23 @@
     }, 500);
   });
   </script>
+  <script>
+  window.addEventListener('WebComponentsReady', function() {
+    var link = document.createElement("link");
+    link.rel = "import";
+    link.href = "facets.html";
+    link.onload= function() {
+      var dive = document.createElement("facets-dive");
+      dive.id = "fdelem";
+      $(".facets-dive-demo")[0].appendChild(dive);
+      var overview = document.createElement("facets-overview");
+      overview.id = "foelem";
+      $(".facets-ov-demo")[0].appendChild(overview);
+      setupVis();
+    };
+    document.head.appendChild(link);
+  });
+</script>
   <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

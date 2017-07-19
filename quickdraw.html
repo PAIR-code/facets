@@ -18,7 +18,26 @@ limitations under the License.
 <html>
 <head>
   <meta charset="utf-8">
-  <link rel="import" href="facets.html" >
+  <script>
+  window.addEventListener('WebComponentsReady', function() {
+    var link = document.createElement('link');
+    link.rel = "import";
+    link.href = "facets.html";
+    link.onload= function() {
+      var dive = document.createElement('facets-dive');
+      dive.crossOrigin = "anonymous";
+      dive.spriteImageWidth = "40";
+      dive.spriteImageHeight = "40";
+      document.body.appendChild(dive);
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'quickdraw.js';
+      document.head.appendChild(script);
+    }
+    document.head.appendChild(link);
+  });
+</script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.js"></script>
 <style>
 body, html {
   height: 100%;
@@ -78,11 +97,5 @@ body {
       <select class="presets"></select>
     </label>
   </div>
-  <facets-dive
-      cross-origin="anonymous"
-      sprite-image-width="40"
-      sprite-image-height="40"
-  ></facets-dive>
-  <script src="quickdraw.js"></script>
 </body>
 </html>
