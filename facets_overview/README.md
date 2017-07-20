@@ -48,6 +48,7 @@ The web component is then displayed in output cell of the notebook.
 Example code (continued from above example):
 ```python
 from IPython.core.display import display, HTML
+import base64
 protostr = base64.b64encode(proto.SerializeToString()).decode("utf-8")
 HTML_TEMPLATE = """<link rel="import" href="/nbextensions/facets-dist/facets-jupyter.html" >
         <facets-overview id="elem"></facets-overview>
