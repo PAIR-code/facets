@@ -82,7 +82,9 @@ You can set these with the `spriteImageWidth` and `spriteImageHeight` properties
 
 ### Embedding Dive in Your Page
 
-The project is build with [Bazel](https://www.bazel.build/). Make sure you have installed Bazel and run the Bazel BUILD files prior to proceeding. Provided you've loaded the `<facets-dive>` Polymer element, you can insert an instance into your page like so.
+The project is built with [Bazel](https://www.bazel.build/). 
+Make sure you have installed Bazel and run the Bazel BUILD files prior to proceeding. 
+Provided you've loaded the `<facets-dive>` Polymer element, you can insert an instance into your page like so.
 
 ```html
 <facets-dive></facets-dive>
