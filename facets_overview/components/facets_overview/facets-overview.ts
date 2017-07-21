@@ -95,12 +95,13 @@ Polymer({
       inValue: DatasetFeatureStatisticsList | Uint8Array | string | null):
           DatasetFeatureStatisticsList |
       null {
-        if (!inValue) {
+        // When using a polymer element within Angular, before a property is
+        // bound to a value, it may be bound to an empty Object. Treat this
+        // as null.
+        if (!inValue ||
+            (inValue.constructor === Object &&
+             Object.keys(inValue).length === 0)) {
           return null;
-        }
-
-        if (inValue instanceof DatasetFeatureStatisticsList) {
-          return inValue;
         }
 
         // If the input proto is an array then treat it is binary and convert it
@@ -119,7 +120,9 @@ Polymer({
           return DatasetFeatureStatisticsList.deserializeBinary(bytes);
         }
 
-        return null;
+        // In this case, a proto object has already been provided as input so
+        // no conversion is necessary.
+        return inValue;
       },
   // tslint:disable-next-line:no-any typescript/polymer temporary issue
   _update(this: any) {
