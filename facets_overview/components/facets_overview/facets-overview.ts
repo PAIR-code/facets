@@ -120,6 +120,14 @@ Polymer({
           return DatasetFeatureStatisticsList.deserializeBinary(bytes);
         }
 
+        // If provided with a plain object and the proto class has a fromObject
+        // method then convert the object into the proto.
+        if (inValue.constructor === Object &&
+            typeof (DatasetFeatureStatisticsList as any).fromObject ===
+            'function') {
+          return (DatasetFeatureStatisticsList as any).fromObject(inValue);
+        }
+
         // In this case, a proto object has already been provided as input so
         // no conversion is necessary.
         return inValue;
