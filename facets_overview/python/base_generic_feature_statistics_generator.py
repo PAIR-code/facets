@@ -237,7 +237,10 @@ class BaseGenericFeatureStatisticsGenerator(object):
             featstats = feat.string_stats
             commonstats = featstats.common_stats
             if has_data:
-              strs = [str(item) for item in value['vals']]
+              strs = []
+              for item in value['vals']:
+                strs.append(item if hasattr(item, '__len__') else str(item))
+
               featstats.avg_length = np.mean(np.vectorize(len)(strs))
               vals, counts = np.unique(strs, return_counts=True)
               featstats.unique = len(vals)
