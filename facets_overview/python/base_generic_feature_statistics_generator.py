@@ -187,11 +187,11 @@ class BaseGenericFeatureStatisticsGenerator(object):
             commonstats = featstats.common_stats
             if has_data:
               nums = value['vals']
-              featstats.std_dev = np.std(nums)
-              featstats.mean = np.mean(nums)
-              featstats.min = np.min(nums)
-              featstats.max = np.max(nums)
-              featstats.median = np.median(nums)
+              featstats.std_dev = np.asscalar(np.std(nums))
+              featstats.mean = np.asscalar(np.mean(nums))
+              featstats.min = np.asscalar(np.min(nums))
+              featstats.max = np.asscalar(np.max(nums))
+              featstats.median = np.asscalar(np.median(nums))
               featstats.num_zeros = len(nums) - np.count_nonzero(nums)
 
               nums = np.array(nums)
@@ -211,7 +211,7 @@ class BaseGenericFeatureStatisticsGenerator(object):
                 bucket = hist.buckets.add(
                     low_value=buckets[bucket_count],
                     high_value=buckets[bucket_count + 1],
-                    sample_count=counts[bucket_count])
+                    sample_count=np.asscalar(counts[bucket_count]))
                 # Add any negative or positive infinities to the first and last
                 # buckets in the histogram.
                 if bucket_count == 0 and num_neginf > 0:
@@ -231,14 +231,16 @@ class BaseGenericFeatureStatisticsGenerator(object):
                       low_value=float('inf'),
                       high_value=float('inf'),
                       sample_count=num_posinf)
-
               self._PopulateQuantilesHistogram(featstats.histograms.add(),
                                                nums.tolist())
           elif feat.type == self.fs_proto.STRING:
             featstats = feat.string_stats
             commonstats = featstats.common_stats
             if has_data:
-              strs = value['vals']
+              strs = []
+              for item in value['vals']:
+                strs.append(item if hasattr(item, '__len__') else str(item))
+
               featstats.avg_length = np.mean(np.vectorize(len)(strs))
               vals, counts = np.unique(strs, return_counts=True)
               featstats.unique = len(vals)
@@ -254,7 +256,7 @@ class BaseGenericFeatureStatisticsGenerator(object):
                 bucket = featstats.rank_histogram.buckets.add(
                     low_rank=val_index,
                     high_rank=val_index,
-                    sample_count=val[0],
+                    sample_count=np.asscalar(val[0]),
                     label=printable_val)
                 if val_index < 2:
                   featstats.top_values.add(
@@ -264,8 +266,8 @@ class BaseGenericFeatureStatisticsGenerator(object):
             commonstats.num_missing = value['missing']
             commonstats.num_non_missing = (all_datasets.datasets[j].num_examples
                                            - featstats.common_stats.num_missing)
-            commonstats.min_num_values = np.min(value['counts']).astype(int)
-            commonstats.max_num_values = np.max(value['counts']).astype(int)
+            commonstats.min_num_values = int(np.min(value['counts']).astype(int))
+            commonstats.max_num_values = int(np.max(value['counts']).astype(int))
             commonstats.avg_num_values = np.mean(value['counts'])
             if 'feat_lens' in value and value['feat_lens']:
               self._PopulateQuantilesHistogram(
