@@ -118,9 +118,18 @@ class BaseGenericFeatureStatisticsGenerator(object):
     flattened = flattened[flattened != np.array(None)]
     if converter:
       flattened = converter(flattened)
-    flattened = ([x for x in flattened if str(x) != 'nan']
-                 if data_type == self.fs_proto.STRING else
-                 flattened[~np.isnan(flattened)].tolist())
+    if data_type == self.fs_proto.STRING:
+      flattened_temp = []
+      for x in flattened:
+        try:
+          if str(x) != 'nan':
+            flattened_temp.append(x)
+        except UnicodeEncodeError:
+          if x.encode('utf-8') != 'nan':
+            flattened_temp.append(x)
+      flattened = flattened_temp
+    else:
+      flattened = flattened[~np.isnan(flattened)].tolist()
     missing = orig_size - len(flattened)
     return {
         'vals': flattened,
@@ -251,7 +260,7 @@ class BaseGenericFeatureStatisticsGenerator(object):
                 else:
                   try:
                     printable_val = val[1].decode('UTF-8', 'strict')
-                  except UnicodeDecodeError:
+                  except (UnicodeDecodeError, UnicodeEncodeError):
                     printable_val = '__BYTES_VALUE__'
                 bucket = featstats.rank_histogram.buckets.add(
                     low_rank=val_index,
