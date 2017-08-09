@@ -259,12 +259,12 @@ Polymer({
             this.feature, undefined,
             utils.getNumberFromField(datum.getLowValue()),
             utils.getNumberFromField(datum.getHighValue())),
-        (foreground: d3.Selection<HTMLElement, {}, never, never>) =>
+        (foreground: d3.Selection<HTMLElement, {}, null, undefined>) =>
             foreground.append('rect')
                 .attr('stroke', 'black')
                 .attr('fill', 'none')
                 .attr('stroke-width', '1px'),
-        (elem: d3.Selection<HTMLElement, {}, never, never>,
+        (elem: d3.Selection<HTMLElement, {}, null, undefined>,
          entity: Plottable.IEntity<any>) =>
             elem.attr(
                     'x',
@@ -400,13 +400,13 @@ Polymer({
             this.feature, undefined,
             utils.getNumberFromField(datum.bucket.getLowValue()),
             utils.getNumberFromField(datum.bucket.getHighValue())),
-        (foreground: d3.Selection<HTMLElement, {}, never, never>) =>
+        (foreground: d3.Selection<HTMLElement, {}, null, undefined>) =>
             foreground.append('circle')
                 .attr('r', 3)
                 .attr('stroke', 'black')
                 .attr('fill', 'none')
                 .attr('stroke-width', '1px'),
-        (elem: d3.Selection<HTMLElement, {}, never, never>,
+        (elem: d3.Selection<HTMLElement, {}, null, undefined>,
          entity: Plottable.IEntity<any>) =>
             elem.attr('cx', entity.position.x).attr('cy', entity.position.y));
   },
@@ -470,12 +470,12 @@ Polymer({
             utils.getNumberFromField(datum.getSampleCount()).toLocaleString(),
         (datum: RankHistogram.Bucket) =>
             new utils.FeatureSelection(this.feature, datum.getLabel()),
-        (foreground: d3.Selection<HTMLElement, {}, never, never>) =>
+        (foreground: d3.Selection<HTMLElement, {}, null, undefined>) =>
             foreground.append('rect')
                 .attr('stroke', 'black')
                 .attr('fill', 'none')
                 .attr('stroke-width', '1px'),
-        (elem: d3.Selection<HTMLElement, {}, never, never>,
+        (elem: d3.Selection<HTMLElement, {}, null, undefined>,
          entity: Plottable.IEntity<any>) =>
             elem.attr(
                     'x',
@@ -631,13 +631,13 @@ Polymer({
                 .toLocaleString(),
         (datum: RankHistogram.Bucket) =>
             new utils.FeatureSelection(this.feature, datum.getLabel()),
-        (foreground: d3.Selection<HTMLElement, {}, never, never>) =>
+        (foreground: d3.Selection<HTMLElement, {}, null, undefined>) =>
             foreground.append('circle')
                 .attr('r', 3)
                 .attr('stroke', 'black')
                 .attr('fill', 'none')
                 .attr('stroke-width', '1px'),
-        (elem: d3.Selection<HTMLElement, {}, never, never>,
+        (elem: d3.Selection<HTMLElement, {}, null, undefined>,
          entity: Plottable.IEntity<any>) =>
             elem.attr('cx', entity.position.x).attr('cy', entity.position.y));
   },
@@ -650,9 +650,9 @@ Polymer({
       tooltipCallback: (datum: any) => string,
       selectionCallback: (datum: any) => utils.FeatureSelection,
       selectionCreator:
-          (foreground: d3.Selection<HTMLElement, {}, never, never>) => {},
+          (foreground: d3.Selection<HTMLElement, {}, null, undefined>) => {},
       selectionPositioner: (
-          elem: d3.Selection<HTMLElement, {}, never, never>,
+          elem: d3.Selection<HTMLElement, {}, null, undefined>,
           entity: Plottable.IEntity<any>) => null) {
     if (this._showTable) {
       return;
@@ -673,11 +673,11 @@ Polymer({
     // the Y axis component.
     Plottable.RenderController.renderPolicy(
         Plottable.RenderController.Policy.immediate);
-    const chartSelection: d3.Selection<HTMLElement, {}, never, never> =
+    const chartSelection: d3.Selection<HTMLElement, {}, null, undefined> =
         d3.select(this.$.chart);
-    const axisSelection: d3.Selection<HTMLElement, {}, never, never> =
+    const axisSelection: d3.Selection<HTMLElement, {}, null, undefined> =
         d3.select(this.$.xaxis);
-    const tooltip: d3.Selection<HTMLElement, {}, never, never> =
+    const tooltip: d3.Selection<HTMLElement, {}, null, undefined> =
         d3.select(this.$.tooltip);
     this.async(() => {
       // Remove the chart component but not anything else as this would disable
@@ -687,7 +687,7 @@ Polymer({
       chartTable.renderTo(this.$.chart);
 
       this._selectionElem = selectionCreator(
-          plot.foreground() as d3.Selection<HTMLElement, {}, never, never>);
+          plot.foreground() as d3.Selection<HTMLElement, {}, null, undefined>);
       this._updateSelectionVisibility(this.selection);
 
       // Setup Interaction.Pointer for tooltip and attach to the plot.
