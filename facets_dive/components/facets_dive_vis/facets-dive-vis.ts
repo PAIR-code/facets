@@ -608,37 +608,37 @@ class FacetsDiveVizInternal {
   /**
    * D3 selection wrapping the SVG element containing cell background elements.
    */
-  cellBackgroundSVG: d3.Selection<SVGSVGElement, {}, never, never>;
+  cellBackgroundSVG: d3.Selection<SVGSVGElement, {}, null, undefined>;
 
   /**
    * D3 selection wrapping the root of the cell background SVG.
    */
-  cellBackgroundSVGRoot: d3.Selection<SVGGElement, {}, never, never>;
+  cellBackgroundSVGRoot: d3.Selection<SVGGElement, {}, null, undefined>;
 
   /**
    * D3 selection wrapping the <g> element for containing cell background rects.
    */
-  cellBackgroundLayer: d3.Selection<SVGGElement, {}, never, never>;
+  cellBackgroundLayer: d3.Selection<SVGGElement, {}, null, undefined>;
 
   /**
    * D3 selection wrapping the SVG element containing labels and axes.
    */
-  labelsAndAxesSVG: d3.Selection<SVGSVGElement, {}, never, never>;
+  labelsAndAxesSVG: d3.Selection<SVGSVGElement, {}, null, undefined>;
 
   /**
    * D3 selection wrapping the labels and axes SVG root group element.
    */
-  labelsAndAxesSVGRoot: d3.Selection<SVGGElement, {}, never, never>;
+  labelsAndAxesSVGRoot: d3.Selection<SVGGElement, {}, null, undefined>;
 
   /**
    * D3 selection wrapping the <g> element for axes within grid cells.
    */
-  axesLayer: d3.Selection<SVGGElement, {}, never, never>;
+  axesLayer: d3.Selection<SVGGElement, {}, null, undefined>;
 
   /**
    * D3 selection wrapping the <g> element for label text elements.
    */
-  labelsLayer: d3.Selection<SVGGElement, {}, never, never>;
+  labelsLayer: d3.Selection<SVGGElement, {}, null, undefined>;
 
   /**
    * Layout object handling fit-to-screen logic.
@@ -697,7 +697,7 @@ class FacetsDiveVizInternal {
    * D3 zoom behavior instance attached to the element for user interaction.
    * TODO(jimbo): Update this when TypeScript typings catch up to d3 v4.
    */
-  zoom: d3.ZoomBehavior<FacetsDiveVis, {}>;
+  zoom: d3.ZoomBehavior<Element, {}>;
 
   /**
    * List of label objects to show in the visualization. Determined by the

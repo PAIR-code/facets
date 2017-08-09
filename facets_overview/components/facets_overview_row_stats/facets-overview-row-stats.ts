@@ -44,7 +44,7 @@ Polymer({
   _colorLegendBox: function(
       this: any, dataModel: OverviewDataModel, datasetIndex: number,
       compareMode: boolean) {
-    const boxSelection: d3.Selection<HTMLElement, {}, never, never> =
+    const boxSelection: d3.Selection<HTMLElement, {}, null, undefined> =
         d3.select(this.$$('#legend-box'));
     // Do not display the color box for the dataset if there is only a single
     // dataset or not in compare mode.
