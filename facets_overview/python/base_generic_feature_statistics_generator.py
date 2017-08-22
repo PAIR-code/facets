@@ -29,7 +29,8 @@ class BaseGenericFeatureStatisticsGenerator(object):
     self.datasets_proto = datasets_proto
     self.histogram_proto = histogram_proto
 
-  def ProtoFromDataFrames(self, dataframes, histogram_categorical_levels_count=None):
+  def ProtoFromDataFrames(self, dataframes,
+                          histogram_categorical_levels_count=None):
     """Creates a feature statistics proto from a set of pandas dataframes.
 
     Args:
@@ -37,9 +38,10 @@ class BaseGenericFeatureStatisticsGenerator(object):
           proto. Each entry contains a 'table' field of the dataframe of the
             data
           and a 'name' field to identify the dataset in the proto.
-      histogram_categorical_levels_count: int, controls the maximum number of levels
-          to display in histograms for categorical features. Useful to prevent codes/IDs
-          features from bloating the stats object. Defaults to None.
+      histogram_categorical_levels_count: int, controls the maximum number of
+          levels to display in histograms for categorical features.
+          Useful to prevent codes/IDs features from bloating the stats object.
+          Defaults to None.
     Returns:
       The feature statistics proto for the provided tables.
     """
@@ -54,7 +56,9 @@ class BaseGenericFeatureStatisticsGenerator(object):
           'size': len(table),
           'name': dataframe['name']
       })
-    return self.GetDatasetsProto(datasets, histogram_categorical_levels_count=histogram_categorical_levels_count)
+    return self.GetDatasetsProto(
+      datasets,
+      histogram_categorical_levels_count=histogram_categorical_levels_count)
 
   def DtypeToType(self, dtype):
     """Converts a Numpy dtype to the FeatureNameStatistics.Type proto enum."""
@@ -140,7 +144,8 @@ class BaseGenericFeatureStatisticsGenerator(object):
         'type': data_type
     }
 
-  def GetDatasetsProto(self, datasets, features=None, histogram_categorical_levels_count=None):
+  def GetDatasetsProto(self, datasets, features=None,
+                       histogram_categorical_levels_count=None):
     """Generates the feature stats proto from dictionaries of feature values.
 
     Args:
@@ -153,9 +158,10 @@ class BaseGenericFeatureStatisticsGenerator(object):
           feature statistics for. If set to None then all features in the
             dataset
           are analyzed. Defaults to None.
-      histogram_categorical_levels_count: int, controls the maximum number of levels
-          to display in histograms for categorical features. Useful to prevent codes/IDs
-          features from bloating the stats object. Defaults to None.
+      histogram_categorical_levels_count: int, controls the maximum number of
+          levels to display in histograms for categorical features.
+          Useful to prevent codes/IDs features from bloating the stats object.
+          Defaults to None.
 
     Returns:
       The feature statistics proto for the provided datasets.
@@ -258,7 +264,8 @@ class BaseGenericFeatureStatisticsGenerator(object):
               featstats.avg_length = np.mean(np.vectorize(len)(strs))
               vals, counts = np.unique(strs, return_counts=True)
               featstats.unique = len(vals)
-              sorted_vals = sorted(zip(counts, vals), reverse=True)[:histogram_categorical_levels_count]
+              sorted_vals = sorted(zip(counts, vals), reverse=True)
+              sorted_vals = sorted_vals[:histogram_categorical_levels_count]
               for val_index, val in enumerate(sorted_vals):
                 if val[1].dtype.type is np.str_:
                   printable_val = val[1]
