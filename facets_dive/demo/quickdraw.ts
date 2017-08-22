@@ -70,7 +70,7 @@ const PRESET_VIEWS = [
     }
   },
   {
-    description: 'Strokes vs. Liklihood of Correctness',
+    description: 'Strokes vs. Likelihood of Correctness',
     settings: {
       'verticalFacet': 'recognized',
       'verticalBuckets': 3,
