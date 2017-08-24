@@ -262,6 +262,9 @@
           var parsedData = d3.csvParse(reader.result);
           parsedData.forEach(function(row) {
             parsedData.columns.forEach(function(column) {
+              if (!row[column]) {
+                delete row[column];
+              }
               var coercedNum = +row[column];
               if (!isNaN(coercedNum)) {
                 row[column] = coercedNum;
