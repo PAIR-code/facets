@@ -191,5 +191,8 @@ Polymer({
   },
   _getTableWrapperClass(features: FeatureNameStatistics[]) {
     return !features || features.length === 0 ? 'hidden' : '';
+  },
+  _getTableRowClass(numeric: boolean) {
+    return numeric ? 'numeric-row' : 'categorical-row';
   }
 });

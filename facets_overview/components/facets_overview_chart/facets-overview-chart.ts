@@ -690,51 +690,60 @@ Polymer({
           plot.foreground() as d3.Selection<HTMLElement, {}, null, undefined>);
       this._updateSelectionVisibility(this.selection);
 
-      // Setup Interaction.Pointer for tooltip and attach to the plot.
-      this._onPointer = new Plottable.Interactions.Pointer();
-      this._onPointerEnterFunction = (p: any) => {
-        // For line charts, give a tooltip for the closest point on any line.
-        // For other charts, give a tooltip for all entries in any dataset
-        // that is overlapping with the datum nearest the pointer (for
-        // overlapping histograms for example).
-        const entities = getEntities(p);
-        if (entities.length > 0) {
-          const title =
-              entities
-                  .map(entity => {
-                    return (entity.dataset.metadata().name == null ||
-                            this.dataModel.getDatasetNames().length === 1) ?
-                        tooltipCallback(entity.datum) :
-                        entity.dataset.metadata().name + ': ' +
-                            tooltipCallback(entity.datum);
-                  })
-                  .join('\n');
-          tooltip.text(title);
-          tooltip.style("opacity", "1");
-        }
-      };
-      this._onPointer.onPointerMove(this._onPointerEnterFunction);
-      this._onPointerExitFunction = function(p: {}) {
-        tooltip.style("opacity", "0");
-      };
-      this._onPointer.onPointerExit(this._onPointerExitFunction);
-      this._onPointer.attachTo(plot);
-
-      if (this.chartSelection !== utils.CHART_SELECTION_LIST_QUANTILES) {
-        this._onClick = new Plottable.Interactions.Click();;
-        const self = this;
-        this._onClickFunction = (p: any) => {
-          const entities = getEntities(p);
-          if (entities.length > 0) {
-            selectionPositioner(self._selectionElem, entities[0]);
-            const selection: utils.FeatureSelection|null =
-                selectionCallback(entities[0].datum);
-            self._setSelection(selection);
-          }
-        };
-        this._onClick.onClick(this._onClickFunction);
-        this._onClick.attachTo(plot);
-      }
+      chartSelection
+          .on('mouseenter',
+              () => {
+                // Setup Interaction.Pointer for tooltip and attach to the plot.
+                this._onPointer = new Plottable.Interactions.Pointer();
+                this._onPointerEnterFunction = (p: any) => {
+                  // For line charts, give a tooltip for the closest point on
+                  // any line. For other charts, give a tooltip for all entries
+                  // in any dataset that is overlapping with the datum nearest
+                  // the pointer (for overlapping histograms for example).
+                  const entities = getEntities(p);
+                  if (entities.length > 0) {
+                    const title =
+                        entities
+                            .map(entity => {
+                              return (entity.dataset.metadata().name == null ||
+                                      this.dataModel.getDatasetNames()
+                                              .length === 1) ?
+                                  tooltipCallback(entity.datum) :
+                                  entity.dataset.metadata().name + ': ' +
+                                      tooltipCallback(entity.datum);
+                            })
+                            .join('\n');
+                    tooltip.text(title);
+                    tooltip.style('opacity', '1');
+                  }
+                };
+                this._onPointer.onPointerMove(this._onPointerEnterFunction);
+                this._onPointerExitFunction = function(p: {}) {
+                  tooltip.style('opacity', '0');
+                };
+                this._onPointer.onPointerExit(this._onPointerExitFunction);
+                this._onPointer.attachTo(plot);
+                if (this.chartSelection !==
+                    utils.CHART_SELECTION_LIST_QUANTILES) {
+                  this._onClick = new Plottable.Interactions.Click();
+                  const self = this;
+                  this._onClickFunction = (p: any) => {
+                    const entities = getEntities(p);
+                    if (entities.length > 0) {
+                      selectionPositioner(self._selectionElem, entities[0]);
+                      const selection: utils.FeatureSelection|null =
+                          selectionCallback(entities[0].datum);
+                      self._setSelection(selection);
+                    }
+                  };
+                  this._onClick.onClick(this._onClickFunction);
+                  this._onClick.attachTo(plot);
+                }
+              })
+          .on('mouseleave', () => {
+            this._onPointer.detachFrom(plot);
+            this._onClick.detachFrom(plot);
+          });
 
       // Add padding equal to the Y axis component to the X axis table to align
       // the axes.
