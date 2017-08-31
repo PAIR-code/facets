@@ -56,7 +56,12 @@ limitations under the License.
         border-right: solid 0.5px rgba(0,0,0,0.1);
         padding-left: 8px;
       }
-      .table-row {
+      .numeric-row {
+        min-height: 80px;
+        display: table-row;
+      }
+      .categorical-row {
+        min-height: 98px;
         display: table-row;
       }
       .table-cell {
@@ -143,7 +148,7 @@ limitations under the License.
                  as="feature"
                  class="feature-iron-list">
         <template>
-          <div class="table-row">
+          <div class$="[[_getTableRowClass(numeric)]]">
             <div class="table-cell">
               <div class="feature-name">[[_getFeatureName(feature)]]</div>
               <template is="dom-repeat" items="[[_getDatasets(dataModel)]]" as="dataset" index-as="datasetIndex">
