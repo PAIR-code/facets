@@ -47,6 +47,7 @@ cd facets
 Pre-built versions of the jupyter extension visualization code can be found in the facets-dist directory.
 
 To enable use of these visualizations in Jupyter notebooks:
+
 1. Install the jupyter notebook software: http://jupyter.org/install.html
 2. Install the visualizations into Jupyter as an nbextension.
   * If jupyter was installed with pip, you can use ```jupyter nbextension install facets-dist/ ``` if jupyter was installed system-wide or ```jupyter nbextension install facets-dist/ --user``` if installed per-user (run from the facets top-level directory). You do not need to run any follow-up ```jupyter nbextension enable``` command for this extension.
@@ -59,6 +60,7 @@ This can be done with the command ```jupyter notebook --NotebookApp.iopub_data_r
 ## Building the Visualizations
 
 If you make code changes to the visualization and would like to rebuild them for use in Jupyter notebooks, follow these directions:
+
 1. Install bazel: https://bazel.build/
 2. Build the visualizations: ```bazel build facets:facets_jupyter``` (run from the facets top-level directory)
 3. Move the resulting vulcanized html file into the facets-dist directory.
