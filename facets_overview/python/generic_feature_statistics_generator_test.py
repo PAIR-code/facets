@@ -173,6 +173,38 @@ class GenericFeatureStatisticsGeneratorTest(googletest.TestCase):
     self.assertEqual('testFeature', numfeat.name)
     self.assertEqual(1, numfeat.num_stats.min)
 
+  def testGetDatasetsProtoWithMaxHistigramLevelsCount(self):
+    # Selected entries' lengths make it easy to compute average length
+    data = [['hi'], ['good'], ['hi'], ['hi'], ['a'], ['a']]
+    df = pd.DataFrame(data, columns=['testFeatureString'])
+    dataframes = [{'table': df, 'name': 'testDataset'}]
+    # Getting proto from ProtoFromDataFrames instead of GetDatasetsProto
+    # directly to avoid any hand written values ex: size of dataset.
+    p = self.gfsg.ProtoFromDataFrames(dataframes,
+                                      histogram_categorical_levels_count=2)
+
+    self.assertEqual(1, len(p.datasets))
+    test_data = p.datasets[0]
+    self.assertEqual('testDataset', test_data.name)
+    self.assertEqual(6, test_data.num_examples)
+    self.assertEqual(1, len(test_data.features))
+    numfeat = test_data.features[0]
+    self.assertEqual('testFeatureString', numfeat.name)
+
+    top_values = numfeat.string_stats.top_values
+    self.assertEqual(3, top_values[0].frequency)
+    self.assertEqual('hi', top_values[0].value)
+
+    self.assertEqual(3, numfeat.string_stats.unique)
+    self.assertEqual(2, numfeat.string_stats.avg_length)
+
+    rank_hist = numfeat.string_stats.rank_histogram
+    buckets = rank_hist.buckets
+    self.assertEqual(2, len(buckets))
+    self.assertEqual('hi', buckets[0].label)
+    self.assertEqual(3, buckets[0].sample_count)
+    self.assertEqual('a', buckets[1].label)
+    self.assertEqual(2, buckets[1].sample_count)
 
 if __name__ == '__main__':
   googletest.main()
