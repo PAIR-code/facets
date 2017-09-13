@@ -39,7 +39,8 @@ class BaseFeatureStatisticsGenerator(BaseGenericFeatureStatisticsGenerator):
                              max_entries=10000,
                              features=None,
                              is_sequence=False,
-                             iterator_options=None):
+                             iterator_options=None,
+                             histogram_categorical_levels_count=None):
     """Creates a feature statistics proto from a set of TFRecord files.
 
     Args:
@@ -58,6 +59,10 @@ class BaseFeatureStatisticsGenerator(BaseGenericFeatureStatisticsGenerator):
           False if tf.Examples. Defaults to false.
       iterator_options: Options to pass to the iterator that reads the examples.
           Defaults to None.
+      histogram_categorical_levels_count: int, controls the maximum number of
+          levels to display in histograms for categorical features.
+          Useful to prevent codes/IDs features from bloating the stats object.
+          Defaults to None.
 
     Returns:
       The feature statistics proto for the provided files.
@@ -67,7 +72,10 @@ class BaseFeatureStatisticsGenerator(BaseGenericFeatureStatisticsGenerator):
       entries, size = self._GetTfRecordEntries(entry['path'], max_entries,
                                                is_sequence, iterator_options)
       datasets.append({'entries': entries, 'size': size, 'name': entry['name']})
-    return self.GetDatasetsProto(datasets, features)
+    return self.GetDatasetsProto(
+      datasets,
+      features,
+      histogram_categorical_levels_count)
 
   def _ParseExample(self, example_features, example_feature_lists, entries,
                     index):
