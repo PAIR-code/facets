@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import BytesStatistics from 'goog:proto.featureStatistics.BytesStatistics';
 import CommonStatistics from 'goog:proto.featureStatistics.CommonStatistics';
 import CustomStatistic from 'goog:proto.featureStatistics.CustomStatistic';
 import DatasetFeatureStatisticsList from 'goog:proto.featureStatistics.DatasetFeatureStatisticsList';
@@ -1265,6 +1266,25 @@ function getStringStatsEntries(
 }
 
 /**
+ * Gets the CssFormattedStrings for a bytes feature's stats for display in the
+ * table.
+ */
+function getBytesStatsEntries(bytesstats: BytesStatistics|null) {
+  const entries: CssFormattedString[] = [];
+  if (bytesstats) {
+    entries.push(formatIntWithClass(bytesstats.getUnique()));
+    entries.push(formatStringWithClass('-'));
+    entries.push(formatStringWithClass('-'));
+    entries.push(formatFloatWithClass(bytesstats.getAvgNumBytes()));
+  } else {
+    for (let i = 0; i < 4; i++) {
+      entries.push(formatStringWithClass('-'));
+    }
+  }
+  return entries;
+}
+
+/**
  * Gets the CssFormattedStrings for a feature's custom stats for display in the
  * table.
  */
@@ -1324,9 +1344,12 @@ export function getStatsEntries(
   if (stats.getNumStats()) {
     entries = entries.concat(
         getNumStatsEntries(stats.getNumStats(), commonStats, showWeighted));
-  } else {
+  } else if (stats.getStringStats()) {
     entries = entries.concat(
         getStringStatsEntries(stats.getStringStats(), showWeighted));
+  } else {
+    entries = entries.concat(
+        getBytesStatsEntries(stats.getBytesStats()));
   }
 
   // Add the entry for the custom stats if the dataset has custom stats.
