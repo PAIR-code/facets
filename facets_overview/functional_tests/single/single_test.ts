@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import DatasetFeatureStatisticsList from 'goog:proto.featureStatistics.DatasetFeatureStatisticsList';
-import FeatureNameStatistics from 'goog:proto.featureStatistics.FeatureNameStatistics';
 import BytesStatistics from 'goog:proto.featureStatistics.BytesStatistics';
 import CommonStatistics from 'goog:proto.featureStatistics.CommonStatistics';
+import DatasetFeatureStatisticsList from 'goog:proto.featureStatistics.DatasetFeatureStatisticsList';
+import FeatureNameStatistics from 'goog:proto.featureStatistics.FeatureNameStatistics';
 import Histogram from 'goog:proto.featureStatistics.Histogram';
 import { DataPoint, generateStats } from '../../common/feature_statistics_generator';
 import { FeatureSelection } from '../../common/utils';
