@@ -16,6 +16,8 @@
  */
 import DatasetFeatureStatisticsList from 'goog:proto.featureStatistics.DatasetFeatureStatisticsList';
 import FeatureNameStatistics from 'goog:proto.featureStatistics.FeatureNameStatistics';
+import BytesStatistics from 'goog:proto.featureStatistics.BytesStatistics';
+import CommonStatistics from 'goog:proto.featureStatistics.CommonStatistics';
 import Histogram from 'goog:proto.featureStatistics.Histogram';
 import { DataPoint, generateStats } from '../../common/feature_statistics_generator';
 import { FeatureSelection } from '../../common/utils';
@@ -58,6 +60,26 @@ function create(): DatasetFeatureStatisticsList {
                      'both-infs': d3.randomNormal(5)()});
   }
   const stats = generateStats(dataPoints);
+
+  // Add a BYTES feature.
+  const bs = new BytesStatistics();
+  const cs = new CommonStatistics();
+  cs.setNumMissing(0);
+  cs.setNumNonMissing(20);
+  cs.setMinNumValues(1);
+  cs.setMaxNumValues(1);
+  cs.setAvgNumValues(1);
+  bs.setCommonStats(cs);
+  bs.setUnique(19);
+  bs.setAvgNumBytes(500)
+  bs.setMinNumBytes(250);
+  bs.setMaxNumBytes(1000);
+  const f = new FeatureNameStatistics();
+  f.setName('encodedImageBytes');
+  f.setType(FeatureNameStatistics.Type.BYTES);
+  f.setBytesStats(bs);
+  stats.getFeaturesList().push(f);
+
   stats.setName('train');
   data.getDatasetsList().push(stats);
   return data;
