@@ -329,6 +329,12 @@ Polymer({
       value: [],
       notify: true,
     },
+    selectedIndices: {
+      type: Object,
+      value: {},
+      notify: true,
+      observer: '_selectedIndicesChanged',
+    },
     height: {
       type: Number,
       value: null,
@@ -337,6 +343,12 @@ Polymer({
     infoRenderer: {
       type: Object,  // Function.
     },
+  },
+
+  _selectedIndicesChanged(indicesDict: vis.IndexDict) {
+    const indices =
+        Object.keys(indicesDict).map((indexStr: string) => +indexStr);
+    this.fire('new-selected-indices', {indices});
   },
 
   ready(this: any) {

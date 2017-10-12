@@ -18,6 +18,9 @@ import {FacetsDive} from '../components/facets-dive/facets-dive';
 
 const ss = document.querySelector('facets-dive') as FacetsDive;
 
+ss.addEventListener('new-selected-indices',
+	(e: CustomEvent) => console.log(e.detail));
+
 const loadDataset = (url: string) => {
   d3.json(`${url}.json`, (data: Array<{}>) => {
     ss.data = data;

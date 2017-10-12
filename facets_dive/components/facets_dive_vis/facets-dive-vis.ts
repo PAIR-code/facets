@@ -417,6 +417,11 @@ interface FacetingInfo {
 }
 
 /**
+ * A dictionary of booleans that is used to hold a set of data indices.
+ */
+export type IndexDict = {[index: string]: boolean};
+
+/**
  * External interface for the <facets-dive-vis> Polymer element.
  */
 export interface FacetsDiveVis extends Element {
@@ -571,6 +576,12 @@ export interface FacetsDiveVis extends Element {
    * Currently selected objects. Should all be elements of the data array.
    */
   selectedData: Array<{}>;
+
+  /**
+   * Dict of indices of currently selected objects. Should all be elements of
+   * the data array.
+   */
+  selectedIndices: IndexDict;
 
   /**
    * Polymer setter for attribute values.
@@ -851,11 +862,24 @@ class FacetsDiveVizInternal {
     const x = this.camera.position.x + mouseX / this.scale;
     const y = this.camera.position.y - mouseY / this.scale;
     const spriteIndexes = this.spriteMesh.findSprites(x, y);
-    const selectedData = new Array(spriteIndexes.length);
+    const selectedIndices: IndexDict= {};
+    if (event.ctrlKey) {
+      for (const key in this.elem.selectedIndices) {
+        if (this.elem.selectedIndices.hasOwnProperty(key)) {
+          selectedIndices[key] = true;
+        }
+      }
+    }
     for (let i = 0; i < spriteIndexes.length; i++) {
-      selectedData[i] = this.elem.data[spriteIndexes[i]];
+      selectedIndices[spriteIndexes[i]] = true;
+    }
+    const selectedIndicesList = Object.keys(selectedIndices);
+    const selectedData = new Array(selectedIndicesList.length);
+    for (let i = 0; i < selectedIndicesList.length; i++) {
+      selectedData[i] = this.elem.data[selectedIndicesList[i]];
     }
     this.elem.set('selectedData', selectedData);
+    this.elem.set('selectedIndices', selectedIndices);
   }
 
   /**
@@ -2888,6 +2912,11 @@ Polymer({
       observer: '_updateColors',
     },
     selectedData: {
+      type: Array,
+      value: [],
+      notify: true,
+    },
+    selectedIndices: {
       type: Array,
       value: [],
       notify: true,
