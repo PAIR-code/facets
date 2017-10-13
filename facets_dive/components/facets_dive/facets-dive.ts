@@ -329,6 +329,11 @@ Polymer({
       value: [],
       notify: true,
     },
+    selectedIndices: {
+      type: Array,
+      value: [],
+      notify: true,
+    },
     height: {
       type: Number,
       value: null,

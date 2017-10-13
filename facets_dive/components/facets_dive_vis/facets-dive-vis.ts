@@ -573,6 +573,11 @@ export interface FacetsDiveVis extends Element {
   selectedData: Array<{}>;
 
   /**
+   * Indices of currently selected objects from the data array.
+   */
+  selectedIndices: number[];
+
+  /**
    * Polymer setter for attribute values.
    */
   // tslint:disable-next-line:no-any TODO(jimbo): Upgrade to typed Polymer.
@@ -851,9 +856,15 @@ class FacetsDiveVizInternal {
     const x = this.camera.position.x + mouseX / this.scale;
     const y = this.camera.position.y - mouseY / this.scale;
     const spriteIndexes = this.spriteMesh.findSprites(x, y);
-    const selectedData = new Array(spriteIndexes.length);
+    const selectedIndicesSet = event.ctrlKey ?
+		new Set(this.elem.selectedIndices) : new Set();
     for (let i = 0; i < spriteIndexes.length; i++) {
-      selectedData[i] = this.elem.data[spriteIndexes[i]];
+      selectedIndicesSet.add(spriteIndexes[i]);
+    }
+    this.elem.set('selectedIndices', Array.from(selectedIndicesSet));
+    const selectedData = [];
+    for (let i = 0; i < this.elem.selectedIndices.length; i++) {
+      selectedData.push(this.elem.data[this.elem.selectedIndices[i]]);
     }
     this.elem.set('selectedData', selectedData);
   }
@@ -2888,6 +2899,11 @@ Polymer({
       observer: '_updateColors',
     },
     selectedData: {
+      type: Array,
+      value: [],
+      notify: true,
+    },
+    selectedIndices: {
       type: Array,
       value: [],
       notify: true,
