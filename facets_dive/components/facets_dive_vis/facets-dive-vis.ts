@@ -417,11 +417,6 @@ interface FacetingInfo {
 }
 
 /**
- * A dictionary of booleans that is used to hold a set of data indices.
- */
-export type IndexDict = {[index: string]: boolean};
-
-/**
  * External interface for the <facets-dive-vis> Polymer element.
  */
 export interface FacetsDiveVis extends Element {
@@ -578,10 +573,9 @@ export interface FacetsDiveVis extends Element {
   selectedData: Array<{}>;
 
   /**
-   * Dict of indices of currently selected objects. Should all be elements of
-   * the data array.
+   * Indices of currently selected objects from the data array.
    */
-  selectedIndices: IndexDict;
+  selectedIndices: number[];
 
   /**
    * Polymer setter for attribute values.
@@ -862,24 +856,17 @@ class FacetsDiveVizInternal {
     const x = this.camera.position.x + mouseX / this.scale;
     const y = this.camera.position.y - mouseY / this.scale;
     const spriteIndexes = this.spriteMesh.findSprites(x, y);
-    const selectedIndices: IndexDict= {};
-    if (event.ctrlKey) {
-      for (const key in this.elem.selectedIndices) {
-        if (this.elem.selectedIndices.hasOwnProperty(key)) {
-          selectedIndices[key] = true;
-        }
-      }
-    }
+    const selectedIndicesSet = event.ctrlKey ?
+		new Set(this.elem.selectedIndices) : new Set();
     for (let i = 0; i < spriteIndexes.length; i++) {
-      selectedIndices[spriteIndexes[i]] = true;
+      selectedIndicesSet.add(spriteIndexes[i]);
     }
-    const selectedIndicesList = Object.keys(selectedIndices);
-    const selectedData = new Array(selectedIndicesList.length);
-    for (let i = 0; i < selectedIndicesList.length; i++) {
-      selectedData[i] = this.elem.data[selectedIndicesList[i]];
+    this.elem.set('selectedIndices', Array.from(selectedIndicesSet));
+    const selectedData = [];
+    for (let i = 0; i < this.elem.selectedIndices.length; i++) {
+      selectedData.push(this.elem.data[this.elem.selectedIndices[i]]);
     }
     this.elem.set('selectedData', selectedData);
-    this.elem.set('selectedIndices', selectedIndices);
   }
 
   /**
