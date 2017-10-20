@@ -856,12 +856,17 @@ class FacetsDiveVizInternal {
     const x = this.camera.position.x + mouseX / this.scale;
     const y = this.camera.position.y - mouseY / this.scale;
     const spriteIndexes = this.spriteMesh.findSprites(x, y);
-    const selectedIndicesSet = event.ctrlKey ?
-		new Set(this.elem.selectedIndices) : new Set();
-    for (let i = 0; i < spriteIndexes.length; i++) {
-      selectedIndicesSet.add(spriteIndexes[i]);
+    const selectedIndicesSet: {[index: number]: boolean} = {};
+    if (event.ctrlKey) {
+      for (let i = 0; i < this.elem.selectedIndices.length; i++) {
+        selectedIndicesSet[this.elem.selectedIndices[i]] = true;
+      }
     }
-    this.elem.set('selectedIndices', Array.from(selectedIndicesSet));
+    for (let i = 0; i < spriteIndexes.length; i++) {
+      selectedIndicesSet[spriteIndexes[i]] = true;
+    }
+    this.elem.set('selectedIndices', Array.from(Object.keys(selectedIndicesSet)
+      .map(key => +key)));
     const selectedData = [];
     for (let i = 0; i < this.elem.selectedIndices.length; i++) {
       selectedData.push(this.elem.data[this.elem.selectedIndices[i]]);
