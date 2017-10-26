@@ -604,9 +604,9 @@ Polymer({
           return ret;
         });
     this._tableData = utils.getValueAndCountsArray(chartDataPercs);
-    chartDataPercs.map(
-        (d: utils.BucketsForDataset, i: number) => lines.addDataset(
-            new Plottable.Dataset(d.percBuckets, {name: d.name})));
+    for (const d of chartDataPercs) {
+      lines.addDataset(new Plottable.Dataset(d.percBuckets, {name: d.name}));
+    }
 
     // Set the X and Y coordinates of each point in the line based on the
     // ratios calculated above and set the line color.
