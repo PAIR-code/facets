@@ -929,9 +929,7 @@ class FacetsDiveVizInternal {
         .attr('stroke-opacity', 1);
 
     // EXIT.
-    selectedElements.exit()
-        .remove()
-        .attr('stoke-opacity', 0);
+    selectedElements.exit().remove();
   }
 
   /**
