@@ -28,6 +28,7 @@ import * as wordtree from '../../lib/wordtree';
 
 export type Cell = gridlib.Cell;
 export type Grid = gridlib.Grid;
+export type ItemPosition = gridlib.ItemPosition;
 export type Key = sorting.Key;
 
 const BAG_OF_WORDS_SEPARATOR = '\u2022';  // Unicode bullet character.
@@ -60,6 +61,16 @@ export const GRID_CELL_MARGIN = 1;
  * Colors for cell background properties.
  */
 export const CELL_BACKGROUND_FILL_COLOR = '#f8f8f9';
+
+/**
+ * Color for selected item borders.
+ */
+const SELECTED_ITEM_COLOR = '#ff0000';
+
+/**
+ * Stroke width for the selected item borders.
+ */
+const SELECTED_ITEM_STROKE_WIDTH = 0.1;
 
 /**
  * Precision to use for numeric labels in digits.
@@ -646,6 +657,11 @@ class FacetsDiveVizInternal {
   labelsLayer: d3.Selection<SVGGElement, {}, null, undefined>;
 
   /**
+   * D3 selection wrapping the <g> element for selected item borders.
+   */
+  selectedLayer: d3.Selection<SVGGElement, {}, null, undefined>;
+
+  /**
    * Layout object handling fit-to-screen logic.
    */
   layout: Layout;
@@ -792,11 +808,13 @@ class FacetsDiveVizInternal {
     this.labelsAndAxesSVGRoot =
         this.labelsAndAxesSVG.append<SVGGElement>('g').attr('class', 'root');
 
-    // Layers for labels and axes.
+    // Layers for labels, axes and selected item borders.
     this.labelsLayer = this.labelsAndAxesSVGRoot.append<SVGGElement>('g').attr(
         'class', 'labels');
     this.axesLayer = this.labelsAndAxesSVGRoot.append<SVGGElement>('g').attr(
         'class', 'axes');
+    this.selectedLayer = this.labelsAndAxesSVGRoot.append<SVGGElement>('g')
+        .attr('class', 'selectedboxes');
 
     // Set up click handler for labels and axes SVG.
     this.labelsAndAxesSVG.on('click', this.clicked.bind(this));
@@ -872,6 +890,46 @@ class FacetsDiveVizInternal {
       selectedData.push(this.elem.data[this.elem.selectedIndices[i]]);
     }
     this.elem.set('selectedData', selectedData);
+    this.updateSelectedBoxes();
+  }
+
+  /**
+   * Update visual appearance of selected items. This code relies heavily on the
+   * D3 join/update/enter/exit pattern.
+   */
+  updateSelectedBoxes() {
+    const selectedBoxes: ItemPosition[] =
+      this.elem.selectedIndices.map(index => {
+        return {x: this.spriteMesh.getX(index), y: this.spriteMesh.getY(index)};
+    });
+
+    // JOIN.
+    const selectedElements = this.selectedLayer.selectAll('.selected').data(
+      selectedBoxes);
+
+    selectedElements
+        // ENTER.
+        .enter()
+        .append('rect')
+        .attr('class', 'selected')
+        .attr('x', (pos: ItemPosition) => pos.x || 0)
+        .attr('y', (pos: ItemPosition) => pos.y || 0)
+        .attr('width', 1)
+        .attr('height', 1)
+        .attr('stroke', SELECTED_ITEM_COLOR)
+        .attr('stroke-opacity', 0)
+        .attr('stroke-width', SELECTED_ITEM_STROKE_WIDTH)
+        .attr('fill-opacity', 0)
+        // ENTER + UPDATE.
+        .merge(selectedElements)
+        .attr('x', (pos: ItemPosition) => pos.x || 0)
+        .attr('y', (pos: ItemPosition) => pos.y || 0)
+        .attr('width', 1)
+        .attr('height', 1)
+        .attr('stroke-opacity', 1);
+
+    // EXIT.
+    selectedElements.exit().remove();
   }
 
   /**
@@ -1928,6 +1986,8 @@ class FacetsDiveVizInternal {
 
     this.updateLabels();
 
+    this.updateSelectedBoxes();
+
     this.fitToViewport();
   }
 
@@ -2036,6 +2096,7 @@ class FacetsDiveVizInternal {
 
     this.updateAxes();
     this.updateLabels();
+    this.updateSelectedBoxes();
 
     this.fitToViewport();
   }
