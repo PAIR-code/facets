@@ -116,7 +116,7 @@ limitations under the License.
         <div class="header-cell table-cell">
           <div class="table-name">[[_getTitle(numeric)]] Features ([[_getFeatureCountText(dataModel, numeric, features)]])
           </div>
-          <facets-overview-row-legend type="[[_getFeatureTypeForList(features)]]"
+          <facets-overview-row-legend numeric="[[numeric]]"
                                 show-weighted="[[_showWeighted]]"
                                 has-custom="[[_hasCustomStats(dataModel)]]"
                                 data-model="[[dataModel]]">
@@ -153,7 +153,7 @@ limitations under the License.
               <div class="feature-name">[[_getFeatureName(feature)]]</div>
               <template is="dom-repeat" items="[[_getDatasets(dataModel)]]" as="dataset" index-as="datasetIndex">
                 <div>
-                  <facets-overview-row-stats type="[[_getFeatureType(feature)]]"
+                  <facets-overview-row-stats
                                        stats="[[_getStats(dataModel, dataset, feature)]]"
                                        custom-stats="[[_getAllCustomStats(dataModel, feature)]]"
                                        show-weighted="[[_showWeighted]]"

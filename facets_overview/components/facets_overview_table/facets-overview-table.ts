@@ -83,16 +83,6 @@ Polymer({
   _getFeatureName(feature: FeatureNameStatistics) {
     return feature.getName();
   },
-  // tslint:disable-next-line:no-any typescript/polymer temporary issue
-  _getFeatureType(this: any, feature: FeatureNameStatistics) {
-    return this._getFeatureTypeForList([feature]);
-  },
-  _getFeatureTypeForList(features: FeatureNameStatistics[]) {
-    // If value is missing then assume INT, which is the 0-index enum.
-    return features.length > 0 ?
-        features[0].getType() || FeatureNameStatistics.Type.INT :
-        FeatureNameStatistics.Type.INT;
-  },
   _hasCustomStats(dataModel: OverviewDataModel) {
     if (dataModel == null) {
       return false;
@@ -171,16 +161,6 @@ Polymer({
     }
     return utils.hasWeightedHistogram(
         this._getChartData(this.dataModel, features[0]));
-  },
-  _hasQuantiles(this: any, features: FeatureNameStatistics[]) {
-    if (features.length === 0) {
-      return false;
-    }
-    if (utils.isFeatureTypeNumeric(this._getFeatureTypeForList(features))) {
-      return utils.hasQuantiles(
-          this._getChartData(this.dataModel, features[0]));
-    }
-    return false;
   },
   _getChartClass(expandCharts: boolean) {
     let classes = 'chart-column ';

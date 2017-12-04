@@ -21,17 +21,17 @@ Polymer({
   is: 'facets-overview-row-legend',
 
   properties: {
-    type: Object,
+    numeric: Boolean,
     showWeighted: Boolean,
     hasCustom: Boolean,
     dataModel: Object,
     _entries: {
       type: Array,
-      computed: '_getEntries(type, showWeighted, hasCustom)'
+      computed: '_getEntries(numeric, showWeighted, hasCustom)'
     },
   },
-  _getEntries: function(type: FeatureNameStatistics.Type, showWeighted: boolean,
+  _getEntries: function(numeric: boolean, showWeighted: boolean,
                         hasCustom: boolean) {
-    return utils.getLegendEntries(type, showWeighted, hasCustom);
+    return utils.getLegendEntries(numeric, showWeighted, hasCustom);
   },
 });

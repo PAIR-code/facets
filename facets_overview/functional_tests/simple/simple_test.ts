@@ -50,11 +50,12 @@ function create(): DatasetFeatureStatisticsList {
     dataPoints.push({'val': d3.randomNormal(10)(),
                      'val2': d3.randomUniform(0, 5)(),
                      'str1': i < 10 ? 'a' : 'b',
-                     'str2': i < 180 ? 'popular' : 'train-' + i
+                     'str2': i < 180 ? 'popular-value-with-long-name'
+                                     : 'train-' + i
                    });
   }
   let stats = generateStats(dataPoints);
-  stats.setName('train');
+  stats.setName('training-data-with-long-name');
   data.getDatasetsList().push(stats);
 
   dataPoints = [];
