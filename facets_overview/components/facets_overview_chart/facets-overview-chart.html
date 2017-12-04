@@ -67,10 +67,18 @@ limitations under the License.
         clear: left;
       }
       .label-cell {
-        width: 100px;
-        max-width: 100px;
-        min-width: 100px;
+        width: 90px;
+        max-width: 90px;
+        min-width: 90px;
         overflow-wrap: break-word;
+      }
+      .non-overflow-label-cell {
+        width: 90px;
+        max-width: 90px;
+        min-width: 90px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
       .count-cell {
         width: 100px;
@@ -129,7 +137,9 @@ limitations under the License.
           <div class="dialog-header-row">
             <div class="dialog-row-entry table-header label-cell">Value</div>
             <template is="dom-repeat" items="[[data]]" as="data">
-              <div class="dialog-row-entry table-header label-cell">[[data.name]]</div>
+              <div class="dialog-row-entry table-header">
+                <div class="non-overflow-label-cell">[[data.name]]</div>
+              </div>
             </template>
           </div>
           <iron-list items="[[_tableData]]" as="entry" class$="[[_tableDataClass]]">

@@ -23,7 +23,6 @@ Polymer({
   is: 'facets-overview-row-stats',
 
   properties: {
-    type: Object,
     stats: Object,
     showWeighted: Boolean,
     hasCustom: Boolean,
@@ -32,14 +31,14 @@ Polymer({
     compareMode: Boolean,
     _entries: {
       type: Array,
-      computed: '_getEntries(type, stats, showWeighted, hasCustom)'
+      computed: '_getEntries(stats, showWeighted, hasCustom)'
     },
   },
   observers: ['_colorLegendBox(dataModel, datasetIndex, compareMode)'],
   _getEntries: function(
-      type: FeatureNameStatistics.Type, stats: FeatureNameStatistics,
+      stats: FeatureNameStatistics,
       showWeighted: boolean, hasCustom: boolean) {
-    return utils.getStatsEntries(type, stats, showWeighted, hasCustom);
+    return utils.getStatsEntries(stats, showWeighted, hasCustom);
   },
   _colorLegendBox: function(
       this: any, dataModel: OverviewDataModel, datasetIndex: number,

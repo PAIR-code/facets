@@ -1641,32 +1641,28 @@ describe('formatPercentageWithClass', () => {
 
 describe('getLegendEntries', () => {
   it('handles numeric features', () => {
-    const entries = utils.getLegendEntries(
-      FeatureNameStatistics.Type.INT, false, false);
+    const entries = utils.getLegendEntries(true, false, false);
     expect(entries.length).to.equal(8);
     expect(entries[0].cssClass).to.equal('');
     expect(entries[3].cssClass).to.equal('');
   });
 
   it('handles string features', () => {
-    const entries = utils.getLegendEntries(
-      FeatureNameStatistics.Type.STRING, false, false);
+    const entries = utils.getLegendEntries(false, false, false);
     expect(entries.length).to.equal(6);
     expect(entries[0].cssClass).to.equal('');
     expect(entries[3].cssClass).to.equal('');
   });
 
   it('handles custom stats', () => {
-    const entries = utils.getLegendEntries(
-      FeatureNameStatistics.Type.INT, false, true);
+    const entries = utils.getLegendEntries(true, false, true);
     expect(entries.length).to.equal(9);
     expect(entries[0].cssClass).to.equal('');
     expect(entries[8].cssClass).to.equal('data-custom ');
   });
 
   it('handles weighted stats', () => {
-    const entries = utils.getLegendEntries(
-      FeatureNameStatistics.Type.INT, true, false);
+    const entries = utils.getLegendEntries(true, true, false);
     expect(entries.length).to.equal(8);
     expect(entries[0].cssClass).to.equal('');
     expect(entries[3].cssClass).to.equal('data-weighted ');
@@ -1690,8 +1686,7 @@ describe('getStatsEntries', () => {
     c.setNumMissing(3);
     c.setNumNonMissing(17);
     c.setAvgNumValues(1);
-    const entries = utils.getStatsEntries(
-      FeatureNameStatistics.Type.INT, f, false, false);
+    const entries = utils.getStatsEntries(f, false, false);
     expect(entries.length).to.equal(8);
     expect(entries[0].str).to.equal('17');
     expect(entries[1].str).to.equal('15%');
@@ -1714,8 +1709,7 @@ describe('getStatsEntries', () => {
     c.setNumMissing(3);
     c.setNumNonMissing(17);
     c.setAvgNumValues(1);
-    const entries = utils.getStatsEntries(
-      FeatureNameStatistics.Type.STRING, f, false, false);
+    const entries = utils.getStatsEntries(f, false, false);
     expect(entries.length).to.equal(6);
     expect(entries[0].str).to.equal('17');
     expect(entries[1].str).to.equal('15%');
@@ -1736,8 +1730,7 @@ describe('getStatsEntries', () => {
     c.setNumMissing(3);
     c.setNumNonMissing(17);
     c.setAvgNumValues(1);
-    const entries = utils.getStatsEntries(
-      FeatureNameStatistics.Type.STRING, f, false, false);
+    const entries = utils.getStatsEntries(f, false, false);
     expect(entries.length).to.equal(6);
     expect(entries[3].str).to.equal('-');
     expect(entries[4].str).to.equal('-');
@@ -1751,8 +1744,7 @@ describe('getStatsEntries', () => {
     custom.setName('cust');
     custom.setStr('hi');
     f.setCustomStatsList([custom]);
-    const entries = utils.getStatsEntries(
-      FeatureNameStatistics.Type.INT, f, false, true);
+    const entries = utils.getStatsEntries(f, false, true);
     expect(entries.length).to.equal(9);
     expect(entries[8].str).to.equal('cust: hi');
     expect(entries[8].cssClass).to.equal('data-custom ');
@@ -1762,8 +1754,7 @@ describe('getStatsEntries', () => {
     const f = new FeatureNameStatistics();
     f.setType(FeatureNameStatistics.Type.INT);
     f.setNumStats(new NumericStatistics());
-    const entries = utils.getStatsEntries(
-      FeatureNameStatistics.Type.INT, f, false, true);
+    const entries = utils.getStatsEntries(f, false, true);
     expect(entries.length).to.equal(9);
     expect(entries[8].str).to.equal('-');
     expect(entries[8].cssClass).to.equal('data-custom ');
@@ -1776,8 +1767,7 @@ describe('getStatsEntries', () => {
     const custom = new CustomStatistic();
     custom.setName('cust');
     f.setCustomStatsList([custom]);
-    const entries = utils.getStatsEntries(
-      FeatureNameStatistics.Type.INT, f, false, true);
+    const entries = utils.getStatsEntries(f, false, true);
     expect(entries.length).to.equal(9);
     expect(entries[8].str).to.equal('cust: 0');
     expect(entries[8].cssClass).to.equal('data-custom ');
@@ -1801,8 +1791,7 @@ describe('getStatsEntries', () => {
     n.setCommonStats(c);
     c.setNumMissing(3);
     c.setNumNonMissing(10);
-    const entries = utils.getStatsEntries(
-      FeatureNameStatistics.Type.INT, f, true, false);
+    const entries = utils.getStatsEntries(f, true, false);
     expect(entries.length).to.equal(8);
     expect(entries[0].cssClass).to.equal('');
     expect(entries[3].cssClass).to.equal('data-weighted ');
@@ -1811,8 +1800,7 @@ describe('getStatsEntries', () => {
   it('handles missing stats', () => {
     const f = new FeatureNameStatistics();
     f.setType(FeatureNameStatistics.Type.STRING);
-    const entries = utils.getStatsEntries(
-      FeatureNameStatistics.Type.STRING, f, false, false);
+    const entries = utils.getStatsEntries(f, false, false);
     expect(entries.length).to.equal(6);
     expect(entries[0].str).to.equal('0');
     expect(entries[1].str).to.equal('100%');

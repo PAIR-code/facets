@@ -1129,13 +1129,12 @@ function getClassForCssFormattedString(
 }
 
 export function getLegendEntries(
-    type: FeatureNameStatistics.Type, showWeighted: boolean,
+    numeric: boolean, showWeighted: boolean,
     hasCustom: boolean): CssFormattedString[] {
   const entries: CssFormattedString[] = [];
   entries.push(formatStringWithClass('count'));
   entries.push(formatStringWithClass('missing'));
-  if (type === FeatureNameStatistics.Type.INT ||
-      type === FeatureNameStatistics.Type.FLOAT) {
+  if (numeric) {
     entries.push(formatStringWithClass('mean', showWeighted));
     entries.push(formatStringWithClass('std dev', showWeighted));
     entries.push(formatStringWithClass('zeros'));
@@ -1326,7 +1325,7 @@ function getCustomStatsEntries(stats: CustomStatistic[]|null) {
  * Gets the CssFormattedStrings for a feature's stats for display in the table.
  */
 export function getStatsEntries(
-    type: FeatureNameStatistics.Type, stats: FeatureNameStatistics,
+    stats: FeatureNameStatistics,
     showWeighted: boolean, hasCustom: boolean): CssFormattedString[] {
   let commonStats: CommonStatistics|null = null;
 
