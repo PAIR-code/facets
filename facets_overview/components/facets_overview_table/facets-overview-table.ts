@@ -40,10 +40,23 @@ Polymer({
       type: Array,
       computed: '_computeChartSelectionTypes(numeric, dataModel, features)'
     },
+    _maxHeight: {type: Number, value: 800, readOnly: true},
+    _expandedRowHeight: {type: Number, value: 330, readOnly: true},
+    _rowHeight: {type: Number, value: 100, readOnly: true},
   },
   // tslint:disable-next-line:no-any typescript/polymer temporary issue
   _handleResize(this: any) {
+    // Iron-lists must be explicitly sized to operate correctly and effiencly,
+    // per the documentation. But we want an iron-list that is max height 800px
+    // but can shrink to accomodate feature tables with a small number of
+    // features. Therefore we set the height here based on the number of
+    // features to display and if the features are displayed expanded or not.
     const ironList = this.$$('iron-list');
+    const heightPerElem = this._expandCharts ? this._expandedRowHeight
+        : this._rowHeight;
+    const length = this.features ? this.features.length : 0;
+    ironList.style.height = Math.min(length * heightPerElem, this._maxHeight)
+        + 'px';
     if (ironList) {
       ironList.fire('iron-resize');
     }
@@ -70,7 +83,7 @@ Polymer({
     // Ensure all visible elements in the iron-list are displayed by firing
     // a resize event after the element has rendered.
     const DELAY_FOR_RESIZE_MS = 1000;
-    setTimeout(() => {
+    setTimeout(() => {   
       this._handleResize();
     }, DELAY_FOR_RESIZE_MS);
   },
