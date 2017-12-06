@@ -83,7 +83,7 @@ Polymer({
     // Ensure all visible elements in the iron-list are displayed by firing
     // a resize event after the element has rendered.
     const DELAY_FOR_RESIZE_MS = 1000;
-    setTimeout(() => {   
+    setTimeout(() => {
       this._handleResize();
     }, DELAY_FOR_RESIZE_MS);
   },
