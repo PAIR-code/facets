@@ -47,7 +47,7 @@ export interface FacetsDive extends Element {
    * Hash containing statistics about each field in the underlying data. These
    * are computed and should be treated as read-only.
    */
-  _stats: {[field: string]: FieldStats};
+  stats: {[field: string]: FieldStats};
 
   // VISUALIZATION PROPERTIES.
 
@@ -217,9 +217,10 @@ Polymer({
       type: Array,
       value: [],
     },
-    _stats: {
+    stats: {
       type: Object,
       value: {},
+      notify: true,
     },
     atlasUrl: {
       type: String,
