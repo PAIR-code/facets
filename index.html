@@ -227,11 +227,7 @@
     $("#uploadbutton2")[0].onclick = function() {
         fileupload.click();
     };
-    var readFiles = function () {
-      var count = fileupload.files.length;
-      var datasetsList = [];
-
-      var whendone = function() {
+    var whendone = function(datasetsList) {
         var overview = $("#foelem")[0];
         var dive = $("#fdelem")[0];
         var proto = overview.getStatsProto(datasetsList);
@@ -256,34 +252,18 @@
           dive.colorBy = newFeatureForDive;
         }
       }
-      var readFile = function(file) {
-        var reader = new FileReader();
-        reader.onload = function() {
-          var parsedData = d3.csvParse(reader.result);
-          parsedData.forEach(function(row) {
-            parsedData.columns.forEach(function(column) {
-              if (!row[column]) {
-                delete row[column];
-              }
-              var coercedNum = +row[column];
-              if (!isNaN(coercedNum)) {
-                row[column] = coercedNum;
-              }
-            });
-          });
-          datasetsList.push({data: parsedData, name: file.name});
-          if (!--count) {
-            whendone();
-          }
-        }
-        reader.readAsBinaryString(file);
-      };
-
-      for (var i = 0; i < count; i++) {
-        readFile(fileupload.files[i]);
-      }
+    var fileworker = new Worker('worker.js');
+    fileworker.onmessage = function(e) {
+        var datasetsList=e.data;
+        whendone(datasetsList);
+    };
+    fileworker.onerror = function(e) {
+      console.error('ERROR: Line ', e.lineno, ' in ', e.filename, ': ', e.message);
+    };
+    var readFileAsync = function() {
+      fileworker.postMessage(fileupload.files);
     }
-    fileupload.addEventListener('change', readFiles);
+    fileupload.addEventListener('change', readFileAsync);
     $.when(trainAjax(), testAjax()).done(function(trainAjax, testAjax) {
       var overview = $("#foelem")[0];
       var proto = overview.getStatsProto([
