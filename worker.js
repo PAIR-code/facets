@@ -1,6 +1,4 @@
 /**
- * @author Loreto Parisi (loretoparisi at gmail dot com)
- * 
  * @license
  * Copyright 2017 Google Inc.
  *
