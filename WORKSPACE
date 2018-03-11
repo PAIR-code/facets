@@ -2,11 +2,11 @@ workspace(name = "ai_google_pair_facets")
 
 http_archive(
     name = "io_bazel_rules_closure",
-    sha256 = "110fe68753413777944b473c25eed6368c4a0487cee23a7bac1b13cc49d3e257",
-    strip_prefix = "rules_closure-4af89ef1db659eb41f110df189b67d4cf14073e1",
+    sha256 = "6691c58a2cd30a86776dd9bb34898b041e37136f2dc7e24cadaeaf599c95c657",
+    strip_prefix = "rules_closure-08039ba8ca59f64248bb3b6ae016460fe9c9914f",
     urls = [
-        "http://mirror.bazel.build/github.com/bazelbuild/rules_closure/archive/4af89ef1db659eb41f110df189b67d4cf14073e1.tar.gz",
-        "https://github.com/bazelbuild/rules_closure/archive/4af89ef1db659eb41f110df189b67d4cf14073e1.tar.gz",  # 2017-08-28
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_closure/archive/08039ba8ca59f64248bb3b6ae016460fe9c9914f.tar.gz",
+        "https://github.com/bazelbuild/rules_closure/archive/08039ba8ca59f64248bb3b6ae016460fe9c9914f.tar.gz",  # 2018-01-16
     ],
 )
 
@@ -18,11 +18,11 @@ closure_repositories()
 
 http_archive(
     name = "org_tensorflow_tensorboard",
-    sha256 = "aa75eb5807e83556922bd37db2c0f18acc37cd13bbb4a492e2856fdce3c3236b",
-    strip_prefix = "tensorboard-e75af806d054b54e6891c6196a2fa275c6407390",
+    sha256 = "087242325ef3b91f1909e3fd3a873ad15e3c7703990ad8caab64736d9009bf62",
+    strip_prefix = "tensorboard-1.6.0",
     urls = [
-	    "http://mirror.bazel.build/github.com/tensorflow/tensorboard/archive/e75af806d054b54e6891c6196a2fa275c6407390.tar.gz",  # 2017-10-10
-	    "https://github.com/tensorflow/tensorboard/archive/e75af806d054b54e6891c6196a2fa275c6407390.tar.gz",
+        "http://mirror.bazel.build/github.com/tensorflow/tensorboard/archive/1.6.0.tar.gz",
+        "https://github.com/tensorflow/tensorboard/archive/1.6.0.tar.gz",
     ],
 )
 

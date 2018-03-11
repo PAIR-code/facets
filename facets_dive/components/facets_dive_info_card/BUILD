@@ -1,11 +1,11 @@
 package(default_visibility = ["//visibility:public"])
 
-load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "ts_web_library")
+load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 load("@org_tensorflow_tensorboard//tensorboard/defs:vulcanize.bzl", "tensorboard_html_binary")
 
 licenses(["notice"])  # Apache 2.0
 
-ts_web_library(
+tf_web_library(
     name = "facets_dive_info_card",
     srcs = [
         "facets-dive-info-card.html",
@@ -20,7 +20,7 @@ ts_web_library(
     ],
 )
 
-ts_web_library(
+tf_web_library(
     name = "test",
     testonly = True,
     srcs = [
