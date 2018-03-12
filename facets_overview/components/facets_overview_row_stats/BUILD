@@ -1,10 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
-load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "ts_web_library")
+load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 
 licenses(["notice"])  # Apache 2.0
 
-ts_web_library(
+tf_web_library(
     name = "facets_overview_row_stats",
     srcs = [
         "facets-overview-row-stats.html",

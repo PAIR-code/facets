@@ -1,10 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
-load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "ts_web_library")
+load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 
 licenses(["notice"])  # Apache 2.0
 
-ts_web_library(
+tf_web_library(
     name = "axis",
     srcs = [
         "axis.html",
@@ -17,7 +17,7 @@ ts_web_library(
     ],
 )
 
-ts_web_library(
+tf_web_library(
     name = "bounded-object",
     srcs = [
         "bounded-object.html",
@@ -26,7 +26,7 @@ ts_web_library(
     path = "/facets-dive/lib",
 )
 
-ts_web_library(
+tf_web_library(
     name = "data-example",
     srcs = [
         "data-example.html",
@@ -35,7 +35,7 @@ ts_web_library(
     path = "/facets-dive/lib",
 )
 
-ts_web_library(
+tf_web_library(
     name = "grid",
     srcs = [
         "grid.html",
@@ -45,7 +45,7 @@ ts_web_library(
     deps = [":sorting"],
 )
 
-ts_web_library(
+tf_web_library(
     name = "info-renderers",
     srcs = [
         "info-renderers.html",
@@ -54,7 +54,7 @@ ts_web_library(
     path = "/facets-dive/lib",
 )
 
-ts_web_library(
+tf_web_library(
     name = "label",
     srcs = [
         "label.html",
@@ -64,7 +64,7 @@ ts_web_library(
     deps = [":sorting"],
 )
 
-ts_web_library(
+tf_web_library(
     name = "layout",
     srcs = [
         "layout.html",
@@ -73,7 +73,7 @@ ts_web_library(
     path = "/facets-dive/lib",
 )
 
-ts_web_library(
+tf_web_library(
     name = "sorting",
     srcs = [
         "sorting.html",
@@ -82,7 +82,7 @@ ts_web_library(
     path = "/facets-dive/lib",
 )
 
-ts_web_library(
+tf_web_library(
     name = "stats",
     srcs = [
         "stats.html",
@@ -92,7 +92,7 @@ ts_web_library(
     deps = [":wordtree"],
 )
 
-ts_web_library(
+tf_web_library(
     name = "string-format",
     srcs = [
         "string-format.html",
@@ -101,7 +101,7 @@ ts_web_library(
     path = "/facets-dive/lib",
 )
 
-ts_web_library(
+tf_web_library(
     name = "text",
     srcs = [
         "text.html",
@@ -110,7 +110,7 @@ ts_web_library(
     path = "/facets-dive/lib",
 )
 
-ts_web_library(
+tf_web_library(
     name = "sprite-atlas",
     srcs = [
         "sprite-atlas.html",
@@ -123,7 +123,7 @@ ts_web_library(
     ],
 )
 
-ts_web_library(
+tf_web_library(
     name = "sprite-material",
     srcs = [
         "sprite-material.html",
@@ -136,7 +136,7 @@ ts_web_library(
     ],
 )
 
-ts_web_library(
+tf_web_library(
     name = "sprite-mesh",
     srcs = [
         "sprite-mesh.html",
@@ -150,7 +150,7 @@ ts_web_library(
     ],
 )
 
-ts_web_library(
+tf_web_library(
     name = "wordtree",
     srcs = [
         "wordtree.html",
