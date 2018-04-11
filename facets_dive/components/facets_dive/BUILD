@@ -38,9 +38,20 @@ tf_web_library(
     ],
 )
 
+# Compiles standalone HTML file that tests facets-dive web component.
+#
+#   $ bazel run //facets_dive/components/facets_dive:devserver
+#   $ google-chrome http://localhost:6006/facets-dive/components/facets-dive/runner.html
+#
+# NOTE: Test output is logged to Chrome's Ctrl+Shift+J console.
+# NOTE: This runs TensorBoard Vulcanize.java to inline HTML imports and
+#       runs the Closure Compiler on the JavaScript outputted by the
+#       TypeScript Compiler, in order to remove ES6 imports, which don't
+#       work in web browsers. Otherwise we'd `bazel run` tf_web_library.
 tensorboard_html_binary(
     name = "devserver",
-    testonly = True,
+    testonly = True,  # Keeps JavaScript somewhat readable
+    compile = True,  # Run Closure Compiler
     input_path = "/facets-dive/components/facets-dive/test.html",
     output_path = "/facets-dive/components/facets-dive/runner.html",
     deps = [":test"],
