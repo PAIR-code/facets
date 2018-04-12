@@ -17,8 +17,15 @@ tf_web_library(
     ],
 )
 
+# Compiles standalone HTML for Facets Dive demo, used by ":facets_jupyter"
+#
+# NOTE: This runs TensorBoard Vulcanize.java to inline HTML imports and
+#       runs the Closure Compiler on the JavaScript outputted by the
+#       TypeScript Compiler, in order to remove ES6 imports, which don't
+#       work in web browsers. Otherwise we'd `bazel run` tf_web_library.
 tensorboard_html_binary(
     name = "facets",
+    compile = True,
     input_path = "/facets/visualizations.html",
     output_path = "/all/visualizations.html",
     deps = [":visualizations"],
