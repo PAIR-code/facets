@@ -39,10 +39,21 @@ tf_web_library(
     testonly = True
 )
 
+# Compiles standalone HTML file that tests facets-overview common files.
+#
+#   $ bazel run //facets_overview/common/test:devserver
+#   $ google-chrome http://localhost:6006/facets-overview/common/test/runner.html
+#
+# NOTE: Test output is logged to Chrome's Ctrl+Shift+J console.
+# NOTE: This runs TensorBoard Vulcanize.java to inline HTML imports and
+#       runs the Closure Compiler on the JavaScript outputted by the
+#       TypeScript Compiler, in order to remove ES6 imports, which don't
+#       work in web browsers. Otherwise we'd `bazel run` tf_web_library.
 tensorboard_html_binary(
     name = "devserver",
+    testonly = True,  # Keeps JavaScript somewhat readable
+    compile = True,  # Run Closure Compiler
     input_path = "/facets-overview/common/test/test.html",
     output_path = "/facets-overview/common/test/runner.html",
     deps = [":test"],
-    testonly = True
 )
