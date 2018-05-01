@@ -169,7 +169,7 @@ Polymer({
     },
     positionMode: {
       type: String,
-      value: vis.DEFAULT_POSITION_MODE,
+      computed: '_getPositionMode(verticalPosition, horizontalPosition)',
       notify: true,
     },
     verticalPosition: {
@@ -252,25 +252,10 @@ Polymer({
   },
 
   /**
-   * Introduce zero width spaces after any non-word characters. This causes the
-   * browser to wrap at these spots.
-   */
-  _breakUp(longString: string): string {
-    return sf.breakAfterNonWords('' + longString);
-  },
-
-  /**
    * Break up long strings and also truncate if too long.
    */
   _breakUpAndTruncate(longString: string): string {
     return sf.breakAfterNonWords(sf.truncateLongString('' + longString));
-  },
-
-  /**
-   * If this is a 'special' label, return the 'special' class for styling.
-   */
-  _specialClass(special: boolean): string {
-    return special ? 'special' : '';
   },
 
   /**
@@ -298,44 +283,29 @@ Polymer({
   },
 
   /**
-   * Returns true if either vertical facteing or horizontal faceting is in
-   * effect.
+   * Returns the positioning mode of the visualization.
    */
-  _anyFacet(this: any, ...facetSettings: string[]) {
-    return !!(this.verticalFacet || this.horizontalFacet);
+  _getPositionMode(
+      this: any, verticalPosition: string, horizontalPosition: string) {
+    return verticalPosition == '' && horizontalPosition == ''
+        ? vis.DEFAULT_POSITION_MODE : 'scatter';
   },
 
   /**
-   * Returns true if either vertical positioning or horizontal positioning are
-   * in effect.
+   * Opens the overflow menu.
    */
-  _anyPosition(this: any, ...positionSettings: string[]) {
-    return !!(
-        this.verticalPosition || this.horizontalPosition ||
-        this.positionMode !== 'stacked');
+  _openOverflow(this: any) {
+    this.$.overflowmenu.positionElement = this.$.overflowbtn;
+    this.$.overflowmenu.open();
   },
 
   /**
-   * Returns true if any faceting or positioning settings are in effect.
+   * Returns if the overflow menu button should be shown.
    */
-  _anyFacetOrPosition(this: any, ...facetAndPositiongSettings: string[]) {
-    return this._anyFacet() || this._anyPosition();
-  },
-
-  /**
-   * Returns true if any coloring settings are in effect.
-   */
-  _anyColor(this: any, colorBy: string, palette?: vis.Palette) {
-    return !!(this.colorBy && this.palette && this.palette.length);
-  },
-
-  /**
-   * Returns true if any settings of any kind are in effect.
-   */
-  _anySettings(
-      this: any, verticalFacet?: string, horizontalFacet?: string,
-      verticalPosition?: string, horizontalPosition?: string, colorBy?: string,
-      palette?: vis.Palette) {
-    return this._anyFacet() || this._anyPosition() || this._anyColor();
+  _shouldShowOverflowMenu(
+      this: any, colorBy: string, verticalFacet: string,
+      horizontalFacet: string) {
+    return this._isKeyCategorical(colorBy) || this._hasWordTree(verticalFacet)
+        || this._hasWordTree(horizontalFacet);
   },
 });

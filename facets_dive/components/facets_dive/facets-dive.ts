@@ -199,6 +199,9 @@ export interface FacetsDive extends Element {
    * will be used.
    */
   infoRenderer?: (dataObject: {}, containerElem: Element) => void;
+
+  /** Hides the info card if this is set to true. */
+  hideInfoCard?: boolean;
 }
 
 Polymer({
@@ -343,6 +346,10 @@ Polymer({
     infoRenderer: {
       type: Object,  // Function.
     },
+    hideInfoCard: {
+      type: Boolean,
+      value: false,
+    },
   },
 
   ready(this: any) {
@@ -355,6 +362,9 @@ Polymer({
     $.zoomInButton.onclick = event => $.vis.zoomIn();
     $.zoomOutButton.onclick = event => $.vis.zoomOut();
 
+    if (this.hideInfoCard) {
+      $.vis.style.right = '0';
+    }
     this._updateHeight();
   },
 

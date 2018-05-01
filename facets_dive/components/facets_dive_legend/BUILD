@@ -6,20 +6,19 @@ load("@org_tensorflow_tensorboard//tensorboard/defs:vulcanize.bzl", "tensorboard
 licenses(["notice"])  # Apache 2.0
 
 tf_web_library(
-    name = "facets_dive",
+    name = "facets_dive_legend",
     srcs = [
-        "facets-dive.html",
-        "facets-dive.ts",
+        "facets-dive-legend.html",
+        "facets-dive-legend.ts",
     ],
-    path = "/facets-dive/components/facets-dive",
+    path = "/facets-dive/components/facets-dive-legend",
     deps = [
-        "//facets_dive/components/facets_dive_controls",
-        "//facets_dive/components/facets_dive_info_card",
-        "//facets_dive/components/facets_dive_legend",
         "//facets_dive/components/facets_dive_vis",
-        "//facets_dive/lib:stats",
+        "//facets_dive/lib:string-format",
+        "@org_polymer_iron_collapse",
         "@org_polymer_iron_icons",
-        "@org_polymer_paper_button",
+        "@org_polymer_paper_icon_button",
+        "@org_polymer_paper_tooltip",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
     ],
 )
@@ -31,18 +30,18 @@ tf_web_library(
         "test.html",
         "test.ts",
     ],
-    path = "/facets-dive/components/facets-dive",
+    path = "/facets-dive/components/facets-dive-legend",
     deps = [
-        ":facets_dive",
+        ":facets_dive_legend",
         "//facets_dive/lib/test:externs",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:web_component_tester",
     ],
 )
 
-# Compiles standalone HTML file that tests facets-dive web component.
+# Compiles standalone HTML to test facets-dive-legend component.
 #
-#   $ bazel run //facets_dive/components/facets_dive:devserver
-#   $ google-chrome http://localhost:6006/facets-dive/components/facets-dive/runner.html
+#   $ bazel run //facets_dive/components/facets_dive_legend:devserver
+#   $ google-chrome http://localhost:6006/facets-dive/components/facets-dive-legend/runner.html
 #
 # NOTE: Test output is logged to Chrome's Ctrl+Shift+J console.
 # NOTE: This runs TensorBoard Vulcanize.java to inline HTML imports and
@@ -53,7 +52,7 @@ tensorboard_html_binary(
     name = "devserver",
     testonly = True,  # Keeps JavaScript somewhat readable
     compile = True,  # Run Closure Compiler
-    input_path = "/facets-dive/components/facets-dive/test.html",
-    output_path = "/facets-dive/components/facets-dive/runner.html",
+    input_path = "/facets-dive/components/facets-dive-legend/test.html",
+    output_path = "/facets-dive/components/facets-dive-legend/runner.html",
     deps = [":test"],
 )

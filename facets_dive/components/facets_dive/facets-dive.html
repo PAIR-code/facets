@@ -19,6 +19,7 @@ limitations under the License.
 <link rel="import" href="../../../paper-button/paper-button.html">
 <link rel="import" href="../facets-dive-controls/facets-dive-controls.html">
 <link rel="import" href="../facets-dive-info-card/facets-dive-info-card.html">
+<link rel="import" href="../facets-dive-legend/facets-dive-legend.html">
 <link rel="import" href="../facets-dive-vis/facets-dive-vis.html">
 
 <dom-module id='facets-dive'>
@@ -54,21 +55,19 @@ limitations under the License.
       }
       #vis {
         bottom: 0;
-        left: 240px;
+        left: 0;
         position: absolute;
         right: 240px;
-        top: 0;
+        top: 60px;
         width: auto;
       }
       #controls {
-        background: #e1eae9;
-        border-right: 1px solid #cccccc;
-        bottom: 0;
-        box-sizing: border-box;
+        border-bottom: 1px solid black;
+        height: 60px;
         left: 0;
         position: absolute;
+        right: 0;
         top: 0;
-        width: 240px;
       }
       #infoCard {
         background: #fff8f4;
@@ -77,8 +76,13 @@ limitations under the License.
         box-sizing: border-box;
         position: absolute;
         right: 0;
-        top: 0;
+        top: 61px;
         width: 240px;
+      }
+      #legend {
+        position: absolute;
+        bottom: 14px;
+        left: 80px;
       }
 
       /**
@@ -87,7 +91,7 @@ limitations under the License.
       .zoom-controls {
         bottom: 14px;
         box-sizing: border-box;
-        left: 250px;
+        left: 0;
         position: absolute;
       }
       .zoom-controls paper-button {
@@ -172,11 +176,17 @@ limitations under the License.
         </paper-button>
       </div>
 
-      <facets-dive-info-card
-          id="infoCard"
-          selected-data="[[selectedData]]"
-          info-renderer="[[infoRenderer]]"
-        ></facets-dive-info-card>
+      <facets-dive-legend id="legend" color-by="[[colorBy]]"
+          palette="[[_palette]]">
+      </facets-dive-legend>
+
+      <template is="dom-if" if="[[!hideInfoCard]]">
+        <facets-dive-info-card
+            id="infoCard"
+            selected-data="[[selectedData]]"
+            info-renderer="[[infoRenderer]]">
+        </facets-dive-info-card>
+      </template>
     </div>
 
   </template>

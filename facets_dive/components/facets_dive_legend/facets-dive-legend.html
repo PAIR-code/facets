@@ -1,0 +1,156 @@
+<!--
+@license
+Copyright 2017 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<link rel="import" href="../../../polymer/polymer.html">
+<link rel="import" href="../../../iron-collapse/iron-collapse.html">
+<link rel="import" href="../../../iron-icons/av-icons.html">
+<link rel="import" href="../../../iron-icons/iron-icons.html">
+<link rel="import" href="../../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../facets-dive-vis/facets-dive-vis.html">
+
+<dom-module id="facets-dive-legend">
+  <template>
+    <style>
+      :host {
+        @apply --paper-font-common-base;
+      }
+
+      .legend {
+        border: 1px solid #a9a9a9;
+        min-width: 200px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+        background: #E6E6FA;
+      }
+
+      .expand-button {
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+      }
+
+      .legend-body {
+        border-top: 1px solid #a9a9a9;
+        padding: 8px;
+        background: white;
+      }
+
+      .legend .layout-row {
+        margin: 0;
+      }
+      .legend .layout-row span {
+        margin: 2px 0 0 8px;
+      }
+
+      /**
+       * Legend table shim. Polymer's dom-repeat feature has a known issue in
+       * which it doesn't work with <tr> elements inside of a <table>. So
+       * instead, we use CSS with classed divs to achieve table behavior.
+       */
+      .legend-table {
+        display: table;
+        margin-left: 2px;
+      }
+      .legend-row {
+        display: table-row;
+      }
+      .legend-cell {
+        display: table-cell;
+      }
+
+      /**
+       * Color legend.
+       */
+      .legend .color {
+        font-size: 14px;
+      }
+      .legend .color iron-icon {
+        --iron-icon-width: 16px;
+        --iron-icon-height: 16px;
+        margin: 0 2px;
+      }
+      .legend .color iron-icon[fill="#ffffff"] {
+        background: #dddddd;
+      }
+      .legend .color span {
+        margin: 0;
+      }
+      .legend .special {
+        font-style: italic;
+      }
+
+      .legend h2 {
+        @apply --paper-font-subhead;
+        color: #4f423e;
+        font-weight: bold;
+        line-height: 1;
+        margin: 0;
+      }
+      .legend .color-by-field {
+        color: #968e8c;
+        display: block;
+        font-size: 12.5px;
+        font-weight: normal;
+        margin: 2px 0 4px 20px;
+      }
+    </style>
+    <template is="dom-if" if="[[_anyColor(colorBy, palette)]]">
+      <div class="legend">
+        <div class="topbar">
+          <div class="title">Legend</div>
+          <paper-icon-button class="expand-button" on-click="_toggleOpened"
+              icon="[[_getIcon(_opened)]]">
+          </paper-icon-button>
+        </div>
+        <iron-collapse id="collapse" opened="{{_opened}}">
+          <div class="legend-body">
+            <h2>Colors</h2>
+            <span class="color-by-field">
+              by [[_breakUpAndTruncate(colorBy)]]
+              <paper-tooltip position="top">[[colorBy]]</paper-tooltip>
+            </span>
+
+            <div class="legend-table">
+              <template is="dom-repeat" items="[[palette]]">
+                <div class="legend-row color">
+                  <div class="legend-cell">
+                    <iron-icon
+                      icon="av:fiber-manual-record"
+                      fill$="[[item.color]]"
+                      style$="fill:[[item.color]]"></iron-icon>
+                  </div>
+                  <div class="legend-cell">
+                    <span class$="[[_specialClass(item.content.special)]]">
+                      [[_breakUpAndTruncate(item.content.label)]]
+                    </span>
+                    <paper-tooltip position="top">[[item.content.label]]</paper-tooltip>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </iron-collapse>
+      </div>
+    </template>
+  </template>
+</dom-module>
+<script src="facets-dive-legend.js"></script>
