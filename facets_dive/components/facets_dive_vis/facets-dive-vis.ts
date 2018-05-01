@@ -430,7 +430,7 @@ interface FacetingInfo {
 /**
  * External interface for the <facets-dive-vis> Polymer element.
  */
-export interface FacetsDiveVis extends Element {
+export interface FacetsDiveVis extends HTMLElement {
   // DATA PROPERTIES.
 
   /**
