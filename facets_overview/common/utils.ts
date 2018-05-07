@@ -974,17 +974,18 @@ export function chartSelectionHasQuantiles(chartSelection: string) {
  * Returns the appropriate chart type to use for data for a single feature.
  */
 export function determineChartTypeForData(
-    chartData: HistogramForDataset[],
+    chartData: HistogramForDataset[], chartSelection: string,
     maxBucketsForBarChart: number): ChartType {
   // Determine if the provided data is numerical.
   let nums = true;
   let maxBuckets = 0;
+  console.log(chartData);
   chartData.forEach(d => {
-    if (!d.histMap[CHART_SELECTION_STANDARD]) {
+    if (!d.histMap[chartSelection]) {
       return;
     }
     const buckets: GenericHistogramBucket[] =
-        d.histMap[CHART_SELECTION_STANDARD].getBucketsList();
+        d.histMap[chartSelection].getBucketsList();
     maxBuckets = Math.max(maxBuckets, buckets.length);
     buckets.forEach((b: Histogram.Bucket) => {
       if (!b.getLowValue) {
@@ -1294,7 +1295,7 @@ function getCustomStatsEntries(stats: CustomStatistic[]|null) {
     // into a single entry with newlines between each stat/value pair.
     const ret = new CssFormattedString('', CUSTOM_CLASS);
     stats.forEach(stat => {
-      if (stat.getHistogram()) {
+      if (stat.getHistogram() || stat.getRankHistogram()) {
         // Continue onto the next custom stat.
         return;
       }

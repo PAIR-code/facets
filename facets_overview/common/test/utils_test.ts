@@ -1283,8 +1283,8 @@ describe('determineChartTypeForData', () => {
 
   it('returns histogram for no data', () => {
     const h = new utils.HistogramForDataset('test', null);
-    expect(utils.determineChartTypeForData([h], 2)).to.equal(
-      utils.ChartType.HISTOGRAM);
+    expect(utils.determineChartTypeForData([h], utils.CHART_SELECTION_STANDARD,
+        2)).to.equal(utils.ChartType.HISTOGRAM);
   });
 
   it('returns histogram for numbers', () => {
@@ -1301,8 +1301,8 @@ describe('determineChartTypeForData', () => {
     b.setSampleCount(20);
     buckets.push(b);
     const h = new utils.HistogramForDataset('test', hist);
-    expect(utils.determineChartTypeForData([h], 2)).to.equal(
-      utils.ChartType.HISTOGRAM);
+    expect(utils.determineChartTypeForData([h], utils.CHART_SELECTION_STANDARD,
+        2)).to.equal(utils.ChartType.HISTOGRAM);
   });
 
   it('returns bar chart for small amount of strings', () => {
@@ -1310,8 +1310,8 @@ describe('determineChartTypeForData', () => {
     const buckets = hist.getBucketsList();
     buckets.push.apply(buckets, rankBuckets);
     const h = new utils.HistogramForDataset('test', hist);
-    expect(utils.determineChartTypeForData([h], 2)).to.equal(
-      utils.ChartType.BAR_CHART);
+    expect(utils.determineChartTypeForData([h], utils.CHART_SELECTION_STANDARD,
+        2)).to.equal(utils.ChartType.BAR_CHART);
   });
 
   it('returns CDF for large amount of strings', () => {
@@ -1319,8 +1319,8 @@ describe('determineChartTypeForData', () => {
     const buckets = hist.getBucketsList();
     buckets.push.apply(buckets, rankBuckets);
     const h = new utils.HistogramForDataset('test', hist);
-    expect(utils.determineChartTypeForData([h], 1)).to.equal(
-      utils.ChartType.CUMDIST_CHART);
+    expect(utils.determineChartTypeForData([h], utils.CHART_SELECTION_STANDARD,
+        1)).to.equal(utils.ChartType.CUMDIST_CHART);
   });
 });
 

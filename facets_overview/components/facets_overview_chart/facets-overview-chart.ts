@@ -113,7 +113,8 @@ Polymer({
     const chartBuckets =
         chartData.map(d => this._getBuckets(d, showWeighted, chartSelection));
     this._chartType =
-        utils.determineChartTypeForData(chartData, this._maxBucketsForBarChart);
+        utils.determineChartTypeForData(chartData, chartSelection,
+        this._maxBucketsForBarChart);
     const names = chartData.map(d => d.name);
     if (chartSelection === utils.CHART_SELECTION_LIST_QUANTILES ||
         chartSelection ===

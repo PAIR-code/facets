@@ -199,7 +199,7 @@ export class OverviewDataModel {
           const customStats = feature.getCustomStatsList()!;
           customStats.forEach(customStat => {
             // Add all custom histograms from the custom stats for the feature.
-            if (customStat.getHistogram()) {
+            if (customStat.getHistogram() || customStat.getRankHistogram()) {
               namesSet[customStat.getName()] = true;
             }
           });
@@ -411,6 +411,10 @@ export class OverviewDataModel {
               customStats.forEach(customStat => {
                 if (customStat.getHistogram()) {
                   namedHists[customStat.getName()] = customStat.getHistogram()!;
+                }
+                else if (customStat.getRankHistogram()) {
+                  namedHists[customStat.getName()] =
+                      customStat.getRankHistogram()!;
                 }
               });
             }

@@ -45,8 +45,10 @@ export function makeCustomStatistic(name: string, value: {}): CustomStatistic {
     s.setStr(value as string);
   } else if (typeof value === 'number') {
     s.setNum(value as number);
-  } else {
+  } else if (value instanceof Histogram) {
     s.setHistogram(value as Histogram);
+  } else {
+    s.setRankHistogram(value as RankHistogram);
   }
   return s;
 }

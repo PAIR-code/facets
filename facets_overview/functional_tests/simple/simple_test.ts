@@ -79,9 +79,13 @@ function create(): DatasetFeatureStatisticsList {
     [0, 1, 1], [1, 2, 2], [2, 3, 3], [3, 4, 4], [4, 5, 5], [5, 6, 6], [6, 7, 7],
     [7, 8, 8], [8, 9, 9], [9, 10, 10]
   ]);
+  const customRankHist = th.makeRankHistogram([
+    th.makeRankBucket('label1', 0, 0, 10), th.makeRankBucket('label2', 1, 1, 6)
+  ]);
   const featureStats = stats.getFeaturesList()[0];
   const customStats = [th.makeCustomStatistic('customHist', customHist),
                        th.makeCustomStatistic('customNum', 13.1),
+                       th.makeCustomStatistic('customRankHist', customRankHist),
                        th.makeCustomStatistic('customStr', 'cust')];
   featureStats.setCustomStatsList(customStats);
   stats.setName('eval');
