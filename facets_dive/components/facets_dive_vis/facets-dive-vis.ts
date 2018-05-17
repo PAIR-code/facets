@@ -890,7 +890,17 @@ class FacetsDiveVizInternal {
       selectedData.push(this.elem.data[this.elem.selectedIndices[i]]);
     }
     this.elem.set('selectedData', selectedData);
-    this.updateSelectedBoxes();
+  }
+
+  /**
+   * Update visuals of selected items.
+   */
+  selectedIndicesUpdated() {
+    // Do not update if the mesh hasn't been created. In that case, the visuals
+    // will be updated by the mesh creation itself.
+    if (this.spriteMesh) {
+      this.updateSelectedBoxes();
+    }
   }
 
   /**
@@ -2973,6 +2983,7 @@ Polymer({
       type: Array,
       value: [],
       notify: true,
+      observer: '_selectedIndicesUpdated',
     },
   },
 
@@ -3024,6 +3035,10 @@ Polymer({
 
   _onIronResize(this: any) {
     this._backing.resizeHandler();
+  },
+
+  _selectedIndicesUpdated(this: any) {
+    this._backing.selectedIndicesUpdated();
   },
 
   // Public non-Polymer methods.
