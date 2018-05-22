@@ -26,7 +26,7 @@ Polymer({
 
   properties: {
     // The feature name search string inputted by the user.
-    _searchString: String,
+    searchString: {type: String, notify: true},
     // For each sorting type, a map of feature names to the order they should
     // appear in the table.
     _sortOptions: Array,

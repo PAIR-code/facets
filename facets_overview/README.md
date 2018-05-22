@@ -84,6 +84,7 @@ The sort-by dropdown changes the sort order for the features in each table. The 
 * Distribution distance (only available when comparing multiple datasets): Ordered by the largest difference between distribution shapes for each feature (using chi-square test for shape).
 
 The name filter input box allows filtering the tables by feature names that match the text provided.
+The currently-set filter is exposed as the property `searchString`.
 
 The feature checkboxes allow filtering by the type of value for each feature, such as float, int or string.
 
