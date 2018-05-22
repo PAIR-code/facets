@@ -176,7 +176,7 @@ limitations under the License.
           </paper-checkbox>
           <paper-input class="right-input input-control"
                        label="Feature search"
-                       value="{{_searchString}}"
+                       value="{{searchString}}"
                        auto-validate="true"
                        validator="filter-validator">
             <facets-overview-filter-validator validator-name="filter-validator">
@@ -206,10 +206,10 @@ limitations under the License.
         </div>
       </template>
       <div class=table-holder>
-        <facets-overview-table features="[[_getNumericFeatureListItems(_dataModel, _searchString, _sortOrder, _reverseOrder, _featureSpecCheckboxes)]]"
+        <facets-overview-table features="[[_getNumericFeatureListItems(_dataModel, searchString, _sortOrder, _reverseOrder, _featureSpecCheckboxes)]]"
                          data-model="[[_dataModel]]" feature-slice-selection="{{featureSliceSelection}}" numeric="true" class="table-left" compare-mode="[[compareMode]]">
         </facets-overview-table>
-        <facets-overview-table features="[[_getNonNumericFeatureListItems(_dataModel, _searchString, _sortOrder, _reverseOrder, _featureSpecCheckboxes)]]"
+        <facets-overview-table features="[[_getNonNumericFeatureListItems(_dataModel, searchString, _sortOrder, _reverseOrder, _featureSpecCheckboxes)]]"
                          data-model="[[_dataModel]]" feature-slice-selection="{{featureSliceSelection}}" class="table-right" compare-mode="[[compareMode]]">
         </facets-overview-table>
       </div>
