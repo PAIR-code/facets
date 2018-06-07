@@ -51,7 +51,7 @@ function create(): DatasetFeatureStatisticsList {
   for (let i = 0; i < 50; i++) {
     const dataPoint1 = {};
     const dataPoint2 = {};
-    for (let j = 0; j < 50; j++) {
+    for (let j = 0; j < 500; j++) {
       dataPoint1['num' + j] = d3.randomNormal(10)();
       dataPoint1['str' + j] = i < 20 ? 'a' : 'b';
       dataPoint2['num' + j] = d3.randomNormal(14)();
