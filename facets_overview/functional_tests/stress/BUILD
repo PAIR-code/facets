@@ -49,6 +49,7 @@ tf_web_library(
 #       work in web browsers. Otherwise we'd `bazel run` tf_web_library.
 tensorboard_html_binary(
     name = "devserver",
+    compile = True,
     input_path = "/facets-overview/functional-tests/stress/index.html",
     output_path = "/facets-overview/functional-tests/stress/index.html",
     deps = [":stress"],

@@ -979,7 +979,6 @@ export function determineChartTypeForData(
   // Determine if the provided data is numerical.
   let nums = true;
   let maxBuckets = 0;
-  console.log(chartData);
   chartData.forEach(d => {
     if (!d.histMap[chartSelection]) {
       return;

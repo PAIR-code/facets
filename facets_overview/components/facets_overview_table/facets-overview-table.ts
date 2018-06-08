@@ -52,14 +52,16 @@ Polymer({
     // features. Therefore we set the height here based on the number of
     // features to display and if the features are displayed expanded or not.
     const ironList = this.$$('iron-list');
+    if (!ironList || !this._expandedRowHeight || !this._rowHeight ||
+        !this._maxHeight || !this.features) {
+      return;
+    }
     const heightPerElem = this._expandCharts ? this._expandedRowHeight
         : this._rowHeight;
     const length = this.features ? this.features.length : 0;
-    ironList.style.height = Math.min(length * heightPerElem, this._maxHeight)
-        + 'px';
-    if (ironList) {
-      ironList.fire('iron-resize');
-    }
+    const newHeight = Math.min(length * heightPerElem, this._maxHeight);
+    ironList.style.height = newHeight + 'px';
+    ironList.fire('iron-resize');
   },
   // tslint:disable-next-line:no-any typescript/polymer temporary issue
   _computeChartSelectionTypes(
