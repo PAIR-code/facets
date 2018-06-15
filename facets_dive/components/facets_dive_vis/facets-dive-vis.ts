@@ -755,7 +755,7 @@ class FacetsDiveVizInternal {
   pickedTextDrawingField: string;
 
   /**
-   * Timer handle returned by setTimout() for debouncing atlasUrl changes.
+   * Timer handle returned by setTimeout() for debouncing atlasUrl changes.
    */
   atlasUrlChangeTimer: number;
 
