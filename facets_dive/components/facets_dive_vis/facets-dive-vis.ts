@@ -1962,7 +1962,7 @@ class FacetsDiveVizInternal {
    * Handle changes to sprite texture atlas image URL.
    */
   atlasUrlChange() {
-    clearTimout(this.atlasUrlChangeTimer);
+    clearTimeout(this.atlasUrlChangeTimer);
     delete this.atlasUrlChangeTimer;
 
     const atlasUrl = this.elem.atlasUrl;
