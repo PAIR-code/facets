@@ -294,6 +294,13 @@ const COLOR_BY_MIX = 180;
 const ZOOM_INCREMENT = 1.1;
 
 /**
+ * Certain changes, such as updating the atlasUrl, are expensive enough to
+ * require debouncing. This is the number of milliseconds of time to require
+ * before locking in such a change.
+ */
+const UPDATE_DEBOUNCE_DELAY_MS = 100;
+
+/**
  * A grid item is the marriage of a sprite and its backing data example object.
  */
 interface GridItem {
@@ -741,6 +748,21 @@ class FacetsDiveVizInternal {
    * Horizontal faceting callbacks.
    */
   horizontalFacetInfo: FacetingInfo|null;
+
+  /**
+   * Text drawing field picked by default. Only performed once.
+   */
+  pickedTextDrawingField: string;
+
+  /**
+   * Timer handle returned by setTimout() for debouncing atlasUrl changes.
+   */
+  atlasUrlChangeTimer: number;
+
+  /**
+   * The last atlas URL that was used.
+   */
+  lastAtlasUrl: string;
 
   /**
    * Capture Polymer element instance and prep internal state.
@@ -1705,25 +1727,36 @@ class FacetsDiveVizInternal {
       return;
     }
 
-    // Keep track of whether this is an update, or a first-run.
-    const update = !!this.spriteMesh;
-
     // Make sure the element's size computations reflect the element boundaries.
     this.resizeHandler();
 
-    // If this is an update, remove the old spriteMesh.
-    if (update) {
-      this.scene.remove(this.spriteMesh);
-      this.spriteMesh.spriteAtlas.clearQueues();  // Stop any outstanding draws.
-      delete this.spriteMesh;
-    }
+    // Produce stats for data.
+    this.stats = getStats(data);
 
+    if (this.items) {
+      this.updateDataChange();
+    } else {
+      this.initialDataChange();
+    }
+  }
+
+  /**
+   * Handle the initial setting of the data array. This will destroy the
+   * spriteMesh if already present and replace with a new one.
+   */
+  initialDataChange() {
+    const data = this.elem.data;
+    const itemCount = data.length;
     const spriteImageWidth = this.elem.spriteImageWidth;
     const spriteImageHeight = this.elem.spriteImageHeight;
     const spriteAspectRatio = spriteImageWidth / spriteImageHeight;
 
-    // Create a SpriteMesh to represent the incoming data.
-    const itemCount = data.length;
+    if (this.spriteMesh) {
+      this.scene.remove(this.spriteMesh);
+      this.spriteMesh.spriteAtlas.clearQueues();  // Abort outstanding draws.
+      delete this.spriteMesh;
+    }
+
     this.spriteMesh =
         new SpriteMesh(itemCount, spriteImageWidth, spriteImageHeight);
     this.scene.add(this.spriteMesh);
@@ -1757,24 +1790,42 @@ class FacetsDiveVizInternal {
       this.renderUntil(item.sprite.timestamp);
     };
 
-    this.stats = getStats(data);
-
     this.updateGridFaceting();
     this.updateGridItemPositions();
 
     // If a colorBy field hasn't already been specified, pick a good one.
-    if (update) {
-      this.updateColors();
-    } else if (!this.elem.colorBy) {
+    if (!this.elem.colorBy) {
       this.pickColorByField();
     }
 
     // If an image backing field hasn't already been specified, pick a good one.
-    if (update) {
-      this.updateImageFieldName();
-    } else if (!this.elem.imageFieldName) {
+    if (!this.elem.imageFieldName) {
       this.pickTextDrawingField();
     }
+  }
+
+  /**
+   * Handle updates to the data after the initial data change..
+   */
+  updateDataChange() {
+
+    const data = this.elem.data;
+
+    // Compare length of data with this.items. If unequal, remove the old
+    // spriteMesh and reinitialize.
+    if (data.length !== this.items.length) {
+      return this.initialDataChange();
+    }
+
+    // Update items' data.
+    for (let i = 0; i < data.length; i++) {
+      this.items[i].data = data[i];
+    }
+
+    this.updateGridFaceting();
+    this.updateGridItemPositions();
+
+    this.updateColors();
   }
 
   /**
@@ -1867,6 +1918,9 @@ class FacetsDiveVizInternal {
    * on the sprites.
    */
   pickTextDrawingField() {
+    if (this.pickedTextDrawingField !== undefined) {
+      return;
+    }
     let bestFieldName = '';
     let bestFieldScore = -Infinity;
 
@@ -1884,16 +1938,41 @@ class FacetsDiveVizInternal {
       }
     }
 
+    this.pickedTextDrawingField = bestFieldName;
     if (isFinite(bestFieldScore) && bestFieldName in this.stats) {
       this.elem.set('imageFieldName', bestFieldName);
     }
   }
 
   /**
+   * Queue a change to the atlas URL for debouncing.
+   */
+  queueAtlasUrlChange() {
+    if (this.atlasUrlChangeTimer) {
+      clearTimeout(this.atlasUrlChangeTimer);
+    }
+    this.atlasUrlChangeTimer = setTimeout(() => {
+      if (this.atlasUrlChangeTimer) {
+        this.atlasUrlChange();
+      }
+    }, UPDATE_DEBOUNCE_DELAY_MS);
+  }
+
+  /**
    * Handle changes to sprite texture atlas image URL.
    */
   atlasUrlChange() {
+    clearTimout(this.atlasUrlChangeTimer);
+    delete this.atlasUrlChangeTimer;
+
     const atlasUrl = this.elem.atlasUrl;
+
+    if (atlasUrl === this.lastAtlasUrl) {
+      // Nothing to do.
+      return;
+    }
+    this.lastAtlasUrl = atlasUrl;
+
     if (!atlasUrl) {
       this.pickTextDrawingField();
       return;
@@ -2848,7 +2927,7 @@ Polymer({
     atlasUrl: {
       type: String,
       value: null,
-      observer: '_atlasUrlChange',
+      observer: '_queueAtlasUrlChange',
     },
     spriteUrl: {
       type: String,
@@ -3009,8 +3088,8 @@ Polymer({
     this._setStats(this._backing.stats);
   },
 
-  _atlasUrlChange(this: any, atlasUrl: string) {
-    this._backing.atlasUrlChange();
+  _queueAtlasUrlChange(this: any, atlasUrl: string) {
+    this._backing.queueAtlasUrlChange();
   },
 
   _spriteUrlChange(this: any, spriteUrl: string) {
