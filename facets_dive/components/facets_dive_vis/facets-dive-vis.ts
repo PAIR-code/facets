@@ -1802,6 +1802,8 @@ class FacetsDiveVizInternal {
     if (!this.elem.imageFieldName) {
       this.pickTextDrawingField();
     }
+
+    this.updateColors();
   }
 
   /**
