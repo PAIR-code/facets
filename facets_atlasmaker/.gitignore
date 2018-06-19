@@ -1,0 +1,9 @@
+/bazel-*
+
+**/*.pyc
+
+# virtualenv
+ENV*
+
+# test output dir
+testoutput/*
