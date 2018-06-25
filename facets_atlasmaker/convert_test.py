@@ -332,5 +332,16 @@ class TestImageConverterTests(absltest.TestCase):
                      (self.desired_width, self.desired_height))
 
 
+class TestImageConverterHelpersTests(absltest.TestCase):
+  """Test misc helper functions."""
+
+  def testCreateDefaultImage(self):
+    conversion_settings = convert.ImageConvertSettings(
+        'png', 20, 20, resize_if_larger=True)
+    output_img = convert.create_default_image(conversion_settings)
+
+    self.assertEqual(output_img.size, (20, 20))
+
+
 if __name__ == '__main__':
   absltest.main()

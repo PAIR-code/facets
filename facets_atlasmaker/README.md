@@ -43,13 +43,13 @@ Additionally, you can install these optional dependencies:
 Atlasmaker currently supports the following functionality:
 
 * Reading input images from localfile and URLs (http/https).
+* Using a default image in the atlas if an image was not successfully retrieved or converted.
 * Various image resizing and conversion options.
 * Parallelization of image fetch/conversion.
 
 Future features (in rough order of priority) that it may support include:
 
 * Conversion of a single image.
-* Using a default image in the atlas if an image was not successfully retrieved or converted.
 * Caching images onto disk instead of doing everything in memory (useful when converting many large 
 image files).
 * Reading from other storage types, such as Google Cloud Storage.
@@ -60,50 +60,48 @@ text format file to allow different conversion settings by image if desired.
 
 ## Getting Started: Generate Your First Sprite Atlas
 
-To run Atlasmaker, you point it to a file listing desired source images as well as conversion options via
-command-line flags. To list the full set of flags, call the ```--help``` flag. E.g.,
-
-```sh
-bazel run :atlasmaker -- --help
-```
-
-To run Atlasmaker, you can either (1) run ```bazel build``` and then execute the resulting binary, 
-or (2) use the ```bazel run``` command, which will build and execute the program in a single step. 
-You can run Atlasmaker using the example list of wikipedia images provided in the ```testdata``` 
-directory as input.
-
-To build and then execute the binary, run the following from this directory:
+To build and then execute the binary, first run bazel build from this directory:
 
 ```sh
 bazel build :atlasmaker
 
+# The binary will be within the bazel-bin directory in the root Facets directory, i.e.:
+../bazel-bin/facets_atlasmaker/atlasmaker
+```
+
+To run Atlasmaker, you point it to a file listing desired source images as well as conversion options via
+command-line flags. To list the full set of flags, call the ```--help``` flag. E.g.,
+
+```sh
+../bazel-bin/facets_atlasmaker/atlasmaker --help
+```
+
+Here's an example command for combining a set of images from wikipedia into an Atlas and 
+manifest located in an `outputs` subdirectory:
+
+```sh
 # Create temp dir to hold outputs if it doesn't exist (optional)
 mkdir $PWD/outputs/
 
-# The binary will be within the bazel-bin directory in the root Facets directory. Now run 
-../bazel-bin/facets_atlasmaker/atlasmaker --sourcelist=$PWD/testdata/wikipedia_images_16.csv --output_dir=$PWD/outputs/
+# Now create your sprite atlas
+../bazel-bin/facets_atlasmaker/atlasmaker --sourcelist=$PWD/testdata/wikipedia_images_16.csv \
+--output_dir=$PWD/outputs/ --image_width=50 --image_height=50 \
+--default_image_path=https://upload.wikimedia.org/wikipedia/en/d/d1/Image_not_available.png
 ```
- 
-Alternatively, you can run the bazel run command to build and run in a single step:
 
-```
-# Create temp dir to hold outputs if it doesn't exist (optional)
-mkdir $PWD/outputs/
-
-# Run atlasmaker
-bazel run :atlasmaker -- --sourcelist=$PWD/testdata/wikipedia_images_16.csv --output_dir=$PWD/outputs/
-```
+Alternatively, you can also run Atlasmaker with a generated list of images from wikipedia, using
+the utility in the `utils/` directory to create this input list.
 
 Some of the most useful image settings flags you can set include:
 
-* ```--image_format```: Output image format, such as png, jpeg, etc.
-* ```--image_width```: width of each final desired output image in pixels.
-* ```--image_height```: height of each final desired output image in pixels.
+* ```--image_width``` (required): width of each final desired output image in pixels.
+* ```--image_height``` (required): height of each final desired output image in pixels.
+* ```--image_format```: Output image format, such as png, jpeg, etc. By default is png.
 * ```--keep_aspect_ratio```: Whether to retain the image aspect ratio, or make a best effort to fit
 resize original image, cropping as necessary.
 * ```---bg_color_name or --bg_color_rgb```: You can specify the background used (e.g., for images 
 that were resized and now don't fill the entire output sprite as well as for locations on the atlas 
-with no images) via a color name or RGB value, such as '255,255,0'.
+with no images) via a color name or RGB value, such as 'geen' or '255,255,0'.
 
 ## For Developers
 

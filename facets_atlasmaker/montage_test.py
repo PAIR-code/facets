@@ -14,6 +14,7 @@ class SpriteAtlasGeneratorTests(absltest.TestCase):
     self.orange_rgb = ImageColor.getrgb('orange')
     self.green_rgb = ImageColor.getrgb('green')
     self.yellow_rgb = ImageColor.getrgb('yellow')
+    self.black_rgb = ImageColor.getrgb('black')
 
   def testAtlasGeneratorDifferentInputSizes(self):
     # Should raise error if image count does not match source path count.
@@ -24,7 +25,8 @@ class SpriteAtlasGeneratorTests(absltest.TestCase):
     with self.assertRaises(ValueError):
       montage.SpriteAtlasGenerator(
           images=source_images, img_src_paths=source_paths,
-          atlas_settings=atlas_settings)
+          atlas_settings=atlas_settings,
+          default_img=Image.new('RGBA', (50, 30)))
 
   def testAtlasGeneratorDifferentImageSizes(self):
     # Should raise error if converted images are different sizes.
@@ -36,7 +38,8 @@ class SpriteAtlasGeneratorTests(absltest.TestCase):
     with self.assertRaises(ValueError):
       montage.SpriteAtlasGenerator(
           images=source_images, img_src_paths=source_paths,
-          atlas_settings=atlas_settings)
+          atlas_settings=atlas_settings,
+          default_img=Image.new('RGBA', (50, 30)))
 
   def testCreateAtlasIfNoSizeSpecified(self):
     # Verify that manifests and atlases contains single items.
@@ -47,7 +50,8 @@ class SpriteAtlasGeneratorTests(absltest.TestCase):
 
     atlas_generator = montage.SpriteAtlasGenerator(
         images=source_images, img_src_paths=source_paths,
-        atlas_settings=atlas_settings)
+        atlas_settings=atlas_settings,
+        default_img=Image.new('RGBA', (50, 30)))
     atlases, manifests = atlas_generator.create_atlas()
 
     self.assertEqual(len(atlases), 1)
@@ -68,7 +72,8 @@ class SpriteAtlasGeneratorTests(absltest.TestCase):
 
     atlas_generator = montage.SpriteAtlasGenerator(
         images=images, img_src_paths=source_paths,
-        atlas_settings=atlas_settings)
+        atlas_settings=atlas_settings,
+        default_img=Image.new('RGBA', (50, 50), self.black_rgb))
     atlases, manifests = atlas_generator.create_atlas()
     atlas = atlases[0]  # Only care about a single atlas
     del manifests
@@ -85,27 +90,82 @@ class SpriteAtlasGeneratorTests(absltest.TestCase):
     self.assertEqual(atlas.getpixel((49, 50))[0:3], self.green_rgb)
     self.assertEqual(atlas.getpixel((50, 50))[0:3], self.yellow_rgb)
 
-  def testCreateAtlasReturnsCorrectManifest(self):
+  def testCreateAtlasWithFailures(self):
+    # Verify that atlas is correct based on sampling pixels and output size.
+    # when one of the images failed retrival/conversion.
+    atlas_settings = montage.SpriteAtlasSettings(img_format='png')
+    source_paths = ['/some/path/file' + str(i) + '.jpg' for i in range(0, 4)]
+    images = [
+        Image.new('RGBA', (50, 50), self.orange_rgb),
+        Image.new('RGBA', (50, 50), self.red_rgb),
+        None,  # Failed
+        Image.new('RGBA', (50, 50), self.yellow_rgb)
+    ]
+
+    atlas_generator = montage.SpriteAtlasGenerator(
+        images=images, img_src_paths=source_paths,
+        atlas_settings=atlas_settings,
+        default_img=Image.new('RGBA', (50, 50), self.black_rgb))
+    atlases, manifests = atlas_generator.create_atlas()
+    atlas = atlases[0]  # Only care about a single atlas
+    del manifests
+
+    self.assertEqual(atlas.size, (100, 100))
+    # Verify pixels in corners of atlas.
+    self.assertEqual(atlas.getpixel((0, 0))[0:3], self.orange_rgb)
+    self.assertEqual(atlas.getpixel((99, 0))[0:3], self.red_rgb)
+    self.assertEqual(atlas.getpixel((0, 99))[0:3], self.black_rgb)
+    self.assertEqual(atlas.getpixel((99, 99))[0:3], self.yellow_rgb)
+    # Verify pixels in center of atlas
+    self.assertEqual(atlas.getpixel((49, 49))[0:3], self.orange_rgb)
+    self.assertEqual(atlas.getpixel((50, 49))[0:3], self.red_rgb)
+    self.assertEqual(atlas.getpixel((49, 50))[0:3], self.black_rgb)
+    self.assertEqual(atlas.getpixel((50, 50))[0:3], self.yellow_rgb)
+
+  def testCreateAtlasManifest(self):
     # Verify manifest contains correct data.
     atlas_settings = montage.SpriteAtlasSettings(img_format='png')
     source_images = [Image.new('RGBA', (50, 30))] * 4
     source_paths = ['/some/path/file' + str(i) + '.jpg' for i in range(0, 4)]
     expected_manifest = [
         {'source image': '/some/path/file0.jpg', 'offset_x': 0,
-         'image_name': 'file0.jpg', 'offset_y': 0},
+         'image_name': 'file0.jpg', 'offset_y': 0, 'success': True},
         {'source image': '/some/path/file1.jpg', 'offset_x': 50,
-         'image_name': 'file1.jpg', 'offset_y': 0},
+         'image_name': 'file1.jpg', 'offset_y': 0, 'success': True},
         {'source image': '/some/path/file2.jpg', 'offset_x': 0,
-         'image_name': 'file2.jpg', 'offset_y': 30},
+         'image_name': 'file2.jpg', 'offset_y': 30, 'success': True},
         {'source image': '/some/path/file3.jpg', 'offset_x': 50,
-         'image_name': 'file3.jpg', 'offset_y': 30}]
+         'image_name': 'file3.jpg', 'offset_y': 30, 'success': True}]
 
     atlas_generator = montage.SpriteAtlasGenerator(
         images=source_images, img_src_paths=source_paths,
-        atlas_settings=atlas_settings)
+        atlas_settings=atlas_settings,
+        default_img=Image.new('RGBA', (50, 50), self.black_rgb))
     atlases, manifests = atlas_generator.create_atlas()
     del atlases  # linter
+    self.assertEqual(manifests[0], expected_manifest)
 
+  def testCreateAtlasManifestWithImgFailures(self):
+    # Verify manifest contains correct data when one image failed.
+    atlas_settings = montage.SpriteAtlasSettings(img_format='png')
+    source_images = [Image.new('RGBA', (50, 30))] * 3 + [None]
+    source_paths = ['/some/path/file' + str(i) + '.jpg' for i in range(0, 4)]
+    expected_manifest = [
+        {'source image': '/some/path/file0.jpg', 'offset_x': 0,
+         'image_name': 'file0.jpg', 'offset_y': 0, 'success': True},
+        {'source image': '/some/path/file1.jpg', 'offset_x': 50,
+         'image_name': 'file1.jpg', 'offset_y': 0, 'success': True},
+        {'source image': '/some/path/file2.jpg', 'offset_x': 0,
+         'image_name': 'file2.jpg', 'offset_y': 30, 'success': True},
+        {'source image': '/some/path/file3.jpg', 'offset_x': 50,
+         'image_name': 'file3.jpg', 'offset_y': 30, 'success': False}]
+
+    atlas_generator = montage.SpriteAtlasGenerator(
+        images=source_images, img_src_paths=source_paths,
+        atlas_settings=atlas_settings,
+        default_img=Image.new('RGBA', (50, 50), self.black_rgb))
+    atlases, manifests = atlas_generator.create_atlas()
+    del atlases  # linter
     self.assertEqual(manifests[0], expected_manifest)
 
 

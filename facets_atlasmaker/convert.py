@@ -1,4 +1,8 @@
-"""Image conversion classes and methods."""
+"""Image conversion classes and methods.
+
+Methods for converting images as well as for creating a default image for use
+upon image retrieval/conversion failures.
+"""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -136,12 +140,12 @@ class ImageConverter(object):
     self._bg_color = image_convert_settings.bg_color
 
   def convert(self):
-    """Returns a converted image."""
+    """Returns a converted image as a PIL Image object."""
     # TODO: Do we need an option to allow pre-cropping?
     if (self._orig_img.size == self._desired_size and
         self._orig_img.format == self._desired_format.upper()):
-      logging.info("Desired image is same format and size as original image"
-                   "so no conversion needed.")
+      logging.debug('Desired image is same format and size as original image'
+                    'so no conversion needed.')
       return self._orig_img
 
     # Desired image is larger than original image.
@@ -207,7 +211,7 @@ class ImageConverter(object):
     crop the larger dimension as necessary. Crop centering is based on
     center of image."""
 
-    logging.info('Reducing image size and cropping as necessary.')
+    logging.debug('Reducing image size and cropping as necessary.')
     return ImageOps.fit(image=self._orig_img, size=self._desired_size,
                         centering=self._position)
 
@@ -246,3 +250,18 @@ class ImageConverter(object):
     bkgd_img = Image.new(self._bg_mode, self._desired_size, self._bg_color)
     bkgd_img.paste(new_img, offset)
     return bkgd_img
+
+
+def create_default_image(image_convert_settings):
+  """Returns a default PIL image for use on image retrieval/conversion failures.
+
+  Helper method for creating a default image (of the background) to be used in
+  Atlas for images that fail retrieval/conversion.
+
+  Returns:
+      PIL Image.
+  """
+  return Image.new(
+      image_convert_settings.bg_mode,
+      (image_convert_settings.width, image_convert_settings.height),
+      image_convert_settings.bg_color)

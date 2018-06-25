@@ -14,7 +14,7 @@ py_binary(
 py_library(
     name = "convert",
     srcs = ["convert.py"],
-    srcs_version = "PY2",
+    srcs_version = "PY2AND3",
     deps = [
     ],
 )

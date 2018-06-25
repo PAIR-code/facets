@@ -4,6 +4,7 @@ import io
 import json
 import os
 from urlparse import urlparse
+from absl import logging
 from PIL import Image
 import requests
 
@@ -28,6 +29,7 @@ def read_src_list_csvfile(filepath):
   Returns:
     List of file locations.
   """
+  logging.debug('Reading images list from %s.' % filepath)
   try:
     with tf.gfile.GFile(filepath) as input_file:
       return input_file.read().splitlines()
