@@ -1731,9 +1731,9 @@ class FacetsDiveVizInternal {
     if (!this.items) {
       // Since this is the very first time that data is available, select nice
       // looking fields to color by and render text labels.
+      this.initializeSpriteMesh();
       this.pickColorByField();
       this.pickTextDrawingField();
-      this.initializeSpriteMesh();
     } else if (this.items.length !== data.length) {
       // This is an update in which the number of data points has changed, so
       // reinitialize the spriteMesh and redraw the image content if any.
@@ -1942,7 +1942,7 @@ class FacetsDiveVizInternal {
     }
 
     const atlasUrl = this.elem.atlasUrl;
-    if (atlasUrl === this.lastAtlasUrl) {
+    if (!atlasUrl || !atlasUrl.length || atlasUrl === this.lastAtlasUrl) {
       // Nothing to do.
       return;
     }
