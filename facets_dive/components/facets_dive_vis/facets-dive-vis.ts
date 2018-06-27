@@ -760,6 +760,12 @@ class FacetsDiveVizInternal {
   lastAtlasUrl: string;
 
   /**
+   * Flag to signal that a change is already being processed, and other
+   * handlers should ignore it.
+   */
+  ignoreChange: boolean;
+
+  /**
    * Capture Polymer element instance and prep internal state.
    */
   constructor(public elem: FacetsDiveVis) {
@@ -1948,6 +1954,8 @@ class FacetsDiveVizInternal {
     }
     this.lastAtlasUrl = atlasUrl;
 
+    this.resetSpritesToDefaultTexture();
+
     this.spriteMesh.spriteAtlas.setAtlasUrl(
         atlasUrl, this.elem.crossOrigin, () => {
           const data = this.elem.data;
@@ -1958,7 +1966,10 @@ class FacetsDiveVizInternal {
           }
           this.renderUntil(future);
 
+          this.ignoreChange = true;
           this.elem.set('imageFieldName', '');
+          delete this.ignoreChange;
+
           if (this.autoColorBy) {
             this.autoColorBy = false;
             this.elem.set('colorBy', '');
@@ -2463,14 +2474,10 @@ class FacetsDiveVizInternal {
   }
 
   /**
-   * When the selected field for rendering text has changed, start jobs to
-   * render the text.
+   * Cancel any outstanding queued atlas draw jobs and transition sprites back
+   * to the default texture.
    */
-  updateImageFieldName() {
-    if (!this.grid) {
-      return;
-    }
-
+  resetSpritesToDefaultTexture() {
     const items = this.grid.items as GridItem[];
 
     // Cancel any outstanding queued draw jobs.
@@ -2486,6 +2493,18 @@ class FacetsDiveVizInternal {
       }
     }
     this.renderUntil(future);
+  }
+
+  /**
+   * When the selected field for rendering text has changed, start jobs to
+   * render the text.
+   */
+  updateImageFieldName() {
+    if (this.ignoreChange || !this.grid) {
+      return;
+    }
+
+    this.resetSpritesToDefaultTexture();
 
     // Short-circuit and default to atlas image if a field hasn't been selected.
     const imageFieldName = this.elem.imageFieldName;
@@ -2500,6 +2519,7 @@ class FacetsDiveVizInternal {
     }
 
     // Queue a draw job for each sprite.
+    const items = this.grid.items as GridItem[];
     for (let i = 0; i < items.length; i++) {
       const {sprite, data} = items[i];
 
