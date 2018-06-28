@@ -65,7 +65,7 @@ export const CELL_BACKGROUND_FILL_COLOR = '#f8f8f9';
 /**
  * Color for selected item borders.
  */
-const SELECTED_ITEM_COLOR = '#ff0000';
+const SELECTED_ITEM_COLOR = '#da7421';
 
 /**
  * Stroke width for the selected item borders.
@@ -819,7 +819,7 @@ class FacetsDiveVizInternal {
 
     // Create and attach zoom behavior to element.
     this.zoom =
-        d3.zoom().scaleExtent([.01, 1000]).on('zoom', this.zoomed.bind(this));
+        d3.zoom().scaleExtent([1, 500]).on('zoom', this.zoomed.bind(this));
     d3.select(this.elem).call(this.zoom);
 
     // Insert background SVG used for labels and axes.
