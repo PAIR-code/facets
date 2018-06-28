@@ -750,11 +750,6 @@ class FacetsDiveVizInternal {
   horizontalFacetInfo: FacetingInfo|null;
 
   /**
-   * Text drawing field picked by default. Only performed once.
-   */
-  pickedTextDrawingField: string;
-
-  /**
    * Timer handle returned by setTimeout() for debouncing atlasUrl changes.
    */
   atlasUrlChangeTimer: number;
@@ -763,6 +758,12 @@ class FacetsDiveVizInternal {
    * The last atlas URL that was used.
    */
   lastAtlasUrl: string;
+
+  /**
+   * Flag to signal that a change is already being processed, and other
+   * handlers should ignore it.
+   */
+  ignoreChange: boolean;
 
   /**
    * Capture Polymer element instance and prep internal state.
@@ -1733,29 +1734,45 @@ class FacetsDiveVizInternal {
     // Produce stats for data.
     this.stats = getStats(data);
 
-    if (this.items) {
-      this.updateDataChange();
+    if (!this.items) {
+      // Since this is the very first time that data is available, select nice
+      // looking fields to color by and render text labels.
+      this.initializeSpriteMesh();
+      this.pickColorByField();
+      this.pickTextDrawingField();
+    } else if (this.items.length !== data.length) {
+      // This is an update in which the number of data points has changed, so
+      // reinitialize the spriteMesh and redraw the image content if any.
+      this.initializeSpriteMesh();
+      this.updateImageFieldName();
     } else {
-      this.initialDataChange();
+      // Number of data items is unchanged, just update each item's data.
+      for (let i = 0; i < data.length; i++) {
+        this.items[i].data = data[i];
+      }
     }
+
+    this.updateGridFaceting();
+    this.updateGridItemPositions();
+    this.updateColors();
   }
 
   /**
-   * Handle the initial setting of the data array. This will destroy the
-   * spriteMesh if already present and replace with a new one.
+   * Set up the spriteMesh to accomodate data. This will destroy the existing
+   * spriteMesh if present.
    */
-  initialDataChange() {
-    const data = this.elem.data;
-    const itemCount = data.length;
-    const spriteImageWidth = this.elem.spriteImageWidth;
-    const spriteImageHeight = this.elem.spriteImageHeight;
-    const spriteAspectRatio = spriteImageWidth / spriteImageHeight;
-
+  initializeSpriteMesh() {
     if (this.spriteMesh) {
       this.scene.remove(this.spriteMesh);
       this.spriteMesh.spriteAtlas.clearQueues();  // Abort outstanding draws.
       delete this.spriteMesh;
     }
+
+    const data = this.elem.data;
+    const itemCount = data.length;
+    const spriteImageWidth = this.elem.spriteImageWidth;
+    const spriteImageHeight = this.elem.spriteImageHeight;
+    const spriteAspectRatio = spriteImageWidth / spriteImageHeight;
 
     this.spriteMesh =
         new SpriteMesh(itemCount, spriteImageWidth, spriteImageHeight);
@@ -1789,43 +1806,6 @@ class FacetsDiveVizInternal {
       item.sprite.timestamp = now + this.elem.tweenDuration;
       this.renderUntil(item.sprite.timestamp);
     };
-
-    this.updateGridFaceting();
-    this.updateGridItemPositions();
-
-    // If a colorBy field hasn't already been specified, pick a good one.
-    if (!this.elem.colorBy) {
-      this.pickColorByField();
-    }
-
-    // If an image backing field hasn't already been specified, pick a good one.
-    if (!this.elem.imageFieldName) {
-      this.pickTextDrawingField();
-    }
-  }
-
-  /**
-   * Handle updates to the data after the initial data change..
-   */
-  updateDataChange() {
-
-    const data = this.elem.data;
-
-    // Compare length of data with this.items. If unequal, remove the old
-    // spriteMesh and reinitialize.
-    if (data.length !== this.items.length) {
-      return this.initialDataChange();
-    }
-
-    // Update items' data.
-    for (let i = 0; i < data.length; i++) {
-      this.items[i].data = data[i];
-    }
-
-    this.updateGridFaceting();
-    this.updateGridItemPositions();
-
-    this.updateColors();
   }
 
   /**
@@ -1918,9 +1898,6 @@ class FacetsDiveVizInternal {
    * on the sprites.
    */
   pickTextDrawingField() {
-    if (this.pickedTextDrawingField !== undefined) {
-      return;
-    }
     let bestFieldName = '';
     let bestFieldScore = -Infinity;
 
@@ -1938,7 +1915,6 @@ class FacetsDiveVizInternal {
       }
     }
 
-    this.pickedTextDrawingField = bestFieldName;
     if (isFinite(bestFieldScore) && bestFieldName in this.stats) {
       this.elem.set('imageFieldName', bestFieldName);
     }
@@ -1965,40 +1941,40 @@ class FacetsDiveVizInternal {
     clearTimeout(this.atlasUrlChangeTimer);
     delete this.atlasUrlChangeTimer;
 
-    const atlasUrl = this.elem.atlasUrl;
+    // TODO(jimbo): Less hacky way of dealing with out-of-order calls.
+    if (!this.spriteMesh) {
+      requestAnimationFrame(this.atlasUrlChange.bind(this));
+      return;
+    }
 
-    if (atlasUrl === this.lastAtlasUrl) {
+    const atlasUrl = this.elem.atlasUrl;
+    if (!atlasUrl || !atlasUrl.length || atlasUrl === this.lastAtlasUrl) {
       // Nothing to do.
       return;
     }
     this.lastAtlasUrl = atlasUrl;
 
-    if (!atlasUrl) {
-      this.pickTextDrawingField();
-      return;
-    }
+    this.resetSpritesToDefaultTexture();
 
-    // TODO(jimbo): Less hacky way of dealing with out-of-order calls.
-    if (this.spriteMesh) {
-      this.spriteMesh.spriteAtlas.setAtlasUrl(
-          atlasUrl, this.elem.crossOrigin, () => {
-            const data = this.elem.data;
-            const now = Date.now();
-            const future = now + this.elem.fadeDuration;
-            for (let i = 0; data && i < data.length; i++) {
-              this.spriteMesh.switchTextures(i, now, future);
-            }
-            this.renderUntil(future);
+    this.spriteMesh.spriteAtlas.setAtlasUrl(
+        atlasUrl, this.elem.crossOrigin, () => {
+          const data = this.elem.data;
+          const now = Date.now();
+          const future = now + this.elem.fadeDuration;
+          for (let i = 0; data && i < data.length; i++) {
+            this.spriteMesh.switchTextures(i, now, future);
+          }
+          this.renderUntil(future);
 
-            this.elem.set('imageFieldName', '');
-            if (this.autoColorBy) {
-              this.autoColorBy = false;
-              this.elem.set('colorBy', '');
-            }
-          });
-    } else {
-      requestAnimationFrame(this.atlasUrlChange.bind(this));
-    }
+          this.ignoreChange = true;
+          this.elem.set('imageFieldName', '');
+          delete this.ignoreChange;
+
+          if (this.autoColorBy) {
+            this.autoColorBy = false;
+            this.elem.set('colorBy', '');
+          }
+        });
   }
 
   /**
@@ -2498,14 +2474,10 @@ class FacetsDiveVizInternal {
   }
 
   /**
-   * When the selected field for rendering text has changed, start jobs to
-   * render the text.
+   * Cancel any outstanding queued atlas draw jobs and transition sprites back
+   * to the default texture.
    */
-  updateImageFieldName() {
-    if (!this.grid) {
-      return;
-    }
-
+  resetSpritesToDefaultTexture() {
     const items = this.grid.items as GridItem[];
 
     // Cancel any outstanding queued draw jobs.
@@ -2521,16 +2493,33 @@ class FacetsDiveVizInternal {
       }
     }
     this.renderUntil(future);
+  }
+
+  /**
+   * When the selected field for rendering text has changed, start jobs to
+   * render the text.
+   */
+  updateImageFieldName() {
+    if (this.ignoreChange || !this.grid) {
+      return;
+    }
+
+    this.resetSpritesToDefaultTexture();
 
     // Short-circuit and default to atlas image if a field hasn't been selected.
     const imageFieldName = this.elem.imageFieldName;
     if (!(imageFieldName in this.stats)) {
+      // Forget any previously set atlas URL since it would need to be redrawn.
+      delete this.lastAtlasUrl;
+
       // Treat default image field as an atlas URL change.
-      this.atlasUrlChange();
+      this.queueAtlasUrlChange();
+
       return;
     }
 
     // Queue a draw job for each sprite.
+    const items = this.grid.items as GridItem[];
     for (let i = 0; i < items.length; i++) {
       const {sprite, data} = items[i];
 
