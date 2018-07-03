@@ -21,6 +21,31 @@ LOCATION_URL = 'url'
 LOCATION_GFILE = 'gfile'
 
 
+def create_output_dir_if_not_exist(dirpath, testfile_name='testfile'):
+  """Ensure output dir exists and can be written to.
+
+  If dir doesn't exist, attempts to create it. Writes and deletes a test file to
+  confirm we have write permissions.
+
+  Args:
+    dirpath: local directory path.
+
+  Raises:
+    OSError: Directory can't be created.
+    IOError: Test file can't be written.
+  """
+  if not os.path.isdir(dirpath):
+    logging.info('Output dir %s doesn\'t exist, so attempting to create it.'
+                 % dirpath)
+    os.makedirs(dirpath)
+
+  with open(os.path.join(dirpath, testfile_name), 'w') as testfile:
+    testfile.write('')
+    logging.debug('Successfully wrote test file to output dir.')
+  os.remove(os.path.join(dirpath, testfile_name))
+  logging.info('Confirmed we have permissions to write to output dir.')
+
+
 def read_src_list_csvfile(filepath):
   """Read source list from csv file.
 

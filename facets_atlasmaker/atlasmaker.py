@@ -19,7 +19,7 @@ import parallelize
 _DEFAULT_COLOR_RGB = [0, 0, 0]
 
 FLAGS = flags.FLAGS
-flags.DEFINE_integer('max_failures', 0,
+flags.DEFINE_integer('max_failures', None,
                      'Max number of images that can fail retrieval and '
                      'conversion before atlasmaker aborts.')
 flags.DEFINE_string('sourcelist', None,
@@ -34,7 +34,8 @@ flags.DEFINE_string('default_error_image',
 flags.DEFINE_string('output_dir', None,
                     'Output location where final sprite atlas and manifest '
                     'will be written. If not specified, it will write to the '
-                    'existing directory.')
+                    'existing directory. If directory doesn\'t exist, will '
+                    'attempt to create it.')
 # Atlas settings
 flags.DEFINE_integer('atlas_width', None,
                      'Desired width for each atlas (number of images).')
@@ -108,7 +109,7 @@ def _determine_bg_rgb():
 def main(argv):
   del argv  # Unused.
   # TODO: Add more flag validations.
-  if FLAGS.max_failures > 0:
+  if FLAGS.max_failures is not None and FLAGS.max_failures > 0:
     raise NotImplementedError(
         'Does not yet handle image retrieval/conversion '
         'failures')
@@ -147,6 +148,9 @@ def main(argv):
       opacity=FLAGS.image_opacity,
       preserve_aspect_ratio=FLAGS.keep_aspect_ratio,
       resize_if_larger=FLAGS.resize_if_larger)
+
+  # Ensure we can write to the output dir, or fail fast.
+  atlasmaker_io.create_output_dir_if_not_exist(FLAGS.output_dir)
 
   # Create default image to be used for images that we can't get or convert.
   if FLAGS.default_image_path is not None:
