@@ -103,6 +103,17 @@ resize original image, cropping as necessary.
 that were resized and now don't fill the entire output sprite as well as for locations on the atlas 
 with no images) via a color name or RGB value, such as 'geen' or '255,255,0'.
 
+## Reading the Manifest
+
+The manifest provides you a comprehensive list of all the images contained in the Atlas, their
+positions in the Atlas (as the location of each image's left corner in relation to (x, y) pixel
+offsets from the top left Atlas corner), and any failure statuses.
+
+Some things to know:
+* Each line is a JSON object representing metadata about a single image.
+* Any images that failed retrieval/conversion and were replaced by a default image will have an
+'error' key with its associated failure message as value.
+
 ## For Developers
 
 ### pylint

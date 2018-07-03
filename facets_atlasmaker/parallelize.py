@@ -3,12 +3,13 @@
 from absl import logging
 from joblib import Parallel, delayed
 from PIL.Image import DecompressionBombError
+from PIL import ImageFile
 import atlasmaker_io
 import convert
 
 
 def get_and_convert_image(image_location, image_convert_settings,
-                          disk_cache=False):
+                          allow_truncated_images=False, disk_cache=False):
   """Wrapper method that retrieves and converts one image.
 
   If run all in-memory (i.e., no disk spill), then returns PIL Image object.
@@ -17,33 +18,50 @@ def get_and_convert_image(image_location, image_convert_settings,
   Args:
     image_location: Image path from the input list of locations.
     image_convert_settings: ImageConvertSettings object.
+    allow_truncated_images: If True, PIL will be tolerant of truncated image
+                            files and load/process them. Note that this isn't
+                            supported on old versions on PIL, just pillow.
+    disk_cache: Store intermediary image objects to disk. Not supported yet.
 
   Returns:
-    Image object or None if fails.
+    A tuple (Image object or None if fails, status message string). Status
+    message string will be empty if success, or error message if failure.
 
-  Raises:
-    IOError: error retrieving image file.
+  Exceptions handled:
+    IOError: error retrieving image file, or truncated image file.
     DecompressionBombError: Image is too large (>0.5G). See PIL documentation
                             for instructions on setting a higher threshold.
   """
+  if disk_cache:
+    raise NotImplementedError()
+
+  if allow_truncated_images:
+    try:
+      ImageFile.LOAD_TRUNCATED_IMAGES = True
+    except AttributeError as e:
+      logging.warning('Are you using PILLOW and not a very old version of PIL? '
+                      'Unable to force load of truncated image files: %s', e)
+
   try:
     src_image = atlasmaker_io.get_image(image_location)
   except (IOError, DecompressionBombError) as e:
     logging.error('Retrieval of file %s failed with error: %s',
                   image_location, e)
-    return None
+    return None, str(e)
 
-  if disk_cache:
-    raise NotImplementedError()
-
-  image_converter = convert.ImageConverter(src_image, image_convert_settings)
-  logging.debug('Successfully converted image: %s' % image_location)
-  return image_converter.convert()
+  try:
+    image_converter = convert.ImageConverter(src_image, image_convert_settings)
+    logging.debug('Successfully converted image: %s' % image_location)
+    return image_converter.convert(), ''
+  except IOError as e:
+    logging.error('Conversion of file %s failed with error: %s',
+                  image_location, e)
+    return None, str(e)
 
 
 def get_and_convert_images_parallel(image_src_locations, image_convert_settings,
                                     n_jobs=-1, disk_cache=False, threads=False,
-                                    verbose=10):
+                                    verbose=10, allow_truncated_images=False):
   """Parallelize retrieving and converting image tasks.
 
   Args:
@@ -52,9 +70,13 @@ def get_and_convert_images_parallel(image_src_locations, image_convert_settings,
     disk_cache:: If True, will cache converted images to disk.
     threads: If true, use threads instead of processes.
     verbose: verbosity level for parallel. See joblib.Parallel documentation.
+    allow_truncated_images: If True, PIL will be tolerant of truncated image
+                            files and load/process them. Note that this isn't
+                            supported on old versions on PIL, just pillow.
 
   Returns:
-    List of converted Image objects.
+    List of tuples, where each tuple contains
+    (converted Image object or None, status/error message string).
   """
   logging.info('Parallelizing with setting %d jobs' % n_jobs)
 
@@ -63,10 +85,11 @@ def get_and_convert_images_parallel(image_src_locations, image_convert_settings,
     logging.debug('Parallelizing using threads.')
     backend = 'threading'
 
-  # TODO: Should have some flag to signify if image retrieval failed.
   outputs = Parallel(n_jobs=n_jobs, backend=backend, verbose=verbose)(
       delayed(get_and_convert_image)(
-          location, image_convert_settings, disk_cache)
+          location, image_convert_settings,
+          allow_truncated_images=allow_truncated_images,
+          disk_cache=disk_cache)
       for location in image_src_locations)
 
   return outputs
@@ -79,8 +102,9 @@ def convert_default_image(image_location, image_convert_settings):
     image_location: Path or URL of image.
     image_convert_settings: ImageConvertSettings object.
   """
-  default_img = get_and_convert_image(
+  default_img, status = get_and_convert_image(
       image_location, image_convert_settings=image_convert_settings)
+  del status  # linter.
   if default_img is None:
     raise IOError('Unable to retrive and convert default image.')
   return default_img

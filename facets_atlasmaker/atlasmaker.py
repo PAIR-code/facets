@@ -48,10 +48,6 @@ flags.DEFINE_string('default_image_path', None,
                     'If not specified, we\'ll use the specified background '
                     'color and opacity')
 
-# Single image conversion.
-flags.DEFINE_bool('single_image_conversion', False, 'Used for testing single '
-                                                    'image conversion.')
-
 # Image settings
 flags.DEFINE_string('image_format', 'png',
                     'Desired image output format. For a list of fully '
@@ -69,6 +65,9 @@ flags.DEFINE_integer('image_opacity', 0,
 flags.DEFINE_bool('resize_if_larger', False,
                   'Resize image larger if desired size is larger than source '
                   'image')
+flags.DEFINE_bool('use_truncated_images', False,
+                  'If true, PIL will attempt to load and process truncated '
+                  'images')
 
 flags.mark_flag_as_required('image_width')
 flags.mark_flag_as_required('image_height')
@@ -127,13 +126,9 @@ def main(argv):
   if outputdir is None:
     outputdir = os.path.join(os.getcwd())
 
-  if FLAGS.single_image_conversion:
-    # TODO: Support conversion of a single image as well as creating atlas.
-    raise NotImplementedError('Single image conversion is not yet supported.')
-
   image_source_list = atlasmaker_io.read_src_list_csvfile(FLAGS.sourcelist)
 
-  # Print out some useful logging info.
+  # Provide some useful confirmation info about settings to user.
   logging.info('Desired output size in pixels width, height for each image is: '
                '(%d, %d)' % (FLAGS.image_width, FLAGS.image_height))
   logging.info('Image format for Atlas is: %s' % FLAGS.image_format)
@@ -149,7 +144,7 @@ def main(argv):
       preserve_aspect_ratio=FLAGS.keep_aspect_ratio,
       resize_if_larger=FLAGS.resize_if_larger)
 
-  # Ensure we can write to the output dir, or fail fast.
+  # Ensure we can write to the output dir or fail fast.
   atlasmaker_io.create_output_dir_if_not_exist(FLAGS.output_dir)
 
   # Create default image to be used for images that we can't get or convert.
@@ -163,16 +158,18 @@ def main(argv):
                  'using the background as the default image.')
     default_img = convert.create_default_image(image_convert_settings)
 
-  converted_images = parallelize.get_and_convert_images_parallel(
+  converted_images_with_statuses = parallelize.get_and_convert_images_parallel(
       image_source_list, image_convert_settings,
-      n_jobs=FLAGS.num_parallel_jobs, verbose=FLAGS.parallelization_verbosity)
+      n_jobs=FLAGS.num_parallel_jobs, verbose=FLAGS.parallelization_verbosity,
+      allow_truncated_images=FLAGS.use_truncated_images)
 
   sprite_atlas_settings = montage.SpriteAtlasSettings(
       img_format=FLAGS.image_format, height=FLAGS.atlas_height,
       width=FLAGS.atlas_width)
 
   sprite_atlas_generator = montage.SpriteAtlasGenerator(
-      images=converted_images, img_src_paths=image_source_list,
+      images_with_statuses=converted_images_with_statuses,
+      img_src_paths=image_source_list,
       atlas_settings=sprite_atlas_settings, default_img=default_img)
 
   atlases, manifests = sprite_atlas_generator.create_atlas()

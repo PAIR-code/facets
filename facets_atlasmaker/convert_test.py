@@ -3,10 +3,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
 from absl.testing import absltest
 from PIL import Image
 from PIL import ImageColor
 import convert
+
+TESTDATA_DIR = 'testdata'
 
 
 class ImageConvertSettingsTests(absltest.TestCase):
@@ -54,6 +57,8 @@ class TestImageConverterTests(absltest.TestCase):
   """Test image conversion outputs."""
 
   def setUp(self):
+    self.testdata_dir = os.path.join(os.getcwd(), TESTDATA_DIR)
+
     self.desired_width = 100
     self.desired_height = 100
     self.conversion_settings = convert.ImageConvertSettings(
@@ -135,7 +140,7 @@ class TestImageConverterTests(absltest.TestCase):
     # Right edge of image should be background color
     self.assertEqual(converted_img.getpixel((45, 99))[0:3], self.blue_rgb)
 
-  def testConvertResizedSmallPositionRightKeepRatio(self):
+  def testConvertSmallerRightPosKeepRatio(self):
     # Same as above but we specify that the position remains in the right.
     # Verify that for an original red rectangular (vertically long image),
     # after conversion to a square size with blue background the output image
@@ -164,7 +169,7 @@ class TestImageConverterTests(absltest.TestCase):
     self.assertEqual(converted_img.getpixel((90, 0))[0:3], self.red_rgb)
     self.assertEqual(converted_img.getpixel((89, 0))[0:3], self.blue_rgb)
 
-  def testConvertReturnsCorrectSizeResizedSmallIgnoreRatio(self):
+  def testConvertSmallerIgnoreRatio(self):
     # Test resize image to smaller sprite without retaining aspect ratio.
     # Simply verifies correct size output.
     conversion_settings = convert.ImageConvertSettings(
@@ -210,7 +215,7 @@ class TestImageConverterTests(absltest.TestCase):
     self.assertEqual(converted_img.getpixel((50, 50))[0:3], self.green_rgb)
     self.assertEqual(converted_img.getpixel((49, 50))[0:3], self.yellow_rgb)
 
-  def testConvertResizedSmallIgnoreRatioCropTopLeftSameAspectRatio(self):
+  def testConvertSmallerIgnoreRatioCropTopLeftSameAspectRatio(self):
     # Verify that we get the desired output image when cropping from left.
     # In this case, since the output image's aspect ratio is same as the input
     # image's aspect ratio, we're able to crop it correctly and keep the same
@@ -245,7 +250,7 @@ class TestImageConverterTests(absltest.TestCase):
     self.assertEqual(converted_img.getpixel((50, 50))[0:3], self.green_rgb)
     self.assertEqual(converted_img.getpixel((49, 50))[0:3], self.yellow_rgb)
 
-  def testConvertResizedSmallIgnoreRatioCropTopLeftDifAspectRatio(self):
+  def testConvertSmallerIgnoreRatioCropTopLeftNoAspectRatio(self):
     # Verify that we get the desired output image when cropping from top left.
     # In this case, the aspect ratio of the output image is different than
     # that of the orig image so cropping occurs.
@@ -275,7 +280,7 @@ class TestImageConverterTests(absltest.TestCase):
     # Bottom left should be yellow
     self.assertEqual(converted_img.getpixel((0, 199))[0:3], self.yellow_rgb)
 
-  def testConvertCorrectSizeResizedLargerKeepAspectRatio(
+  def testConvertResizedLargerKeepAspectRatio(
       self):
     conversion_settings = convert.ImageConvertSettings(
         'png', self.desired_width, self.desired_height, resize_if_larger=True,
@@ -330,6 +335,32 @@ class TestImageConverterTests(absltest.TestCase):
 
     self.assertEqual(converted_img.size,
                      (self.desired_width, self.desired_height))
+
+  def testConvertTruncatedImage(self):
+    # Should fail with a message that image is truncated.
+    # To test image truncation, we actually need to write a file to disk.
+    img_filepath = os.path.join(self.testdata_dir, 'test_img.png')
+
+    try:
+      orig_img = Image.new('RGBA', (500, 500), self.orange_rgb)
+      orig_img.save(img_filepath)
+      filesize = os.path.getsize(img_filepath)
+
+      with open(img_filepath, 'r+') as img_on_disk:
+        img_on_disk.truncate(filesize - 100)
+      img_truncated = Image.open(img_filepath)
+
+      image_converter = convert.ImageConverter(img_truncated,
+                                               self.conversion_settings)
+      with self.assertRaises(IOError) as e:
+        image_converter.convert()
+      self.assertTrue('truncated' in str(e.exception).lower())
+    except:
+      raise
+    finally:
+      # Cleanup.
+      if os.path.isfile(img_filepath):
+        os.remove(img_filepath)
 
 
 class TestImageConverterHelpersTests(absltest.TestCase):
