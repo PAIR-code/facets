@@ -25,6 +25,10 @@ flags.DEFINE_integer('max_failures', None,
 flags.DEFINE_string('sourcelist', None,
                     'Full path to csv file that lists source images. Each line '
                     'should contain the path to an image.')
+flags.DEFINE_enum('sourcelist_dups_handling', 'ignore',
+                  ['ignore', 'fail', 'unique'],
+                  'What action to take if duplicate image locations are found '
+                  'in the source list.')
 flags.DEFINE_string('default_error_image',
                     None,
                     'Path to image that should be used if desired image fails '
@@ -69,6 +73,7 @@ flags.DEFINE_bool('use_truncated_images', False,
                   'If true, PIL will attempt to load and process truncated '
                   'images')
 
+flags.mark_flag_as_required('output_dir')
 flags.mark_flag_as_required('image_width')
 flags.mark_flag_as_required('image_height')
 
@@ -126,7 +131,8 @@ def main(argv):
   if outputdir is None:
     outputdir = os.path.join(os.getcwd())
 
-  image_source_list = atlasmaker_io.read_src_list_csvfile(FLAGS.sourcelist)
+  image_source_list = atlasmaker_io.read_src_list_csvfile(
+      FLAGS.sourcelist, FLAGS.sourcelist_dups_handling)
 
   # Provide some useful confirmation info about settings to user.
   logging.info('Desired output size in pixels width, height for each image is: '

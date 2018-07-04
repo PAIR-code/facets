@@ -46,7 +46,52 @@ def create_output_dir_if_not_exist(dirpath, testfile_name='testfile'):
   logging.info('Confirmed we have permissions to write to output dir.')
 
 
-def read_src_list_csvfile(filepath):
+def _check_src_list_dups(locations, handle_dups='ignore'):
+  """Check source list for duplicate source image locations.
+
+  If dups are found, either ignore with warning, don't use duplicates (take the
+  first one encountered), or fail.
+
+  Args:
+    locations: List of source image locations.
+    handle_dups: One of the following strings: ignore, fail, unique.
+
+  Returns:
+    List of file locations.
+  """
+  ingore = 'ignore'
+  fail = 'fail'
+  unique = 'unique'
+
+  if handle_dups not in [ingore, fail, unique]:
+    raise ValueError('Unknown action for handling dups in source list.')
+
+  if len(locations) == len(set(locations)):
+    logging.debug('No duplicates in source list.')
+    return locations
+
+  uniques = []
+  dups = set()
+  seen = set()
+
+  for location in locations:
+    if location not in seen:
+      uniques.append(location)
+      seen.add(location)
+    else:
+      dups.add(location)
+
+  if handle_dups == fail:
+    raise ValueError('Found duplicates in source list: %s' % ', '.join(dups))
+  logging.warn('Found the following duplicates in source list: %s' % ', '.join(dups))
+  if handle_dups == unique:
+    logging.info('Found duplicates but only using unique entries in image '
+                 'source list')
+    return uniques
+  return locations
+
+
+def read_src_list_csvfile(filepath, handle_dups='ignore'):
   """Read source list from csv file.
 
   Each line should contain the location of a source image file.
@@ -57,10 +102,10 @@ def read_src_list_csvfile(filepath):
   logging.debug('Reading images list from %s.' % filepath)
   try:
     with tf.gfile.GFile(filepath) as input_file:
-      return input_file.read().splitlines()
+      return _check_src_list_dups(input_file.read().splitlines(), handle_dups)
   except NameError:
     with open(filepath) as input_file:
-      return input_file.read().splitlines()
+      return _check_src_list_dups(input_file.read().splitlines(), handle_dups)
 
 
 def get_image(location, request_timeout=60):

@@ -7,7 +7,7 @@ from PIL import Image
 
 # Manifest Key names
 MANIFEST_IMAGE_NAME_KEY = 'image_name'
-MANIFEST_SOURCE_IMAGE_KEY = 'source image'
+MANIFEST_SOURCE_IMAGE_KEY = 'source_image'
 MANIFEST_OFFSET_X_KEY = 'offset_x'
 MANIFEST_OFFSET_Y_KEY = 'offset_y'
 MANIFEST_IMAGE_FAIL_KEY = 'errors'

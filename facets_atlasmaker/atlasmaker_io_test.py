@@ -60,6 +60,7 @@ class AtlasmakerIOTests(absltest.TestCase):
           atlasmaker_io.create_output_dir_if_not_exist(full_testdir_path)
 
   def testReadSrcListCsvfile(self):
+    # Test file only contains unique entries
     expected = ['https://www.wikipedia/image1.png',
                 'http://www.wordpress/testimage1.png',
                 'http://www.npr.org/myimageA.jpg']
@@ -67,6 +68,36 @@ class AtlasmakerIOTests(absltest.TestCase):
 
     self.assertSameElements(atlasmaker_io.read_src_list_csvfile(testfile),
                             expected)
+
+  def testReadSrcListCsvfileIgnoreDups(self):
+    expected = ['https://www.wikipedia/image1.png',
+                'http://www.wordpress/testimage1.png',
+                'http://www.wordpress/testimage1.png',
+                'http://www.npr.org/myimageA.jpg',
+                'https://www.wikipedia/image1.png']
+    testfile = os.path.join(self.testdata_dir,
+                            'testfiles_smalllist_with_dups.csv')
+
+    self.assertSameElements(atlasmaker_io.read_src_list_csvfile(testfile),
+                            expected)
+
+  def testReadSrcListCsvfileFailWhenDups(self):
+    testfile = os.path.join(self.testdata_dir,
+                            'testfiles_smalllist_with_dups.csv')
+
+    with self.assertRaises(ValueError):
+      atlasmaker_io.read_src_list_csvfile(testfile, handle_dups='fail')
+
+  def testReadSrcListCsvfileDupsReturnUniques(self):
+    expected = ['https://www.wikipedia/image1.png',
+                'http://www.wordpress/testimage1.png',
+                'http://www.npr.org/myimageA.jpg']
+    testfile = os.path.join(self.testdata_dir,
+                            'testfiles_smalllist_with_dups.csv')
+
+    self.assertSameElements(
+        atlasmaker_io.read_src_list_csvfile(testfile, handle_dups='unique'),
+        expected)
 
   def testGetImageFromLocalFile(self):
     testfile = os.path.join(self.testdata_dir, 'Googleplex-Patio-Aug-2014.JPG')

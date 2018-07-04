@@ -135,13 +135,13 @@ class SpriteAtlasGeneratorTests(absltest.TestCase):
     source_images_with_statuses = [(Image.new('RGBA', (50, 30)), '')] * 4
     source_paths = ['/some/path/file' + str(i) + '.jpg' for i in range(0, 4)]
     expected_manifest = [
-        {'source image': '/some/path/file0.jpg', 'offset_x': 0,
+        {'source_image': '/some/path/file0.jpg', 'offset_x': 0,
          'image_name': 'file0.jpg', 'offset_y': 0},
-        {'source image': '/some/path/file1.jpg', 'offset_x': 50,
+        {'source_image': '/some/path/file1.jpg', 'offset_x': 50,
          'image_name': 'file1.jpg', 'offset_y': 0},
-        {'source image': '/some/path/file2.jpg', 'offset_x': 0,
+        {'source_image': '/some/path/file2.jpg', 'offset_x': 0,
          'image_name': 'file2.jpg', 'offset_y': 30},
-        {'source image': '/some/path/file3.jpg', 'offset_x': 50,
+        {'source_image': '/some/path/file3.jpg', 'offset_x': 50,
          'image_name': 'file3.jpg', 'offset_y': 30}]
 
     atlas_generator = montage.SpriteAtlasGenerator(
@@ -160,13 +160,13 @@ class SpriteAtlasGeneratorTests(absltest.TestCase):
         Image.new('RGBA', (50, 30)), '')] * 3 + [(None, 'Failure msg')]
     source_paths = ['/some/path/file' + str(i) + '.jpg' for i in range(0, 4)]
     expected_manifest = [
-        {'source image': '/some/path/file0.jpg', 'offset_x': 0,
+        {'source_image': '/some/path/file0.jpg', 'offset_x': 0,
          'image_name': 'file0.jpg', 'offset_y': 0},
-        {'source image': '/some/path/file1.jpg', 'offset_x': 50,
+        {'source_image': '/some/path/file1.jpg', 'offset_x': 50,
          'image_name': 'file1.jpg', 'offset_y': 0},
-        {'source image': '/some/path/file2.jpg', 'offset_x': 0,
+        {'source_image': '/some/path/file2.jpg', 'offset_x': 0,
          'image_name': 'file2.jpg', 'offset_y': 30},
-        {'source image': '/some/path/file3.jpg', 'offset_x': 50,
+        {'source_image': '/some/path/file3.jpg', 'offset_x': 50,
          'image_name': 'file3.jpg', 'offset_y': 30, 'errors': 'Failure msg'}]
 
     atlas_generator = montage.SpriteAtlasGenerator(
