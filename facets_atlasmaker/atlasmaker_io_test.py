@@ -138,6 +138,38 @@ class AtlasmakerIOTests(absltest.TestCase):
                                          stream=True, timeout=30)
     self.assertEqual(output_img.size, (200, 200))
 
+  def testSaveImageJpegDontDelete(self):
+    # Verify we can output to jpeg despite using RGBA.
+    output_file = os.path.join(self.testdata_dir, 'testfile.jpg')
+    img = Image.new('RGBA', (50, 50))
+
+    try:
+      atlasmaker_io.save_image(img=img, outpath=output_file)
+      output_img = Image.open(output_file)
+      self.assertEqual(output_img.size, (50, 50))
+    except:
+      raise
+    finally:
+      # Cleanup.
+      if os.path.isfile(output_file):
+        os.remove(output_file)
+
+  def testSaveImageJpegAndDelete(self):
+    # Verify we can output to jpeg despite using RGBA and it gets deleted.
+    output_file = os.path.join(self.testdata_dir, 'testfile.jpg')
+    img = Image.new('RGBA', (50, 50))
+
+    try:
+      atlasmaker_io.save_image(img=img, outpath=output_file,
+                               delete_after_write=True)
+      self.assertFalse(os.path.isfile(output_file))
+    except:
+      raise
+    finally:
+      # Cleanup.
+      if os.path.isfile(output_file):
+        os.remove(output_file)
+
 
 if __name__ == '__main__':
   absltest.main()

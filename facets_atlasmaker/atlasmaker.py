@@ -16,7 +16,7 @@ import parallelize
 
 
 # DEFAULT settings
-_DEFAULT_COLOR_RGB = [0, 0, 0]
+_DEFAULT_COLOR_RGB = [255, 255, 255]
 
 FLAGS = flags.FLAGS
 flags.DEFINE_integer('max_failures', None,
@@ -164,6 +164,22 @@ def main(argv):
                  'using the background as the default image.')
     default_img = convert.create_default_image(image_convert_settings)
 
+  # Verify we can write the specified output format, or fail fast.
+  try:
+    testimage_file_name = '{}.{}'.format('testimage',
+                                         str(FLAGS.image_format).lower())
+    atlasmaker_io.save_image(
+        default_img, os.path.join(FLAGS.output_dir, testimage_file_name),
+        delete_after_write=False)
+    logging.info('Confirmed we can output images in %s format' %
+                 FLAGS.image_format)
+  except:
+    logging.error('Unable to write test image in desired output format. '
+                  'Please confirm that \'%s\' is a supported PIL output '
+                  'format.' % FLAGS.image_format)
+    raise
+
+  # Convert images in parallel.
   converted_images_with_statuses = parallelize.get_and_convert_images_parallel(
       image_source_list, image_convert_settings,
       n_jobs=FLAGS.num_parallel_jobs, verbose=FLAGS.parallelization_verbosity,
@@ -173,6 +189,7 @@ def main(argv):
       img_format=FLAGS.image_format, height=FLAGS.atlas_height,
       width=FLAGS.atlas_width)
 
+  # Generate the atlas from converted images.
   sprite_atlas_generator = montage.SpriteAtlasGenerator(
       images_with_statuses=converted_images_with_statuses,
       img_src_paths=image_source_list,

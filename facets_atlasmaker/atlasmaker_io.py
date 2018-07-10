@@ -137,7 +137,7 @@ def get_image(location, request_timeout=60):
 
 
 def save_atlas_and_manifests(outdir, atlases, manifests, sprite_atlas_settings):
-  """Write atlases and manifests to local file.
+  """Write atlases and manifests to local file. Handles multiple items.
 
   Args:
     outdir: full path to output directory
@@ -146,25 +146,63 @@ def save_atlas_and_manifests(outdir, atlases, manifests, sprite_atlas_settings):
     sprite_atlas_settings: SpriteAtlasSettings object.
   """
   if len(atlases) == 1:
-    atlases[0].save(os.path.join(
-        outdir,
-        sprite_atlas_settings.filename + '.' + str(
-            sprite_atlas_settings.img_format).lower()))
+    save_image(atlases[0],
+               os.path.join(
+                   outdir,
+                   # Filename with correct image format extension
+                   '{}.{}'.format(
+                       sprite_atlas_settings.filename,
+                       str(sprite_atlas_settings.img_format).lower())))
     _output_manifest(
         os.path.join(
             outdir, sprite_atlas_settings.manifest_filename + '.json'),
         manifests[0])
   else:
     for idx, atlas in enumerate(atlases):
-      atlas.save(os.path.join(
-          outdir,
-          sprite_atlas_settings.filename + str(idx) + '.' + str(
-              sprite_atlas_settings.img_format).lower()))
+      save_image(atlas,
+                 os.path.join(
+                     outdir,
+                     # Filename with correct image format extension
+                     '{}{}.{}'.format(
+                         sprite_atlas_settings.filename, str(idx),
+                         str(sprite_atlas_settings.img_format).lower())))
       _output_manifest(
           os.path.join(
               outdir,
               sprite_atlas_settings.manifest_filename + str(idx) + '.json'),
           manifests[idx])
+
+
+def save_image(img, outpath, delete_after_write=False):
+  """Save an image to file.
+
+   We are using RGBA by default, but not all types can use RGBA, such as JPEG,
+   so this handles conversions if needed.
+
+   For output format validation purposes, saving a test image to disk verifies
+   that the specified output format is supported by PIL, as there's no API to
+   verify that the image format string is allowed other than by attempting to
+   save the image.
+
+   Args:
+     img: PIL Image object.
+     outpath: Full output path for image along with image format extension.
+              E.g., /path/to/myimage.jpg
+     delete_after_write: If True, will delete the image after writing it. This
+                         should be used when writing a test image to disk to
+                         verify that PIL can actually output the specified image
+                         format.
+  """
+  try:
+    img.save(outpath)
+  except IOError:
+    logging.warn('Unable to save image as RGBA to desired output format. '
+                 'Converting to RGB and retrying.')
+    img.convert('RGB').save(outpath)
+    logging.info('Successfully saved image in RGB color space.')
+
+  if delete_after_write:
+    os.remove(outpath)
 
 
 def _output_manifest(filepath, manifest):
