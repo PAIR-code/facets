@@ -57,6 +57,20 @@ To enable use of these visualizations in Jupyter notebooks:
 Note: When visualizing a large amount of data, as is done in the [Dive demo Jupyter notebook](./facets_dive/Dive_demo.ipynb), you will need to start the notebook server with an increased IOPub data rate.
 This can be done with the command ```jupyter notebook --NotebookApp.iopub_data_rate_limit=10000000```.
 
+### Usage in Jupyter Notebooks with Docker
+
+Pre-built docker image for Facets is available.
+You can try Facets in the jupyter notebook software without the above installation.
+
+To use Facets in the jupyter notebook software with Docker:
+1. Install Docker and Chrome.
+2. Run
+ ```
+ docker run -d -p 8888:8888 kozo2/facets start-notebook.sh --NotebookApp.token='' --NotebookApp.iopub_data_rate_limit=10000000
+ ```
+3. Open [http://localhost:8888](http://localhost:8888) with Chrome. You should see the jupyter notebook software in the Chrome tab.
+4. Open `facets_overview/Overview_demo.ipynb` or `facets_dive/Dive_demo.ipynb` with the jupyter notebook software.
+
 ## Building the Visualizations
 
 If you make code changes to the visualization and would like to rebuild them for use in Jupyter notebooks, follow these directions:
