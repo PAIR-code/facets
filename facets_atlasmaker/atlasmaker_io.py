@@ -3,10 +3,12 @@
 import io
 import json
 import os
+import time
 from urlparse import urlparse
 from absl import logging
 from PIL import Image
 import requests
+from requests.exceptions import Timeout
 
 
 # Use TF gfile interface if available (for supporting more file types).
@@ -63,6 +65,8 @@ def _check_src_list_dups(locations, handle_dups='ignore'):
   fail = 'fail'
   unique = 'unique'
 
+  logging.info('Number of images listed in source list: %d' % len(locations))
+
   if handle_dups not in [ingore, fail, unique]:
     raise ValueError('Unknown action for handling dups in source list.')
 
@@ -85,8 +89,8 @@ def _check_src_list_dups(locations, handle_dups='ignore'):
     raise ValueError('Found duplicates in source list: %s' % ', '.join(dups))
   logging.warn('Found the following duplicates in source list: %s' % ', '.join(dups))
   if handle_dups == unique:
-    logging.info('Found duplicates but only using unique entries in image '
-                 'source list')
+    logging.info('Found duplicates but only using %d unique entries in image '
+                 'source list' % len(uniques))
     return uniques
   return locations
 
@@ -108,7 +112,8 @@ def read_src_list_csvfile(filepath, handle_dups='ignore'):
       return _check_src_list_dups(input_file.read().splitlines(), handle_dups)
 
 
-def get_image(location, request_timeout=60):
+def get_image(location, request_timeout=60, http_max_retries=2,
+              http_retry_interval=3):
   """Wrapper function that routes to appropriate utility to get image data.
 
   Args:
@@ -117,14 +122,35 @@ def get_image(location, request_timeout=60):
               supported in the future. If localfile, it should be the full path
               to the file.
     request_timeout: Timeout in seconds for file download.
+    http_max_retries: Max number of attempts we will try to retrive http images
+                      due to timeout errors.
+    http_retry_interval: Seconds to wait between retries.
 
   Returns:
     PIL Image object.
   """
-  # TODO: May need to explicitly close Images for performance reasons.
+  if http_max_retries < 1:
+    raise ValueError('Max retries must be 1 or greater.')
+  if http_retry_interval < 0:
+    raise ValueError('Retry interval must be 0 or more seconds.')
   if urlparse(location).scheme in ('http', 'https'):
     # File should be downloaded from URL.
-    # TODO: Handle retries if file download fails.
+
+    # Retry if we run into timeout errors, give up otherwise.
+    attempts = 0
+    while attempts < http_max_retries - 1:
+      try:
+        req = requests.get(location, stream=True, timeout=request_timeout)
+        image_data = io.BytesIO(req.raw.read())
+        return Image.open(image_data)
+      except Timeout:
+        logging.debug('Timeout error while retrieving image from URL. Waiting '
+                      '%d seconds before retrying' % http_retry_interval)
+        time.sleep(http_retry_interval)
+      except Exception:
+        raise
+      attempts += 1
+    # Final attempt
     req = requests.get(location, stream=True, timeout=request_timeout)
     image_data = io.BytesIO(req.raw.read())
     return Image.open(image_data)

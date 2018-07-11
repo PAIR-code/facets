@@ -40,6 +40,15 @@ flags.DEFINE_string('output_dir', None,
                     'will be written. If not specified, it will write to the '
                     'existing directory. If directory doesn\'t exist, will '
                     'attempt to create it.')
+flags.DEFINE_integer('http_request_timeout', 60,
+                     'Timeout in seconds that we will wait to fetch http '
+                     'image requests. See the requests library documentation '
+                     'for more details.')
+flags.DEFINE_integer('http_max_retries', 2,
+                     'Max number of times we will retry to fetch an image for '
+                     'timeout errors, and only timeout errors.')
+
+
 # Atlas settings
 flags.DEFINE_integer('atlas_width', None,
                      'Desired width for each atlas (number of images).')
@@ -170,7 +179,7 @@ def main(argv):
                                          str(FLAGS.image_format).lower())
     atlasmaker_io.save_image(
         default_img, os.path.join(FLAGS.output_dir, testimage_file_name),
-        delete_after_write=False)
+        delete_after_write=True)
     logging.info('Confirmed we can output images in %s format' %
                  FLAGS.image_format)
   except:
@@ -180,10 +189,13 @@ def main(argv):
     raise
 
   # Convert images in parallel.
+  logging.info('Scheduling %d tasks.' % len(image_source_list))
   converted_images_with_statuses = parallelize.get_and_convert_images_parallel(
       image_source_list, image_convert_settings,
       n_jobs=FLAGS.num_parallel_jobs, verbose=FLAGS.parallelization_verbosity,
-      allow_truncated_images=FLAGS.use_truncated_images)
+      allow_truncated_images=FLAGS.use_truncated_images,
+      request_timeout=FLAGS.http_request_timeout,
+      http_max_retries=FLAGS.http_max_retries)
 
   sprite_atlas_settings = montage.SpriteAtlasSettings(
       img_format=FLAGS.image_format, height=FLAGS.atlas_height,

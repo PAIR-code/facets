@@ -5,6 +5,7 @@ import shutil
 import mock
 from absl.testing import absltest
 from PIL import Image
+from requests.exceptions import ConnectTimeout, ReadTimeout, InvalidURL
 import atlasmaker_io
 
 TESTDATA_DIR = 'testdata'
@@ -137,6 +138,52 @@ class AtlasmakerIOTests(absltest.TestCase):
     mock_requests.get.assert_called_with(image_url,
                                          stream=True, timeout=30)
     self.assertEqual(output_img.size, (200, 200))
+    self.assertEqual(mock_requests.get.call_count, 1)
+
+
+  @mock.patch.object(atlasmaker_io, 'requests')
+  @mock.patch.object(atlasmaker_io, 'io')
+  def testGetImageFromUrlSucceedsLastTry(self, mock_io, mock_requests):
+    # Verify that we retry up to max retries for timeout errors.
+    image_url = 'https://some.url.com/image.jpg'
+    orig_img = Image.new('RGBA', (200, 200))
+    img_bytes = io.BytesIO()
+    orig_img.save(img_bytes, format='png')
+    mock_response = mock.MagicMock()
+    mock_response.raw.read.return_value = 'something'
+    mock_io.BytesIO.return_value = img_bytes
+
+    mock_requests.get.side_effect = [ConnectTimeout(), ReadTimeout(),
+                                     mock_response]
+
+    output_img = atlasmaker_io.get_image(image_url, request_timeout=30,
+                                         http_max_retries=3,
+                                         http_retry_interval=0)
+
+    self.assertEqual(mock_requests.get.call_count, 3)
+    self.assertEqual(output_img.size, (200, 200))
+
+  @mock.patch.object(atlasmaker_io, 'requests')
+  @mock.patch.object(atlasmaker_io, 'io')
+  def testGetImageFromUrlNotWorthRetry(self, mock_io, mock_requests):
+    # We should give up quickly for non-timeout errors.
+    image_url = 'https://some.url.com/image.jpg'
+    orig_img = Image.new('RGBA', (200, 200))
+    img_bytes = io.BytesIO()
+    orig_img.save(img_bytes, format='png')
+    mock_response = mock.MagicMock()
+    mock_response.raw.read.return_value = 'something'
+
+    mock_io.BytesIO.return_value = img_bytes
+
+    mock_requests.get.side_effect = [InvalidURL(), ReadTimeout(),
+                                     mock_response]
+
+    with self.assertRaises(InvalidURL):
+      atlasmaker_io.get_image(image_url, request_timeout=30, http_max_retries=3,
+                              http_retry_interval=0)
+    self.assertEqual(mock_requests.get.call_count, 1)
+
 
   def testSaveImageJpegDontDelete(self):
     # Verify we can output to jpeg despite using RGBA.
