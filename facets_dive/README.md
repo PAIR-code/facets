@@ -41,6 +41,8 @@ If the values on your objects are complex (like arrays, or nested objects), thes
 By default, Dive will render text onto a circle to represent each data point.
 However, you can supply a sprite atlas that it can use instead.
 
+We have provided a utility called *facets atlasmaker* that can be used for creating your own sprite atlas, given a list of image locations. Please see its [documentation](../facets_atlasmaker/) for more details.
+
 A sprite atlas is one big image containing many tiny images at predictable coordinates.
 Starting from the top-left hand corner of the image, sprites proceed across and down, from left-to-right and from top-to-bottom.
 

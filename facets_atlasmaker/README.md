@@ -76,7 +76,7 @@ command-line flags. To list the full set of flags, call the ```--help``` flag. E
 ../bazel-bin/facets_atlasmaker/atlasmaker --help
 ```
 
-Here's an example command for combining a set of images from wikipedia into an Atlas and 
+Here's an example command for combining a set of images from wikipedia into an atlas and 
 manifest located in an `outputs` subdirectory:
 
 ```sh
@@ -101,7 +101,7 @@ Some of the most useful image settings flags you can set include:
 resize original image, cropping as necessary.
 * ```---bg_color_name or --bg_color_rgb```: You can specify the background used (e.g., for images 
 that were resized and now don't fill the entire output sprite as well as for locations on the atlas 
-with no images) via a color name or RGB value, such as 'geen' or '255,255,0'.
+with no images) via a color name or RGB value, such as 'green' or '255,255,0'.
 
 ## Reading the Manifest
 
