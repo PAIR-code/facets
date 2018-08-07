@@ -131,10 +131,33 @@ limitations under the License.
     </style>
 
     <div class="main-controls">
+        <div class="dropdown-holder horizontal-facet">
+            <paper-dropdown-menu
+                  id="horizontalFacet"
+                  label="Faceting | X-Axis"
+                  class="facet-selector">
+              <paper-listbox class="dropdown-content" selected="{{horizontalFacet}}"
+                  attr-for-selected="value" slot="dropdown-content">
+                <paper-item value="">&lt;NONE&gt;</paper-item>
+                <template is="dom-repeat" items="[[keys]]">
+                  <paper-item value="[[item]]">[[_breakUpAndTruncate(item)]]</paper-item>
+                </template>
+              </paper-listbox>
+            </paper-dropdown-menu>
+          </div>
+
+          <template is="dom-if" if="[[horizontalFacet]]">
+          <paper-input type="number" min="1"
+                  max="[[_maxBuckets(horizontalFacet, horizontalBagOfWords)]]"
+                  value="{{horizontalBuckets}}"
+                  label="X-Axis #Bins">
+            </paper-input>
+          </template>
+
       <div class="dropdown-holder vertical-facet">
         <paper-dropdown-menu
               id="verticalFacet"
-              label="Faceting | X-Axis"
+              label="Faceting | Y-Axis"
               class="facet-selector">
           <paper-listbox class="dropdown-content" selected="{{verticalFacet}}"
               attr-for-selected="value" slot="dropdown-content">
@@ -150,29 +173,6 @@ limitations under the License.
         <paper-input type="number" min="1"
               max="[[_maxBuckets(verticalFacet,verticalBagOfWords)]]"
               value="{{verticalBuckets}}"
-              label="X-Axis #Bins">
-        </paper-input>
-      </template>
-
-      <div class="dropdown-holder horizontal-facet">
-        <paper-dropdown-menu
-              id="horizontalFacet"
-              label="Faceting | Y-Axis"
-              class="facet-selector">
-          <paper-listbox class="dropdown-content" selected="{{horizontalFacet}}"
-              attr-for-selected="value" slot="dropdown-content">
-            <paper-item value="">&lt;NONE&gt;</paper-item>
-            <template is="dom-repeat" items="[[keys]]">
-              <paper-item value="[[item]]">[[_breakUpAndTruncate(item)]]</paper-item>
-            </template>
-          </paper-listbox>
-        </paper-dropdown-menu>
-      </div>
-
-      <template is="dom-if" if="[[horizontalFacet]]">
-      <paper-input type="number" min="1"
-              max="[[_maxBuckets(horizontalFacet, horizontalBagOfWords)]]"
-              value="{{horizontalBuckets}}"
               label="Y-Axis #Bins">
         </paper-input>
       </template>
@@ -192,7 +192,7 @@ limitations under the License.
       <div class="dropdown-holder">
         <paper-dropdown-menu
             id="imageFieldName"
-            label="Display | Type">
+            label="Display | Label">
           <paper-listbox
               class="dropdown-content"
               selected="{{imageFieldName}}"

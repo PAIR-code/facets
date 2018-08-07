@@ -36,35 +36,40 @@ Details about Dive usage can be found in its [README](./facets_dive/README.md).
 
 # Setup
 
-## Installation
+## Usage in Google Colabratory/Jupyter Notebooks
+
+Using Facets in [Google Colabratory](https://colab.research.google.com) and [Jupyter](http://jupyter.org) notebooks can be seen
+[in this notebook](https://colab.research.google.com/drive/1QrcuNHJnL3TBzcFV-0yw6y3wWmSWv_gM). These notebooks work without the need to first download/install this repository.
+
+Note that for using Facets Overview in a Jupyter notebook, there are two considerations:
+1. In the notebook, you will need to change the path that the Facets Overview python code is loaded from to the correct path given where your notebook kernel is run from.
+2. You must also have the Protocol Buffers python runtime library installed: https://github.com/google/protobuf/tree/master/python. If you used pip or anaconda to install Jupyter, you can use the same tool to install the runtime library.
+
+When visualizing a large amount of data in Dive in a Juypter notebook, as is done in the [Dive demo Jupyter notebook](./facets_dive/Dive_demo.ipynb), you will need to start the notebook server with an increased IOPub data rate.
+This can be done with the command ```jupyter notebook --NotebookApp.iopub_data_rate_limit=10000000```.
+
+## Code Installation
 ```
 git clone https://github.com/PAIR-code/facets
 cd facets
 ```
 
-## Enabling Usage in Jupyter Notebooks
-
-Pre-built versions of the jupyter extension visualization code can be found in the facets-dist directory.
-
-To enable use of these visualizations in Jupyter notebooks:
-
-1. Install the jupyter notebook software: http://jupyter.org/install.html
-2. Install the visualizations into Jupyter as an nbextension.
-  * If jupyter was installed with pip, you can use ```jupyter nbextension install facets-dist/ ``` if jupyter was installed system-wide or ```jupyter nbextension install facets-dist/ --user``` if installed per-user (run from the facets top-level directory). You do not need to run any follow-up ```jupyter nbextension enable``` command for this extension.
-  * Alternatively, you can manually install the nbextension by finding your jupyter installation's ```share/jupyter/nbextensions``` folder and copying the facets-dist directory into it.
-3. To enable the Overview visualization, you must also have the Protocol Buffers python runtime library installed: https://github.com/google/protobuf/tree/master/python. If you used pip or anaconda to install Jupyter, you can use the same tool to install the runtime library.
-
-Note: When visualizing a large amount of data, as is done in the [Dive demo Jupyter notebook](./facets_dive/Dive_demo.ipynb), you will need to start the notebook server with an increased IOPub data rate.
-This can be done with the command ```jupyter notebook --NotebookApp.iopub_data_rate_limit=10000000```.
-
 ## Building the Visualizations
 
-If you make code changes to the visualization and would like to rebuild them for use in Jupyter notebooks, follow these directions:
+If you make code changes to the visualization and would like to rebuild them, follow these directions:
 
 1. Install bazel: https://bazel.build/
 2. Build the visualizations: ```bazel build facets:facets_jupyter``` (run from the facets top-level directory)
-3. Move the resulting vulcanized html file into the facets-dist directory.
-4. Reinstall the facets-dist jupyter extension as in the previous section.
+
+## Using the rebuilt Visualizations in a Jupyter notebook
+
+If you want to use the visualizations you built locally in a Jupyter notebook, follow these directions:
+
+1. Move the resulting vulcanized html file from the build step into the facets-dist directory.
+2. Install the visualizations into Jupyter as an nbextension.
+  * If jupyter was installed with pip, you can use ```jupyter nbextension install facets-dist/ ``` if jupyter was installed system-wide or ```jupyter nbextension install facets-dist/ --user``` if installed per-user (run from the facets top-level directory). You do not need to run any follow-up ```jupyter nbextension enable``` command for this extension.
+  * Alternatively, you can manually install the nbextension by finding your jupyter installation's ```share/jupyter/nbextensions``` folder and copying the facets-dist directory into it.
+3. In the notebook cell's HTML link tag that loads the built facets html, load from ```/nbextensions/facets-dist/facets-jupyter.html```, which is the locally installed facets distribution. from the previous step.
 
 ## Known Issues
 
