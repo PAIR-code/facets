@@ -2,11 +2,11 @@ workspace(name = "ai_google_pair_facets")
 
 http_archive(
     name = "io_bazel_rules_closure",
-    sha256 = "7fb23196455e26d83559cf8a2afa13f720d512f10215228186badfe6d6ad1b18",
-    strip_prefix = "rules_closure-0.6.0",
+    sha256 = "b29a8bc2cb10513c864cb1084d6f38613ef14a143797cea0af0f91cd385f5e8c",
+    strip_prefix = "rules_closure-0.8.0",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_closure/archive/0.6.0.tar.gz",
-        "https://github.com/bazelbuild/rules_closure/archive/0.6.0.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_closure/archive/0.8.0.tar.gz",
+        "https://github.com/bazelbuild/rules_closure/archive/0.8.0.tar.gz",  # 2018-08-03
     ],
 )
 
@@ -14,15 +14,18 @@ load("@io_bazel_rules_closure//closure:defs.bzl", "closure_repositories")
 load("@io_bazel_rules_closure//closure:defs.bzl", "web_library_external")
 load("@io_bazel_rules_closure//closure:defs.bzl", "filegroup_external")
 
-closure_repositories()
+closure_repositories(
+    #    omit_com_google_protobuf = True,
+    omit_com_google_protobuf_js = True,
+)
 
 http_archive(
     name = "org_tensorflow_tensorboard",
-    sha256 = "e3f39f67b950da1f80198d4534afa44f3a2335cb69940577294ad3cf90ce23be",
-    strip_prefix = "tensorboard-46a0b7d947618f2ea50f982e73688f6b91119ad4",
+    sha256 = "5f921949cd70f06e6f5de56d5453ea621bf27fc4e5b3dc2122b6e62a346367ce",
+    strip_prefix = "tensorboard-6d47ca3b5fe0ffb2c3ef0e8babbadf6632fe4eea",
     urls = [
-        "https://mirror.bazel.build/github.com/tensorflow/tensorboard/archive/46a0b7d947618f2ea50f982e73688f6b91119ad4.tar.gz",
-        "https://github.com/tensorflow/tensorboard/archive/46a0b7d947618f2ea50f982e73688f6b91119ad4.tar.gz",
+        "https://mirror.bazel.build/github.com/tensorflow/tensorboard/archive/6d47ca3b5fe0ffb2c3ef0e8babbadf6632fe4eea.tar.gz",
+        "https://github.com/tensorflow/tensorboard/archive/6d47ca3b5fe0ffb2c3ef0e8babbadf6632fe4eea.tar.gz",  # 2018-08-07
     ],
 )
 
