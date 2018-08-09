@@ -126,7 +126,7 @@ This feature will likely be drastically changed or removed in the future.
 
 By default, Dive will arrange items within each cell of the grid by stacking them.
 Alternatively, the items can be placed in a scatter plot.
-This is most useful when Faceting is set to `<NONE>`.
+This is most useful when Faceting is set to `(none)`.
 
 Features with numeric values can be used for scatter plot positioning.
 Any items whose value is not a number will still be shown, but the value will be coerced to zero.

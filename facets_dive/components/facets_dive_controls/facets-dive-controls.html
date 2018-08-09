@@ -134,11 +134,11 @@ limitations under the License.
         <div class="dropdown-holder horizontal-facet">
             <paper-dropdown-menu
                   id="horizontalFacet"
-                  label="Faceting | X-Axis"
+                  label="Binning | X-Axis"
                   class="facet-selector">
               <paper-listbox class="dropdown-content" selected="{{horizontalFacet}}"
                   attr-for-selected="value" slot="dropdown-content">
-                <paper-item value="">&lt;NONE&gt;</paper-item>
+                <paper-item value="">(none)</paper-item>
                 <template is="dom-repeat" items="[[keys]]">
                   <paper-item value="[[item]]">[[_breakUpAndTruncate(item)]]</paper-item>
                 </template>
@@ -150,18 +150,18 @@ limitations under the License.
           <paper-input type="number" min="1"
                   max="[[_maxBuckets(horizontalFacet, horizontalBagOfWords)]]"
                   value="{{horizontalBuckets}}"
-                  label="X-Axis #Bins">
+                  label="Count">
             </paper-input>
           </template>
 
       <div class="dropdown-holder vertical-facet">
         <paper-dropdown-menu
               id="verticalFacet"
-              label="Faceting | Y-Axis"
+              label="Binning | Y-Axis"
               class="facet-selector">
           <paper-listbox class="dropdown-content" selected="{{verticalFacet}}"
               attr-for-selected="value" slot="dropdown-content">
-            <paper-item value="">&lt;NONE&gt;</paper-item>
+            <paper-item value="">(none)</paper-item>
             <template is="dom-repeat" items="[[keys]]">
               <paper-item value="[[item]]">[[_breakUpAndTruncate(item)]]</paper-item>
             </template>
@@ -173,15 +173,15 @@ limitations under the License.
         <paper-input type="number" min="1"
               max="[[_maxBuckets(verticalFacet,verticalBagOfWords)]]"
               value="{{verticalBuckets}}"
-              label="Y-Axis #Bins">
+              label="Count">
         </paper-input>
       </template>
 
       <div class="dropdown-holder">
-        <paper-dropdown-menu id="colorBy" label="Display | Color">
+        <paper-dropdown-menu id="colorBy" label="Color By">
           <paper-listbox class="dropdown-content" selected="{{colorBy}}"
               attr-for-selected="value" slot="dropdown-content">
-            <paper-item value="">&lt;NONE&gt;</paper-item>
+            <paper-item value="">(none)</paper-item>
             <template is="dom-repeat" items="[[keys]]">
               <paper-item value="[[item]]">[[item]]</paper-item>
             </template>
@@ -192,7 +192,7 @@ limitations under the License.
       <div class="dropdown-holder">
         <paper-dropdown-menu
             id="imageFieldName"
-            label="Display | Label">
+            label="Label By">
           <paper-listbox
               class="dropdown-content"
               selected="{{imageFieldName}}"
@@ -216,7 +216,7 @@ limitations under the License.
               class="dropdown-content"
               selected="{{horizontalPosition}}"
               attr-for-selected="value" slot="dropdown-content">
-            <paper-item value="">&lt;DEFAULT&gt;</paper-item>
+            <paper-item value="">(default)</paper-item>
             <template is="dom-repeat" items="[[keys]]"
                 filter="_isKeyNumeric">
               <paper-item value="[[item]]">[[item]]</paper-item>
@@ -234,7 +234,7 @@ limitations under the License.
               class="dropdown-content"
               selected="{{verticalPosition}}"
               attr-for-selected="value" slot="dropdown-content">
-            <paper-item value="">&lt;DEFAULT&gt;</paper-item>
+            <paper-item value="">(default)</paper-item>
             <template is="dom-repeat" items="[[keys]]"
                 filter="_isKeyNumeric">
               <paper-item value="[[item]]">[[item]]</paper-item>
