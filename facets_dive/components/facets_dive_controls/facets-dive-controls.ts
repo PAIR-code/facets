@@ -224,7 +224,7 @@ Polymer({
   },
 
   _getImageFieldNameDefaultLabel(atlasUrl: string): string {
-    return atlasUrl ? '<IMAGE>' : '<DEFAULT>';
+    return atlasUrl ? '(image)' : '(default)';
   },
 
   _isModeScatter(positionMode: string): boolean {
@@ -287,8 +287,9 @@ Polymer({
    */
   _getPositionMode(
       this: any, verticalPosition: string, horizontalPosition: string) {
-    return verticalPosition == '' && horizontalPosition == ''
-        ? vis.DEFAULT_POSITION_MODE : 'scatter';
+    return verticalPosition == '' && horizontalPosition == '' ?
+        vis.DEFAULT_POSITION_MODE :
+        'scatter';
   },
 
   /**
@@ -305,7 +306,7 @@ Polymer({
   _shouldShowOverflowMenu(
       this: any, colorBy: string, verticalFacet: string,
       horizontalFacet: string) {
-    return this._isKeyCategorical(colorBy) || this._hasWordTree(verticalFacet)
-        || this._hasWordTree(horizontalFacet);
+    return this._isKeyCategorical(colorBy) ||
+        this._hasWordTree(verticalFacet) || this._hasWordTree(horizontalFacet);
   },
 });
