@@ -19,6 +19,7 @@ import CommonStatistics from 'goog:proto.featureStatistics.CommonStatistics';
 import DatasetFeatureStatisticsList from 'goog:proto.featureStatistics.DatasetFeatureStatisticsList';
 import FeatureNameStatistics from 'goog:proto.featureStatistics.FeatureNameStatistics';
 import Histogram from 'goog:proto.featureStatistics.Histogram';
+import StructStatistics from 'goog:proto.featureStatistics.StructStatistics';
 import { DataPoint, generateStats } from '../../common/feature_statistics_generator';
 import { FeatureSelection } from '../../common/utils';
 import * as th from '../test_helpers/test_helpers';
@@ -63,7 +64,7 @@ function create(): DatasetFeatureStatisticsList {
 
   // Add a BYTES feature.
   const bs = new BytesStatistics();
-  const cs = new CommonStatistics();
+  let cs = new CommonStatistics();
   cs.setNumMissing(0);
   cs.setNumNonMissing(20);
   cs.setMinNumValues(1);
@@ -74,10 +75,25 @@ function create(): DatasetFeatureStatisticsList {
   bs.setAvgNumBytes(500)
   bs.setMinNumBytes(250);
   bs.setMaxNumBytes(1000);
-  const f = new FeatureNameStatistics();
+  let f = new FeatureNameStatistics();
   f.setName('encodedImageBytes');
   f.setType(FeatureNameStatistics.Type.BYTES);
   f.setBytesStats(bs);
+  stats.getFeaturesList().push(f);
+
+  // Add a STRUCT feature.
+  const ss = new StructStatistics();
+  cs = new CommonStatistics();
+  cs.setNumMissing(1);
+  cs.setNumNonMissing(19);
+  cs.setMinNumValues(1);
+  cs.setMaxNumValues(2);
+  cs.setAvgNumValues(1.05);
+  ss.setCommonStats(cs);
+  f = new FeatureNameStatistics();
+  f.setName('structFeature');
+  f.setType(FeatureNameStatistics.Type.STRUCT);
+  f.setStructStats(ss);
   stats.getFeaturesList().push(f);
 
   stats.setName('train');

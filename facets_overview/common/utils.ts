@@ -257,18 +257,14 @@ export function getNumberFromField(value: number|string|null|
  */
 export function getRatioMissingAndZero(stats: FeatureNameStatistics|
                                        null): number {
-  let commonstats: CommonStatistics|null|undefined = null;
   let num = 0;
   let total = 0;
+  const commonstats = getCommonStats(stats);
   if (stats && stats.getNumStats()) {
     const numstats = stats.getNumStats()!;
-    commonstats = numstats.getCommonStats();
     num += getNumberFromField(numstats.getNumZeros());
-  } else if (stats && stats.getStringStats()) {
-    commonstats = stats.getStringStats()!.getCommonStats();
-  } else if (stats && stats.getBytesStats()) {
-    commonstats = stats.getBytesStats()!.getCommonStats();
   }
+
   // Get all common stats, which appear first in the stats list.
   if (commonstats) {
     const numMissing = getNumberFromField(commonstats.getNumMissing());
@@ -445,6 +441,8 @@ export function stringFromFeatureType(type: FeatureNameStatistics.Type):
       return 'float';
     case FeatureNameStatistics.Type.BYTES:
       return 'binary';
+    case FeatureNameStatistics.Type.STRUCT:
+      return 'struct';
     default:
       return 'unknown';
   }
@@ -612,14 +610,7 @@ export function containsFeatureListLengthData(
     const dataset = datasets.getDatasetsList()[i];
     for (let j = 0; j < dataset.getFeaturesList().length; j++) {
       const feature = dataset.getFeaturesList()[j];
-      let commonStats: CommonStatistics|null = null;
-      if (feature.getStringStats()) {
-        commonStats = feature.getStringStats()!.getCommonStats();
-      } else if (feature.getNumStats()) {
-        commonStats = feature.getNumStats()!.getCommonStats();
-      } else if (feature.getBytesStats()) {
-        commonStats = feature.getBytesStats()!.getCommonStats();
-      }
+      const commonStats = getCommonStats(feature);
       if (commonStats && commonStats.getFeatureListLengthHistogram()) {
         return true;
       }
@@ -704,8 +695,11 @@ export const FS_VAR_LEN_STRS = 8;
 export const FS_SCALAR_BYTES = 9;
 export const FS_FIXED_LEN_BYTES = 10;
 export const FS_VAR_LEN_BYTES = 11;
-export const FS_UNKNOWN = 12;
-export const FS_NUM_VALUES = 13;
+export const FS_SCALAR_STRUCT = 12;
+export const FS_FIXED_LEN_STRUCT = 13;
+export const FS_VAR_LEN_STRUCT = 14;
+export const FS_UNKNOWN = 15;
+export const FS_NUM_VALUES = 16;
 
 /**
  * Converts a feature spec to a string, for display.
@@ -736,6 +730,12 @@ export function featureSpecToString(spec: number) {
       return 'fixed-length bytes';
     case FS_VAR_LEN_BYTES:
       return 'variable-length bytes';
+    case FS_SCALAR_STRUCT:
+      return 'struct';
+    case FS_FIXED_LEN_STRUCT:
+      return 'fixed-length struct';
+    case FS_VAR_LEN_STRUCT:
+      return 'variable-length struct';
     default:
       return 'unknown';
   }
@@ -766,7 +766,9 @@ export function updateSpec(spec: FeatureSpec, newSpec: FeatureSpec) {
       (spec >= FS_SCALAR_STR && spec <= FS_VAR_LEN_STRS &&
        newSpec >= FS_SCALAR_STR && newSpec <= FS_VAR_LEN_STRS) ||
       (spec >= FS_SCALAR_BYTES && spec <= FS_VAR_LEN_BYTES &&
-       newSpec >= FS_SCALAR_BYTES && newSpec <= FS_VAR_LEN_BYTES)) {
+       newSpec >= FS_SCALAR_BYTES && newSpec <= FS_VAR_LEN_BYTES) ||
+       (spec >= FS_SCALAR_STRUCT && spec <= FS_VAR_LEN_STRUCT &&
+        newSpec >= FS_SCALAR_STRUCT && newSpec <= FS_VAR_LEN_STRUCT)) {
     return Math.max(spec, newSpec);
   }
   // If the spec and the new spec have a type mismatch, use the sentinal
@@ -802,9 +804,12 @@ export function getSpecFromFeatureStats(
     } else if (type === FeatureNameStatistics.Type.STRING) {
       spec = scalar ? FS_SCALAR_STR :
                       fixedLength ? FS_FIXED_LEN_STRS : FS_VAR_LEN_STRS;
-    } else {
+    } else if (type === FeatureNameStatistics.Type.BYTES) {
       spec = scalar ? FS_SCALAR_BYTES :
                       fixedLength ? FS_FIXED_LEN_BYTES : FS_VAR_LEN_BYTES;
+    } else {
+      spec = scalar ? FS_SCALAR_STRUCT :
+                      fixedLength ? FS_FIXED_LEN_STRUCT : FS_VAR_LEN_STRUCT;
     }
   }
   return spec;
@@ -1160,6 +1165,26 @@ const NUM_NON_MISSING_ERROR_THRESHOLD = 0;
 const MISSING_PERC_ERROR_THRESHOLD = 0.02;
 
 /**
+ * Retrieves the CommonStatistics for a feature or null if not found.
+ */
+export function getCommonStats(featureStats?: FeatureNameStatistics):
+    CommonStatistics|null {
+  if (!featureStats) {
+    return null;
+  }
+  if (featureStats.getNumStats()) {
+    return featureStats.getNumStats()!.getCommonStats();
+  } else if (featureStats.getStringStats()) {
+    return featureStats.getStringStats()!.getCommonStats();
+  } else if (featureStats.getBytesStats()) {
+    return featureStats.getBytesStats()!.getCommonStats();
+  } else if (featureStats.getStructStats()) {
+    return featureStats.getStructStats()!.getCommonStats();
+  }
+  return null;
+}
+
+/**
  * Gets the CssFormattedStrings for a feature's common stats for display in the
  * table.
  */
@@ -1327,18 +1352,10 @@ function getCustomStatsEntries(stats: CustomStatistic[]|null) {
 export function getStatsEntries(
     stats: FeatureNameStatistics,
     showWeighted: boolean, hasCustom: boolean): CssFormattedString[] {
-  let commonStats: CommonStatistics|null = null;
-
   if (!stats) {
     return [];
   }
-  if (stats.getStringStats()) {
-    commonStats = stats.getStringStats()!.getCommonStats();
-  } else if (stats.getNumStats()) {
-    commonStats = stats.getNumStats()!.getCommonStats();
-  } else if (stats.getBytesStats()) {
-    commonStats = stats.getBytesStats()!.getCommonStats();
-  }
+  const commonStats = getCommonStats(stats);
   let entries: CssFormattedString[] = getCommonStatsEntries(commonStats);
   if (stats.getNumStats()) {
     entries = entries.concat(
