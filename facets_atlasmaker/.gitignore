@@ -1,0 +1,13 @@
+/bazel-*
+
+**/*.pyc
+
+# virtualenv
+ENV*
+
+# test output dir
+testoutput/*
+outputs/*
+
+# Utilities
+utils/*.csv
