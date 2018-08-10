@@ -234,14 +234,7 @@ export class OverviewDataModel {
     if (featureStats == null) {
       return null;
     }
-    if (featureStats.getNumStats()) {
-      return featureStats.getNumStats()!.getCommonStats();
-    } else if (featureStats.getStringStats()) {
-      return featureStats.getStringStats()!.getCommonStats();
-    } else if (featureStats.getBytesStats()) {
-      return featureStats.getBytesStats()!.getCommonStats();
-    }
-    return null;
+    return utils.getCommonStats(featureStats);
   }
 
   /**

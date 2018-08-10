@@ -51,6 +51,7 @@ message FeatureNameStatistics {
     FLOAT = 1;
     STRING = 2;
     BYTES = 3;
+    STRUCT = 4;
   }
 
   // The feature name
@@ -64,6 +65,7 @@ message FeatureNameStatistics {
     NumericStatistics num_stats = 3;
     StringStatistics string_stats = 4;
     BytesStatistics bytes_stats = 5;
+    StructStatistics struct_stats = 7;
   }
 
   // Any custom statistics can be stored in this list.
@@ -189,6 +191,11 @@ message BytesStatistics {
   float min_num_bytes = 4;
   // The maximum number of bytes in a value
   float max_num_bytes = 5;
+}
+
+// Statistics for a struct feature in a dataset.
+message StructStatistics {
+  CommonStatistics common_stats = 1;
 }
 
 // Common statistics for all feature types

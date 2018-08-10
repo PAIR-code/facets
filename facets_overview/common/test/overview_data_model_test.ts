@@ -21,6 +21,7 @@ import CommonStatistics from 'goog:proto.featureStatistics.CommonStatistics';
 import CustomStatistic from 'goog:proto.featureStatistics.CustomStatistic';
 import NumericStatistics from 'goog:proto.featureStatistics.NumericStatistics';
 import StringStatistics from 'goog:proto.featureStatistics.StringStatistics';
+import StructStatistics from 'goog:proto.featureStatistics.StructStatistics';
 import FeatureNameStatistics from 'goog:proto.featureStatistics.FeatureNameStatistics';
 import Histogram from 'goog:proto.featureStatistics.Histogram';
 import RankHistogram from 'goog:proto.featureStatistics.RankHistogram';
@@ -291,6 +292,17 @@ describe('getFeatureCommonStats', () => {
     common.setNumNonMissing(10);
     stats.setCommonStats(common);
     f.setBytesStats(stats);
+    expect(dm.getFeatureCommonStats('feature', 'dataset')).to.equal(common);
+  });
+
+  it('returns stats from struct feature', () => {
+    dm = new OverviewDataModel(dl);
+    const f = addFeature('feature');
+    const stats = new StructStatistics();
+    const common = new CommonStatistics();
+    common.setNumNonMissing(10);
+    stats.setCommonStats(common);
+    f.setStructStats(stats);
     expect(dm.getFeatureCommonStats('feature', 'dataset')).to.equal(common);
   });
 });
@@ -1227,6 +1239,27 @@ describe('getFeatureSpecForFeature', () => {
     const dm = new OverviewDataModel(dl);
 
     expect(dm.getFeatureSpecForFeature('bytes')).to.equal(utils.FS_SCALAR_BYTES);
+  });
+
+  it('returns scalar struct correctly', () => {
+    const dl = new DatasetFeatureStatisticsList();
+    const d = new DatasetFeatureStatistics();
+    const f = new FeatureNameStatistics();
+    f.setName('struct');
+    f.setType(FeatureNameStatistics.Type.STRUCT);
+    const stats = new StructStatistics();
+    const common = new CommonStatistics();
+    common.setNumNonMissing(1);
+    common.setMinNumValues(1);
+    common.setMaxNumValues(1);
+    stats.setCommonStats(common);
+    f.setStructStats(stats);
+    d.setFeaturesList([f]);
+    dl.setDatasetsList([d]);
+    const dm = new OverviewDataModel(dl);
+
+    expect(dm.getFeatureSpecForFeature('struct')).to.equal(
+      utils.FS_SCALAR_STRUCT);
   });
 
   it('returns unknown for a mismatch across datasets', () => {

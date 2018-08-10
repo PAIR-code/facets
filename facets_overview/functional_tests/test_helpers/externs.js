@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 /** @externs */
-/** @type {!Object} */ var module;
-/** @type {!Object} */ var define;
-/** @type {!Object} */ var exports;
-/** @type {!Object} */ var global;
 /** @type {!Object} */ var WebComponents;
 
 
