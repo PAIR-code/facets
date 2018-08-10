@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 Google Inc.
+ * Copyright 2018 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -385,14 +385,14 @@ export class Label extends BoundedObject {
    * Additional attributes to set for this label. Examples include font-size,
    * text-anchor, x and y (local user-space coordinates).
    */
-  attributes?: {[name: string]: number | string};
+  attributes?: {[name: string]: number|string};
 }
 
 /**
  * Palette object maps a label string onto a color that should be used in
  * any items that match that label.
  */
-export type Palette = Array < {
+export type Palette = Array<{
   /**
    * Key value which maps to this color.
    */
@@ -407,8 +407,7 @@ export type Palette = Array < {
    * Label string and special status to show for this color.
    */
   content: LabelContent;
-}
-> ;
+}>;
 
 type FacetingFunction = (item: GridItem) => (Key|null);
 
@@ -516,6 +515,13 @@ export interface FacetsDiveVis extends HTMLElement {
   gridFacetingHorizontalLabelColor: string;
   itemPositioningVerticalLabelColor: string;
   itemPositioningHorizontalLabelColor: string;
+
+  /**
+   * Whether to attempt to fill available visualization area when arranging
+   * items into the grid. If missing/false, then the default aspect ratio of 1
+   * (square) will be used.
+   */
+  fitGridAspectRatioToViewport: boolean;
 
   // USER-INTERACTION PROPERTIES.
 
@@ -836,8 +842,9 @@ class FacetsDiveVizInternal {
         'class', 'labels');
     this.axesLayer = this.labelsAndAxesSVGRoot.append<SVGGElement>('g').attr(
         'class', 'axes');
-    this.selectedLayer = this.labelsAndAxesSVGRoot.append<SVGGElement>('g')
-        .attr('class', 'selectedboxes');
+    this.selectedLayer =
+        this.labelsAndAxesSVGRoot.append<SVGGElement>('g').attr(
+            'class', 'selectedboxes');
 
     // Set up click handler for labels and axes SVG.
     this.labelsAndAxesSVG.on('click', this.clicked.bind(this));
@@ -906,8 +913,9 @@ class FacetsDiveVizInternal {
     for (let i = 0; i < spriteIndexes.length; i++) {
       selectedIndicesSet[spriteIndexes[i]] = true;
     }
-    this.elem.set('selectedIndices', Array.from(Object.keys(selectedIndicesSet)
-      .map(key => +key)));
+    this.elem.set(
+        'selectedIndices',
+        Array.from(Object.keys(selectedIndicesSet).map(key => +key)));
     const selectedData = [];
     for (let i = 0; i < this.elem.selectedIndices.length; i++) {
       selectedData.push(this.elem.data[this.elem.selectedIndices[i]]);
@@ -932,13 +940,16 @@ class FacetsDiveVizInternal {
    */
   updateSelectedBoxes() {
     const selectedBoxes: ItemPosition[] =
-      this.elem.selectedIndices.map(index => {
-        return {x: this.spriteMesh.getX(index), y: this.spriteMesh.getY(index)};
-    });
+        this.elem.selectedIndices.map(index => {
+          return {
+            x: this.spriteMesh.getX(index),
+            y: this.spriteMesh.getY(index)
+          };
+        });
 
     // JOIN.
-    const selectedElements = this.selectedLayer.selectAll('.selected').data(
-      selectedBoxes);
+    const selectedElements =
+        this.selectedLayer.selectAll('.selected').data(selectedBoxes);
 
     selectedElements
         // ENTER.
@@ -2043,6 +2054,14 @@ class FacetsDiveVizInternal {
     this.grid.horizontalFacet = horizontalFacetInfo.facetingFunction;
     this.grid.horizontalKeyCompare = horizontalFacetInfo.keyCompareFunction;
 
+    if (this.elem.fitGridAspectRatioToViewport) {
+      const rect = this.elem.getBoundingClientRect();
+      this.grid.targetGridAspectRatio =
+          rect && rect.width && rect.height ? rect.width / rect.height || 1 : 1;
+    } else {
+      this.grid.targetGridAspectRatio = 1;
+    }
+
     this.grid.arrange();
 
     this.updateCellBackgrounds();
@@ -2974,6 +2993,10 @@ Polymer({
     itemPositioningHorizontalLabelColor: {
       type: String,
       value: ITEM_POSITIONING_HORIZONTAL_LABEL_COLOR,
+    },
+    fitGridAspectRatioToViewport: {
+      type: Boolean,
+      value: false,
     },
     verticalFacet: {
       type: String,

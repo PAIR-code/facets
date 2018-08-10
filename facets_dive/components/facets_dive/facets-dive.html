@@ -40,54 +40,35 @@ limitations under the License.
         background: #ffffff;
         box-sizing: border-box;
         display: flex;
-        flex: 1;
+        flex-grow: 1;
         height: 100%;
         overflow: hidden;
         position: relative;
         width: 100%;
       }
       .fill {
-        bottom: 0;
-        left: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
+        display: flex;
+        flex-grow: 1;
+        position: relative;
       }
-      #vis {
-        bottom: 0;
-        left: 0;
-        position: absolute;
-        right: 240px;
-        top: 60px;
-        width: auto;
+      .main {
+        flex-direction: column;
       }
-      #controls {
+      facets-dive-controls {
         border-bottom: 1px solid black;
+        flex-grow: 0;
+        flex-shrink: 0;
         height: 60px;
-        left: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
       }
-      #infoCard {
-        background: #fff8f4;
-        bottom: 0;
-        border-left: 1px solid #c6c6c6;
-        box-sizing: border-box;
-        position: absolute;
-        right: 0;
-        top: 61px;
-        width: 240px;
+      .row {
+        display: flex;
+        flex-direction: row;
       }
-      #legend {
+      facets-dive-legend {
         position: absolute;
         bottom: 14px;
-        left: 80px;
+        right: 24px;
       }
-
-      /**
-       * Zoom Controls.
-       */
       .zoom-controls {
         bottom: 14px;
         box-sizing: border-box;
@@ -104,42 +85,17 @@ limitations under the License.
         min-width: 0;
         padding: 8px;
       }
+      facets-dive-info-card {
+        background: #fff8f4;
+        border-left: 1px solid #c6c6c6;
+        box-sizing: border-box;
+        flex-grow: 0;
+        flex-shrink: 0;
+        width: 240px;
+      }
     </style>
 
-    <div class="fill">
-      <facets-dive-vis
-          id="vis"
-          class="fill"
-          data="[[data]]"
-          filtered-data-indices="[[filteredDataIndices]]"
-          atlas-url="[[atlasUrl]]"
-          sprite-url="[[spriteUrl]]"
-          cross-origin="[[crossOrigin]]"
-          keys="{{_keys}}"
-          stats="{{stats}}"
-          sprite-image-width="[[spriteImageWidth]]"
-          sprite-image-height="[[spriteImageHeight]]"
-          vertical-facet="[[verticalFacet]]"
-          vertical-buckets="[[verticalBuckets]]"
-          vertical-bag-of-words="[[verticalBagOfWords]]"
-          horizontal-facet="[[horizontalFacet]]"
-          horizontal-buckets="[[horizontalBuckets]]"
-          horizontal-bag-of-words="[[horizontalBagOfWords]]"
-          position-mode="[[positionMode]]"
-          vertical-position="[[verticalPosition]]"
-          horizontal-position="[[horizontalPosition]]"
-          color-by="{{colorBy}}"
-          image-field-name="{{imageFieldName}}"
-          palette="{{_palette}}"
-          palette-choice="[[paletteChoice]]"
-          grid-faceting-vertical-label-color="{{gridFacetingVerticalLabelColor}}"
-          grid-faceting-horizontal-label-color="{{gridFacetingHorizontalLabelColor}}"
-          item-positioning-vertical-label-color="{{itemPositioningVerticalLabelColor}}"
-          item-positioning-horizontal-label-color="{{itemPositioningHorizontalLabelColor}}"
-          selected-data="{{selectedData}}"
-          selected-indices="{{selectedIndices}}"
-        ></facets-dive-vis>
-
+    <div class="fill main">
       <facets-dive-controls
           id="controls"
           atlas-url="[[atlasUrl]]"
@@ -164,29 +120,67 @@ limitations under the License.
           item-positioning-horizontal-label-color="[[itemPositioningHorizontalLabelColor]]"
         ></facets-dive-controls>
 
-      <div class="zoom-controls">
-        <paper-button raised id="zoomInButton">
-          <iron-icon icon="icons:add"></iron-icon>
-        </paper-button>
-        <paper-button raised id="zoomOutButton">
-          <iron-icon icon="icons:remove"></iron-icon>
-        </paper-button>
-        <paper-button raised id="fitButton">
-          <iron-icon icon="icons:aspect-ratio"></iron-icon>
-        </paper-button>
+      <div class="fill row">
+        <div class="fill">
+          <facets-dive-vis
+              id="vis"
+              class="fill"
+              data="[[data]]"
+              filtered-data-indices="[[filteredDataIndices]]"
+              atlas-url="[[atlasUrl]]"
+              sprite-url="[[spriteUrl]]"
+              cross-origin="[[crossOrigin]]"
+              keys="{{_keys}}"
+              stats="{{stats}}"
+              sprite-image-width="[[spriteImageWidth]]"
+              sprite-image-height="[[spriteImageHeight]]"
+              vertical-facet="[[verticalFacet]]"
+              vertical-buckets="[[verticalBuckets]]"
+              vertical-bag-of-words="[[verticalBagOfWords]]"
+              horizontal-facet="[[horizontalFacet]]"
+              horizontal-buckets="[[horizontalBuckets]]"
+              horizontal-bag-of-words="[[horizontalBagOfWords]]"
+              position-mode="[[positionMode]]"
+              vertical-position="[[verticalPosition]]"
+              horizontal-position="[[horizontalPosition]]"
+              color-by="{{colorBy}}"
+              image-field-name="{{imageFieldName}}"
+              palette="{{_palette}}"
+              palette-choice="[[paletteChoice]]"
+              grid-faceting-vertical-label-color="{{gridFacetingVerticalLabelColor}}"
+              grid-faceting-horizontal-label-color="{{gridFacetingHorizontalLabelColor}}"
+              item-positioning-vertical-label-color="{{itemPositioningVerticalLabelColor}}"
+              item-positioning-horizontal-label-color="{{itemPositioningHorizontalLabelColor}}"
+              fit-grid-aspect-ratio-to-viewport="[[fitGridAspectRatioToViewport]]"
+              selected-data="{{selectedData}}"
+              selected-indices="{{selectedIndices}}"
+            ></facets-dive-vis>
+
+          <div class="zoom-controls">
+            <paper-button raised id="zoomInButton">
+              <iron-icon icon="icons:add"></iron-icon>
+            </paper-button>
+            <paper-button raised id="zoomOutButton">
+              <iron-icon icon="icons:remove"></iron-icon>
+            </paper-button>
+            <paper-button raised id="fitButton">
+              <iron-icon icon="icons:aspect-ratio"></iron-icon>
+            </paper-button>
+          </div>
+
+          <facets-dive-legend id="legend" color-by="[[colorBy]]"
+              palette="[[_palette]]">
+          </facets-dive-legend>
+        </div>
+
+        <template is="dom-if" if="[[!hideInfoCard]]">
+          <facets-dive-info-card
+              id="infoCard"
+              selected-data="[[selectedData]]"
+              info-renderer="[[infoRenderer]]">
+          </facets-dive-info-card>
+        </template>
       </div>
-
-      <facets-dive-legend id="legend" color-by="[[colorBy]]"
-          palette="[[_palette]]">
-      </facets-dive-legend>
-
-      <template is="dom-if" if="[[!hideInfoCard]]">
-        <facets-dive-info-card
-            id="infoCard"
-            selected-data="[[selectedData]]"
-            info-renderer="[[infoRenderer]]">
-        </facets-dive-info-card>
-      </template>
     </div>
 
   </template>

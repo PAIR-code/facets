@@ -128,7 +128,7 @@ This feature will likely be drastically changed or removed in the future.
 
 By default, Dive will arrange items within each cell of the grid by stacking them.
 Alternatively, the items can be placed in a scatter plot.
-This is most useful when Faceting is set to `<NONE>`.
+This is most useful when Faceting is set to `(none)`.
 
 Features with numeric values can be used for scatter plot positioning.
 Any items whose value is not a number will still be shown, but the value will be coerced to zero.
@@ -259,6 +259,13 @@ These optional properties control various stylistic aspects of Dive.
   Label color for item positioning in the horizontal direction.
   If not provided, a reasonable default will be set.
   (Use `item-positioning-horizontal-label-color` in HTML).
+* `fitGridAspectRatioToViewport` - `boolean` -
+  When laying out items in a grid, if this property is set, then the
+  visualization will attempt to match the aspect ratio of the available
+  on-screen space. For example, on a very wide screen, you would expect the grid
+  to also be wide. When this property is not set, then the visualization will
+  lay the grid items out using the default aspect ratio, a square.
+  (Use `fit-grid-aspect-ratio-to-viewport` in HTML).
 
 ### Interactive Properties
 

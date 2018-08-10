@@ -92,6 +92,13 @@ export interface FacetsDive extends Element {
   itemPositioningVerticalLabelColor: string;
   itemPositioningHorizontalLabelColor: string;
 
+  /**
+   * Whether to attempt to fill available visualization area when arranging
+   * items into the grid. If missing/false, then the default aspect ratio of 1
+   * (square) will be used.
+   */
+  fitGridAspectRatioToViewport: boolean;
+
   // INTER-COMPONENT WIRING PROPERTIES.
 
   /**
@@ -263,6 +270,10 @@ Polymer({
     itemPositioningHorizontalLabelColor: {
       type: String,
       value: vis.ITEM_POSITIONING_HORIZONTAL_LABEL_COLOR,
+    },
+    fitGridAspectRatioToViewport: {
+      type: Boolean,
+      value: false,
     },
     verticalFacet: {
       type: String,
