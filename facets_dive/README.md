@@ -315,4 +315,11 @@ These are typically controlled by the user, but can also be set programatically 
 * `infoRenderer?` - `(dataObject: {}, containerElem: Element) => void` -
   Callback function to use to render the content of a data object for the info pane.
   If not specified, the `FacetsDiveInfoCard.defaultInfoRenderer` will be used.
-
+* `comparedIndices` - `Array<number>` -
+  Property listing indices of data objects to compare to the selected ones.
+  Set this programatically, will automatically update `comparedData` to match.
+* `comparedData` - `Array<{}>` -
+  READ ONLY.
+  Data objects to be compared to the selected objects.
+  They will all be elements of the data array.
+  Changed automatically in response to changes to `comparedIndices`.
