@@ -190,6 +190,18 @@ export interface FacetsDive extends Element {
    */
   selectedData: Array<{}>;
 
+  /**
+   * Indices of data objects to compare against those that are selected. Set
+   * programmatically, influences comparedData.
+   */
+  comparedIndices: number[];
+
+  /**
+   * The currently compared data objects. They should all be elements of the
+   * data array. Changed in response to updates to the comparedIndices.
+   */
+  comparedData: Array<{}>;
+
   // STYLE PROPERTIES.
 
   /**
@@ -345,6 +357,16 @@ Polymer({
       notify: true,
     },
     selectedIndices: {
+      type: Array,
+      value: [],
+      notify: true,
+    },
+    comparedData: {
+      type: Array,
+      value: [],
+      notify: true,
+    },
+    comparedIndices: {
       type: Array,
       value: [],
       notify: true,

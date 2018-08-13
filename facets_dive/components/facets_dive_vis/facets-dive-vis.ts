@@ -73,6 +73,16 @@ const SELECTED_ITEM_COLOR = '#da7421';
 const SELECTED_ITEM_STROKE_WIDTH = 0.1;
 
 /**
+ * Color for compared item borders.
+ */
+const COMPARED_ITEM_COLOR = '#16dcfb';
+
+/**
+ * Stroke width for the compared item borders.
+ */
+const COMPARED_ITEM_STROKE_WIDTH = 0.1;
+
+/**
  * Precision to use for numeric labels in digits.
  */
 export const DEFAULT_NUMERIC_LABEL_PRECISION = 3;
@@ -602,6 +612,16 @@ export interface FacetsDiveVis extends HTMLElement {
   selectedIndices: number[];
 
   /**
+   * Currently compared objects. Should all be elements of the data array.
+   */
+  comparedData: Array<{}>;
+
+  /**
+   * Indices of currently compared objects from the data array.
+   */
+  comparedIndices: number[];
+
+  /**
    * Polymer setter for attribute values.
    */
   // tslint:disable-next-line:no-any TODO(jimbo): Upgrade to typed Polymer.
@@ -673,6 +693,11 @@ class FacetsDiveVizInternal {
    * D3 selection wrapping the <g> element for selected item borders.
    */
   selectedLayer: d3.Selection<SVGGElement, {}, null, undefined>;
+
+  /**
+   * D3 selection wrapping the <g> element for compared item borders.
+   */
+  comparedLayer: d3.Selection<SVGGElement, {}, null, undefined>;
 
   /**
    * Layout object handling fit-to-screen logic.
@@ -842,6 +867,9 @@ class FacetsDiveVizInternal {
         'class', 'labels');
     this.axesLayer = this.labelsAndAxesSVGRoot.append<SVGGElement>('g').attr(
         'class', 'axes');
+    this.comparedLayer =
+        this.labelsAndAxesSVGRoot.append<SVGGElement>('g').attr(
+            'class', 'comparedboxes');
     this.selectedLayer =
         this.labelsAndAxesSVGRoot.append<SVGGElement>('g').attr(
             'class', 'selectedboxes');
@@ -935,6 +963,23 @@ class FacetsDiveVizInternal {
   }
 
   /**
+   * Update visuals of compared items.
+   */
+  comparedIndicesUpdated() {
+    // Do not update if the mesh hasn't been created. In that case, the visuals
+    // will be updated by the mesh creation itself.
+    if (!this.spriteMesh) {
+      return;
+    }
+    const comparedData = [];
+    for (let i = 0; i < this.elem.comparedIndices.length; i++) {
+      comparedData.push(this.elem.data[this.elem.comparedIndices[i]]);
+    }
+    this.elem.set('comparedData', comparedData);
+    this.updateComparedBoxes();
+  }
+
+  /**
    * Update visual appearance of selected items. This code relies heavily on the
    * D3 join/update/enter/exit pattern.
    */
@@ -974,6 +1019,48 @@ class FacetsDiveVizInternal {
 
     // EXIT.
     selectedElements.exit().remove();
+  }
+
+  /**
+   * Update visual appearance of compared items. This code relies heavily on the
+   * D3 join/update/enter/exit pattern.
+   */
+  updateComparedBoxes() {
+    const comparedBoxes: ItemPosition[] =
+        this.elem.comparedIndices.map(index => {
+          return {
+            x: this.spriteMesh.getX(index),
+            y: this.spriteMesh.getY(index)
+          };
+        });
+
+    // JOIN.
+    const comparedElements =
+        this.comparedLayer.selectAll('.compared').data(comparedBoxes);
+
+    comparedElements
+        // ENTER.
+        .enter()
+        .append('rect')
+        .attr('class', 'compared')
+        .attr('x', (pos: ItemPosition) => pos.x || 0)
+        .attr('y', (pos: ItemPosition) => pos.y || 0)
+        .attr('width', 1)
+        .attr('height', 1)
+        .attr('stroke', COMPARED_ITEM_COLOR)
+        .attr('stroke-opacity', 0)
+        .attr('stroke-width', COMPARED_ITEM_STROKE_WIDTH)
+        .attr('fill-opacity', 0)
+        // ENTER + UPDATE.
+        .merge(comparedElements)
+        .attr('x', (pos: ItemPosition) => pos.x || 0)
+        .attr('y', (pos: ItemPosition) => pos.y || 0)
+        .attr('width', 1)
+        .attr('height', 1)
+        .attr('stroke-opacity', 1);
+
+    // EXIT.
+    comparedElements.exit().remove();
   }
 
   /**
@@ -2071,6 +2158,7 @@ class FacetsDiveVizInternal {
     this.updateLabels();
 
     this.updateSelectedBoxes();
+    this.updateComparedBoxes();
 
     this.fitToViewport();
   }
@@ -2181,6 +2269,7 @@ class FacetsDiveVizInternal {
     this.updateAxes();
     this.updateLabels();
     this.updateSelectedBoxes();
+    this.updateComparedBoxes();
 
     this.fitToViewport();
   }
@@ -3076,6 +3165,17 @@ Polymer({
       notify: true,
       observer: '_selectedIndicesUpdated',
     },
+    comparedData: {
+      type: Array,
+      value: [],
+      notify: true,
+    },
+    comparedIndices: {
+      type: Array,
+      value: [],
+      notify: true,
+      observer: '_comparedIndicesUpdated',
+    },
   },
 
   listeners: {'iron-resize': '_onIronResize'},
@@ -3130,6 +3230,10 @@ Polymer({
 
   _selectedIndicesUpdated(this: any) {
     this._backing.selectedIndicesUpdated();
+  },
+
+  _comparedIndicesUpdated(this: any) {
+    this._backing.comparedIndicesUpdated();
   },
 
   // Public non-Polymer methods.
