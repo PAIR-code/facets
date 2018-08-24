@@ -202,6 +202,13 @@ export interface FacetsDive extends Element {
    */
   comparedData: Array<{}>;
 
+  /**
+   * If true then color legend is stable, meaning the color assignments are not
+   * based on the counts of individual values, but on the alphabetical order of
+   * the values.
+   */
+  stableColors: boolean;
+
   // STYLE PROPERTIES.
 
   /**
@@ -380,6 +387,10 @@ Polymer({
       type: Object,  // Function.
     },
     hideInfoCard: {
+      type: Boolean,
+      value: false,
+    },
+    stableColors: {
       type: Boolean,
       value: false,
     },

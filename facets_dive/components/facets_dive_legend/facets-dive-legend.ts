@@ -84,6 +84,6 @@ Polymer({
    * Gets the icon for opening/closing the legend panel.
    */
   _getIcon(opened: boolean) {
-    return opened ? "expand-more" : "expand-less";
+    return opened ? "expand-less" : "expand-more";
   }
 });
