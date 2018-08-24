@@ -622,6 +622,13 @@ export interface FacetsDiveVis extends HTMLElement {
   comparedIndices: number[];
 
   /**
+   * If true then color legend is stable, meaning the color assignments are not
+   * based on the counts of individual values, but on the alphabetical order of
+   * the values.
+   */
+  stableColors: boolean;
+
+  /**
    * Polymer setter for attribute values.
    */
   // tslint:disable-next-line:no-any TODO(jimbo): Upgrade to typed Polymer.
@@ -2397,9 +2404,13 @@ class FacetsDiveVizInternal {
 
     // Sort the unique values of this field, higest count first.
     const hashKeys = Object.keys(fieldStats.valueHash);
-    hashKeys.sort(
-        (a: string, b: string): number =>
-            fieldStats.valueHash[b].count - fieldStats.valueHash[a].count);
+    if (this.elem.stableColors) {
+      hashKeys.sort();
+    } else {
+      hashKeys.sort(
+          (a: string, b: string): number =>
+              fieldStats.valueHash[b].count - fieldStats.valueHash[a].count);
+    }
 
     const buckets = Math.min(paletteSource.length, hashKeys.length);
 
@@ -3175,6 +3186,11 @@ Polymer({
       value: [],
       notify: true,
       observer: '_comparedIndicesUpdated',
+    },
+    stableColors: {
+      type: Boolean,
+      value: false,
+      observer: '_updateColors',
     },
   },
 
