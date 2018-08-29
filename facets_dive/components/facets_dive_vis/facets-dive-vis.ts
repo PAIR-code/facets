@@ -65,12 +65,27 @@ export const CELL_BACKGROUND_FILL_COLOR = '#f8f8f9';
 /**
  * Color for selected item borders.
  */
-const SELECTED_ITEM_COLOR = '#da7421';
+const SELECTED_ITEM_COLOR = '#fad411';
+
+/**
+ * Color for stroke around selected item borders.
+ */
+const SELECTED_ITEM_COLOR_STROKE = '#826e09';
 
 /**
  * Stroke width for the selected item borders.
  */
-const SELECTED_ITEM_STROKE_WIDTH = 0.1;
+const SELECTED_ITEM_STROKE_WIDTH = 0.15;
+
+/**
+ * Scale of selected highlight box initially before fade-in.
+ */
+const SELECTED_ITEM_INITIAL_SCALE = 3;
+
+/**
+ * Final scale of selected highlight box after fade-in.
+ */
+const SELECTED_ITEM_FINAL_SCALE = 0.8;
 
 /**
  * Color for compared item borders.
@@ -78,9 +93,24 @@ const SELECTED_ITEM_STROKE_WIDTH = 0.1;
 const COMPARED_ITEM_COLOR = '#16dcfb';
 
 /**
+ * Color for stroke around compared item borders.
+ */
+const COMPARED_ITEM_COLOR_STROKE = '#0b6371';
+
+/**
  * Stroke width for the compared item borders.
  */
-const COMPARED_ITEM_STROKE_WIDTH = 0.1;
+const COMPARED_ITEM_STROKE_WIDTH = 0.15;
+
+/**
+ * Scale of compared highlight box initially before fade-in.
+ */
+const COMPARED_ITEM_INITIAL_SCALE = 3;
+
+/**
+ * Final scale of compared highlight box after fade-in.
+ */
+const COMPARED_ITEM_FINAL_SCALE = 0.8;
 
 /**
  * Precision to use for numeric labels in digits.
@@ -1003,29 +1033,59 @@ class FacetsDiveVizInternal {
     const selectedElements =
         this.selectedLayer.selectAll('.selected').data(selectedBoxes);
 
-    selectedElements
-        // ENTER.
+    // ENTER.
+    const enterElements = selectedElements
         .enter()
+        .append('g')
+        .classed('selected', true)
+        .attr('transform', (pos: ItemPosition) => {
+          const x = 0.5 + (pos.x || 0);
+          const y = 0.5 + (pos.y || 0);
+          return `translate(${x},${y}) scale(${SELECTED_ITEM_INITIAL_SCALE})`;
+        })
+        .style('opacity', 0);
+
+    enterElements
         .append('rect')
-        .attr('class', 'selected')
-        .attr('x', (pos: ItemPosition) => pos.x || 0)
-        .attr('y', (pos: ItemPosition) => pos.y || 0)
+        .attr('x', -0.5)
+        .attr('y', -0.5)
+        .attr('width', 1)
+        .attr('height', 1)
+        .attr('stroke', SELECTED_ITEM_COLOR_STROKE)
+        .attr('stroke-linecap', 'round')
+        .attr('stroke-linejoin', 'round')
+        .attr('stroke-opacity', 0)
+        .attr('stroke-width', SELECTED_ITEM_STROKE_WIDTH * 2)
+        .attr('fill-opacity', 0);
+    enterElements
+        .append('rect')
+        .attr('x', -0.5)
+        .attr('y', -0.5)
         .attr('width', 1)
         .attr('height', 1)
         .attr('stroke', SELECTED_ITEM_COLOR)
+        .attr('stroke-linecap', 'round')
+        .attr('stroke-linejoin', 'round')
         .attr('stroke-opacity', 0)
         .attr('stroke-width', SELECTED_ITEM_STROKE_WIDTH)
-        .attr('fill-opacity', 0)
-        // ENTER + UPDATE.
-        .merge(selectedElements)
-        .attr('x', (pos: ItemPosition) => pos.x || 0)
-        .attr('y', (pos: ItemPosition) => pos.y || 0)
-        .attr('width', 1)
-        .attr('height', 1)
+        .attr('fill-opacity', 0);
+
+    // ENTER + UPDATE.
+    const mergedElements = enterElements.merge(selectedElements);
+    mergedElements.transition()
+        .attr('transform', (pos: ItemPosition) => {
+          const x = 0.5 + (pos.x || 0);
+          const y = 0.5 + (pos.y || 0);
+          return `translate(${x},${y}) scale(${SELECTED_ITEM_FINAL_SCALE})`;
+        })
+        .style('opacity', 1);
+    mergedElements
+        .selectAll('rect')
+        .classed('rotate', true)
         .attr('stroke-opacity', 1);
 
     // EXIT.
-    selectedElements.exit().remove();
+    selectedElements.exit().transition().style('opacity', 0).remove();
   }
 
   /**
@@ -1045,29 +1105,59 @@ class FacetsDiveVizInternal {
     const comparedElements =
         this.comparedLayer.selectAll('.compared').data(comparedBoxes);
 
-    comparedElements
-        // ENTER.
+    // ENTER.
+    const enterElements = comparedElements
         .enter()
+        .append('g')
+        .classed('compared', true)
+        .attr('transform', (pos: ItemPosition) => {
+          const x = 0.5 + (pos.x || 0);
+          const y = 0.5 + (pos.y || 0);
+          return `translate(${x},${y}) scale(${COMPARED_ITEM_INITIAL_SCALE})`;
+        })
+        .style('opacity', 0);
+
+    enterElements
         .append('rect')
-        .attr('class', 'compared')
-        .attr('x', (pos: ItemPosition) => pos.x || 0)
-        .attr('y', (pos: ItemPosition) => pos.y || 0)
+        .attr('x', -0.5)
+        .attr('y', -0.5)
+        .attr('width', 1)
+        .attr('height', 1)
+        .attr('stroke', COMPARED_ITEM_COLOR_STROKE)
+        .attr('stroke-linecap', 'round')
+        .attr('stroke-linejoin', 'round')
+        .attr('stroke-opacity', 0)
+        .attr('stroke-width', COMPARED_ITEM_STROKE_WIDTH * 2)
+        .attr('fill-opacity', 0);
+    enterElements
+        .append('rect')
+        .attr('x', -0.5)
+        .attr('y', -0.5)
         .attr('width', 1)
         .attr('height', 1)
         .attr('stroke', COMPARED_ITEM_COLOR)
+        .attr('stroke-linecap', 'round')
+        .attr('stroke-linejoin', 'round')
         .attr('stroke-opacity', 0)
         .attr('stroke-width', COMPARED_ITEM_STROKE_WIDTH)
-        .attr('fill-opacity', 0)
-        // ENTER + UPDATE.
-        .merge(comparedElements)
-        .attr('x', (pos: ItemPosition) => pos.x || 0)
-        .attr('y', (pos: ItemPosition) => pos.y || 0)
-        .attr('width', 1)
-        .attr('height', 1)
+        .attr('fill-opacity', 0);
+
+    // ENTER + UPDATE.
+    const mergedElements = enterElements.merge(comparedElements);
+    mergedElements.transition()
+        .attr('transform', (pos: ItemPosition) => {
+          const x = 0.5 + (pos.x || 0);
+          const y = 0.5 + (pos.y || 0);
+          return `translate(${x},${y}) scale(${COMPARED_ITEM_FINAL_SCALE})`;
+        })
+        .style('opacity', 1);
+    mergedElements
+        .selectAll('rect')
+        .classed('rotate', true)
         .attr('stroke-opacity', 1);
 
     // EXIT.
-    comparedElements.exit().remove();
+    comparedElements.exit().transition().style('opacity', 0).remove();
   }
 
   /**

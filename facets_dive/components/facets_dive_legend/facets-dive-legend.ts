@@ -41,6 +41,7 @@ Polymer({
     colorBy: {
       type: String,
       value: '',
+      observer: '_open',
     },
     palette: {
       type: Array,
@@ -71,6 +72,13 @@ Polymer({
    */
   _specialClass(special: boolean): string {
     return special ? 'special' : '';
+  },
+
+  /**
+   * Opens the legend panel if it's not open already.
+   */
+  _open(this: any) {
+    this._opened = true;
   },
 
   /**
