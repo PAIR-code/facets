@@ -42,6 +42,18 @@ limitations under the License.
         @apply --paper-font-common-base;
         @apply --paper-font-headline;
       }
+      ::content .rotate {
+        stroke-dasharray: 1.5, 0.5;
+        animation: rotate 1s linear infinite;
+      }
+      @keyframes rotate {
+        from {
+          stroke-dashoffset: 0;
+        }
+        to {
+          stroke-dashoffset: 2;
+        }
+      }
     </style>
     <!-- Additional content filled in dynamically. -->
   </template>
