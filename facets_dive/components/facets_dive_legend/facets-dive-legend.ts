@@ -48,7 +48,7 @@ Polymer({
     },
     _opened: {
       type: Boolean,
-      value: false,
+      value: true,
     },
   },
 
