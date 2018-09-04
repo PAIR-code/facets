@@ -39,6 +39,11 @@ import pandas as pd
 df =  pd.DataFrame({'num' : [1, 2, 3, 4], 'str' : ['a', 'a', 'b', None]})
 proto = GenericFeatureStatisticsGenerator().ProtoFromDataFrames([{'name': 'test', 'table': df}])
 ```
+
+## Large Datasets
+
+The python code in this repository for generating feature stats only works on datasets that are small enough to fit into memory on your local machine. For distributed generation of feature stats for large datasets, check out the independently-developed [Facets Overview Spark project](https://github.com/gopro/facets-overview-spark).
+
 # Visualization
 
 A proto can easily be visualized in a Jupyter notebook using the installed nbextension.
