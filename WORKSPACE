@@ -21,11 +21,11 @@ closure_repositories(
 
 http_archive(
     name = "org_tensorflow_tensorboard",
-    sha256 = "5f921949cd70f06e6f5de56d5453ea621bf27fc4e5b3dc2122b6e62a346367ce",
-    strip_prefix = "tensorboard-6d47ca3b5fe0ffb2c3ef0e8babbadf6632fe4eea",
+    sha256 = "892999b71a8b51f20fecf52eb70ed357eb2db1f0834dec73d43de3b86aa761ef",
+    strip_prefix = "tensorboard-199cf2c94fa097ccc67aca71ebf5870eef4bc78d",
     urls = [
-        "https://mirror.bazel.build/github.com/tensorflow/tensorboard/archive/6d47ca3b5fe0ffb2c3ef0e8babbadf6632fe4eea.tar.gz",
-        "https://github.com/tensorflow/tensorboard/archive/6d47ca3b5fe0ffb2c3ef0e8babbadf6632fe4eea.tar.gz",  # 2018-08-07
+        "https://mirror.bazel.build/github.com/tensorflow/tensorboard/archive/199cf2c94fa097ccc67aca71ebf5870eef4bc78d.tar.gz",
+        "https://github.com/tensorflow/tensorboard/archive/199cf2c94fa097ccc67aca71ebf5870eef4bc78d.tar.gz",  # 2018-09-05
     ],
 )
 

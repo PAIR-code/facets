@@ -229,10 +229,10 @@ Polymer({
           }
         }
         return x;
-      }, xScale)
+      })
       .y(() => 0, yScale)
       .y2((d: Histogram.Bucket) =>
-          this._getCountWithFloor(d, maxCount, logScale), yScale);
+          this._getCountWithFloor(d, maxCount, logScale));
 
     // Set the rectangle attributes.
     bars.attr(
