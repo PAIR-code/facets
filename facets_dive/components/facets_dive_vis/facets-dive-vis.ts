@@ -70,7 +70,7 @@ const SELECTED_ITEM_COLOR = '#fad411';
 /**
  * Color for stroke around selected item borders.
  */
-const SELECTED_ITEM_COLOR_STROKE = '#826e09';
+const SELECTED_ITEM_COLOR_STROKE = '#483d06';
 
 /**
  * Stroke width for the selected item borders.
@@ -90,12 +90,12 @@ const SELECTED_ITEM_FINAL_SCALE = 0.8;
 /**
  * Color for compared item borders.
  */
-const COMPARED_ITEM_COLOR = '#16dcfb';
+const COMPARED_ITEM_COLOR = '#1d6b1d';
 
 /**
  * Color for stroke around compared item borders.
  */
-const COMPARED_ITEM_COLOR_STROKE = '#0b6371';
+const COMPARED_ITEM_COLOR_STROKE = '#44ff44';
 
 /**
  * Stroke width for the compared item borders.
@@ -1034,19 +1034,20 @@ class FacetsDiveVizInternal {
         this.selectedLayer.selectAll('.selected').data(selectedBoxes);
 
     // ENTER.
-    const enterElements = selectedElements
-        .enter()
-        .append('g')
-        .classed('selected', true)
-        .attr('transform', (pos: ItemPosition) => {
-          const x = 0.5 + (pos.x || 0);
-          const y = 0.5 + (pos.y || 0);
-          return `translate(${x},${y}) scale(${SELECTED_ITEM_INITIAL_SCALE})`;
-        })
-        .style('opacity', 0);
+    const enterElements = selectedElements.enter()
+                              .append('g')
+                              .classed('selected', true)
+                              .attr(
+                                  'transform',
+                                  (pos: ItemPosition) => {
+                                    const x = 0.5 + (pos.x || 0);
+                                    const y = 0.5 + (pos.y || 0);
+                                    return `translate(${x},${y}) scale(${
+                                        SELECTED_ITEM_INITIAL_SCALE})`;
+                                  })
+                              .style('opacity', 0);
 
-    enterElements
-        .append('rect')
+    enterElements.append('rect')
         .attr('x', -0.5)
         .attr('y', -0.5)
         .attr('width', 1)
@@ -1057,8 +1058,7 @@ class FacetsDiveVizInternal {
         .attr('stroke-opacity', 0)
         .attr('stroke-width', SELECTED_ITEM_STROKE_WIDTH * 2)
         .attr('fill-opacity', 0);
-    enterElements
-        .append('rect')
+    enterElements.append('rect')
         .attr('x', -0.5)
         .attr('y', -0.5)
         .attr('width', 1)
@@ -1073,14 +1073,15 @@ class FacetsDiveVizInternal {
     // ENTER + UPDATE.
     const mergedElements = enterElements.merge(selectedElements);
     mergedElements.transition()
-        .attr('transform', (pos: ItemPosition) => {
-          const x = 0.5 + (pos.x || 0);
-          const y = 0.5 + (pos.y || 0);
-          return `translate(${x},${y}) scale(${SELECTED_ITEM_FINAL_SCALE})`;
-        })
+        .attr(
+            'transform',
+            (pos: ItemPosition) => {
+              const x = 0.5 + (pos.x || 0);
+              const y = 0.5 + (pos.y || 0);
+              return `translate(${x},${y}) scale(${SELECTED_ITEM_FINAL_SCALE})`;
+            })
         .style('opacity', 1);
-    mergedElements
-        .selectAll('rect')
+    mergedElements.selectAll('rect')
         .classed('rotate', true)
         .attr('stroke-opacity', 1);
 
@@ -1106,19 +1107,20 @@ class FacetsDiveVizInternal {
         this.comparedLayer.selectAll('.compared').data(comparedBoxes);
 
     // ENTER.
-    const enterElements = comparedElements
-        .enter()
-        .append('g')
-        .classed('compared', true)
-        .attr('transform', (pos: ItemPosition) => {
-          const x = 0.5 + (pos.x || 0);
-          const y = 0.5 + (pos.y || 0);
-          return `translate(${x},${y}) scale(${COMPARED_ITEM_INITIAL_SCALE})`;
-        })
-        .style('opacity', 0);
+    const enterElements = comparedElements.enter()
+                              .append('g')
+                              .classed('compared', true)
+                              .attr(
+                                  'transform',
+                                  (pos: ItemPosition) => {
+                                    const x = 0.5 + (pos.x || 0);
+                                    const y = 0.5 + (pos.y || 0);
+                                    return `translate(${x},${y}) scale(${
+                                        COMPARED_ITEM_INITIAL_SCALE})`;
+                                  })
+                              .style('opacity', 0);
 
-    enterElements
-        .append('rect')
+    enterElements.append('rect')
         .attr('x', -0.5)
         .attr('y', -0.5)
         .attr('width', 1)
@@ -1129,8 +1131,7 @@ class FacetsDiveVizInternal {
         .attr('stroke-opacity', 0)
         .attr('stroke-width', COMPARED_ITEM_STROKE_WIDTH * 2)
         .attr('fill-opacity', 0);
-    enterElements
-        .append('rect')
+    enterElements.append('rect')
         .attr('x', -0.5)
         .attr('y', -0.5)
         .attr('width', 1)
@@ -1145,14 +1146,15 @@ class FacetsDiveVizInternal {
     // ENTER + UPDATE.
     const mergedElements = enterElements.merge(comparedElements);
     mergedElements.transition()
-        .attr('transform', (pos: ItemPosition) => {
-          const x = 0.5 + (pos.x || 0);
-          const y = 0.5 + (pos.y || 0);
-          return `translate(${x},${y}) scale(${COMPARED_ITEM_FINAL_SCALE})`;
-        })
+        .attr(
+            'transform',
+            (pos: ItemPosition) => {
+              const x = 0.5 + (pos.x || 0);
+              const y = 0.5 + (pos.y || 0);
+              return `translate(${x},${y}) scale(${COMPARED_ITEM_FINAL_SCALE})`;
+            })
         .style('opacity', 1);
-    mergedElements
-        .selectAll('rect')
+    mergedElements.selectAll('rect')
         .classed('rotate', true)
         .attr('stroke-opacity', 1);
 
