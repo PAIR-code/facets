@@ -8,7 +8,7 @@ tf_web_library(
     name = "facets_overview_row_legend",
     srcs = [
         "facets-overview-row-legend.html",
-        "facets-overview-row-legend.ts"
+        "facets-overview-row-legend.ts",
     ],
     clutz_entry_points = [
         "proto.featureStatistics.DatasetFeatureStatistics",
@@ -18,12 +18,12 @@ tf_web_library(
         "proto.featureStatistics.StringStatistics",
         "proto.featureStatistics.CommonStatistics",
         "proto.featureStatistics.Histogram",
-        "proto.featureStatistics.RankHistogram"
+        "proto.featureStatistics.RankHistogram",
     ],
     path = "/facets-overview/components/facets-overview-row-legend",
     deps = [
-        "//facets_overview/proto",
         "//facets_overview/common",
+        "//facets_overview/proto",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
     ],
 )

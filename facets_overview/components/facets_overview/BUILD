@@ -9,7 +9,7 @@ tf_web_library(
     srcs = [
         "facets-overview-filter-validator.html",
         "facets-overview.html",
-        "facets-overview.ts"
+        "facets-overview.ts",
     ],
     clutz_entry_points = [
         "proto.featureStatistics.DatasetFeatureStatistics",
@@ -19,13 +19,13 @@ tf_web_library(
         "proto.featureStatistics.StringStatistics",
         "proto.featureStatistics.CommonStatistics",
         "proto.featureStatistics.Histogram",
-        "proto.featureStatistics.RankHistogram"
+        "proto.featureStatistics.RankHistogram",
     ],
     path = "/facets-overview/components/facets-overview",
     deps = [
-        "//facets_overview/proto",
         "//facets_overview/common",
         "//facets_overview/components/facets_overview_table",
+        "//facets_overview/proto",
         "@org_polymer_iron_list",
         "@org_polymer_iron_validator_behavior",
         "@org_polymer_paper_checkbox",
