@@ -12,8 +12,8 @@ tf_web_library(
     ],
     path = "/facets",
     deps = [
-        "//facets_overview/components/facets_overview",
         "//facets_dive/components/facets_dive",
+        "//facets_overview/components/facets_overview",
     ],
 )
 
@@ -40,5 +40,5 @@ genrule(
     name = "facets_jupyter",
     srcs = [":facets"],
     outs = ["facets-jupyter.html"],
-    cmd = "sed 's|<!doctype html>|<!doctype html><script>define=undefined</script>|' $(location :facets) > $@"
+    cmd = "sed 's|<!doctype html>|<!doctype html><script>define=undefined</script>|' $(location :facets) > $@",
 )

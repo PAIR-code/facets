@@ -8,7 +8,7 @@ tf_web_library(
     name = "facets_overview_chart",
     srcs = [
         "facets-overview-chart.html",
-        "facets-overview-chart.ts"
+        "facets-overview-chart.ts",
     ],
     clutz_entry_points = [
         "proto.featureStatistics.DatasetFeatureStatistics",
@@ -18,12 +18,12 @@ tf_web_library(
         "proto.featureStatistics.StringStatistics",
         "proto.featureStatistics.CommonStatistics",
         "proto.featureStatistics.Histogram",
-        "proto.featureStatistics.RankHistogram"
+        "proto.featureStatistics.RankHistogram",
     ],
     path = "/facets-overview/components/facets-overview-chart",
     deps = [
-        "//facets_overview/proto",
         "//facets_overview/common",
+        "//facets_overview/proto",
         "@org_polymer_iron_list",
         "@org_polymer_paper_button",
         "@org_polymer_paper_checkbox",

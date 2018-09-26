@@ -8,7 +8,7 @@ tf_web_library(
     name = "facets_overview_table",
     srcs = [
         "facets-overview-table.html",
-        "facets-overview-table.ts"
+        "facets-overview-table.ts",
     ],
     clutz_entry_points = [
         "proto.featureStatistics.DatasetFeatureStatistics",
@@ -22,11 +22,11 @@ tf_web_library(
     ],
     path = "/facets-overview/components/facets-overview-table",
     deps = [
-        "//facets_overview/proto",
         "//facets_overview/common",
         "//facets_overview/components/facets_overview_chart",
         "//facets_overview/components/facets_overview_row_legend",
         "//facets_overview/components/facets_overview_row_stats",
+        "//facets_overview/proto",
         "@org_polymer_iron_list",
         "@org_polymer_paper_dropdown_menu",
         "@org_polymer_paper_item",
@@ -35,4 +35,3 @@ tf_web_library(
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
     ],
 )
-
