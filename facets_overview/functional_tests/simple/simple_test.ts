@@ -17,6 +17,7 @@
 import DatasetFeatureStatisticsList from 'goog:proto.featureStatistics.DatasetFeatureStatisticsList';
 import FeatureNameStatistics from 'goog:proto.featureStatistics.FeatureNameStatistics';
 import Histogram from 'goog:proto.featureStatistics.Histogram';
+import Path from 'goog:proto.featureStatistics.Path';
 import RankHistogram from 'goog:proto.featureStatistics.RankHistogram';
 import { DataPoint, generateStats } from '../../common/feature_statistics_generator';
 import { FeatureSelection } from '../../common/utils';
@@ -55,6 +56,10 @@ function create(): DatasetFeatureStatisticsList {
                    });
   }
   let stats = generateStats(dataPoints);
+  let featureStats = stats.getFeaturesList()[1];
+  const path = new Path();
+  path.setStepList(['root', 'dir', 'val2']);
+  featureStats.setPath(path);
   stats.setName('training-data-with-long-name');
   data.getDatasetsList().push(stats);
 
@@ -82,7 +87,7 @@ function create(): DatasetFeatureStatisticsList {
   const customRankHist = th.makeRankHistogram([
     th.makeRankBucket('label1', 0, 0, 10), th.makeRankBucket('label2', 1, 1, 6)
   ]);
-  const featureStats = stats.getFeaturesList()[0];
+  featureStats = stats.getFeaturesList()[0];
   const customStats = [th.makeCustomStatistic('customHist', customHist),
                        th.makeCustomStatistic('customNum', 13.1),
                        th.makeCustomStatistic('customRankHist', customRankHist),
