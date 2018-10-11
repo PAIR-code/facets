@@ -462,8 +462,9 @@ export function isFeatureTypeNumeric(type: FeatureNameStatistics.Type) {
 /**
  * Cleans the provided DatasetFeatureStatisticsList proto by copying all
  * deprecated fields to their non-deprecated version if the deprecated field
- * is set and the non-deprecated field is not set. This method alters the proto
- * in place and also returns it as a convinience.
+ * is set and the non-deprecated field is not set and performing other clean-up
+ * operations. This method alters the proto in place and also returns it as a
+ * convinience.
  */
 export function cleanProto(datasets: DatasetFeatureStatisticsList):
     DatasetFeatureStatisticsList {
@@ -472,6 +473,16 @@ export function cleanProto(datasets: DatasetFeatureStatisticsList):
   // deprecated field into the non-deprecated field.
   datasets.getDatasetsList().forEach(dataset => {
     dataset.getFeaturesList().forEach(feature => {
+      // If the feature's path step list is set, then use this path to create
+      // the feature's name, separated by forward slashes.
+      const path = feature.getPath();
+      if (path != null) {
+        const steps = path.getStepList();
+        if (steps != null) {
+          feature.setName(steps.join('/'));
+        }
+      }
+
       let hists: GenericHistogram[] = [];
       if (feature.getStringStats()) {
         const h = feature.getStringStats()!.getRankHistogram();
