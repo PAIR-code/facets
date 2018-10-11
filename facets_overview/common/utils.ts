@@ -479,8 +479,7 @@ export function cleanProto(datasets: DatasetFeatureStatisticsList):
       if (path != null) {
         const steps = path.getStepList();
         if (steps != null) {
-          feature.setName(steps.reduce(
-            (accumulator, currentValue) => accumulator + '/' + currentValue));
+          feature.setName(steps.join('/'));
         }
       }
 
