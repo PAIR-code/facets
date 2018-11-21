@@ -225,5 +225,5 @@ class BaseFeatureStatisticsGenerator(BaseGenericFeatureStatisticsGenerator):
     """
     return self._GetEntries([path], max_entries,
                             partial(
-                                tf.python_io.tf_record_iterator,
+                                tf.compat.v1.io.tf_record_iterator,
                                 options=iterator_options), is_sequence)
