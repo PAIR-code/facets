@@ -1919,18 +1919,11 @@ class FacetsDiveVizInternal {
       return;
     }
 
-    // TODO(jimbo): Less hacky way of deferring change handlers for ready?
-    /*if (!this.scene) {
-      requestAnimationFrame(this.dataChange.bind(this));
-      return;
-    }*/
-
     // Make sure the element's size computations reflect the element boundaries.
     this.resizeHandler();
 
     // Produce stats for data.
     this.stats = getStats(data);
-    debugger;
 
     if (!this.items) {
       // Since this is the very first time that data is available, select nice
@@ -2012,12 +2005,6 @@ class FacetsDiveVizInternal {
   filteredDataIndicesChange() {
     const filteredIndices = this.elem.filteredDataIndices;
 
-    // TODO(jimbo): Less hacky way of deferring change handlers for ready?
-    /*if (!this.scene || !this.items) {
-      requestAnimationFrame(this.filteredDataIndicesChange.bind(this));
-      return;
-    }*/
-
     const itemVisibility: boolean[] = [];
     if (filteredIndices) {
       for (let i = 0; i < filteredIndices.length; i++) {
@@ -2057,7 +2044,6 @@ class FacetsDiveVizInternal {
 
     // TODO(jimbo): Computing stats is quite expensive, do less or incremental.
     this.stats = getStats(filteredData);
-    debugger;
     this.grid.items = filteredItems;
 
     this.updateGridFaceting();
@@ -3299,28 +3285,25 @@ Polymer({
   },
 
   _dataChange(this: any, data: DataExample[]) {
+    // TODO(jimbo): Less hacky way of deferring change handlers for ready?
     if (!this._backing.scene) {
-      debugger;
       requestAnimationFrame(this._dataChange.bind(this, data));
       return;
     }
-    debugger;
     this._backing.dataChange();
     this._setKeys(this._backing.getKeys());
-    debugger;
     this._setStats(this._backing.stats);
   },
 
   _filteredDataIndicesChange(this: any, filteredDataIndices: number[]) {
+    // TODO(jimbo): Less hacky way of deferring change handlers for ready?
     if (!this._backing.scene) {
-      debugger;
-      requestAnimationFrame(this._filteredDataIndicesChange.bind(this, filteredDataIndices));
+      requestAnimationFrame(
+        this._filteredDataIndicesChange.bind(this, filteredDataIndices));
       return;
     }
-    debugger;
     this._backing.filteredDataIndicesChange();
     this._setKeys(this._backing.getKeys());
-    debugger;
     this._setStats(this._backing.stats);
   },
 
