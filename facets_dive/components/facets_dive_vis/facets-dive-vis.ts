@@ -1919,12 +1919,6 @@ class FacetsDiveVizInternal {
       return;
     }
 
-    // TODO(jimbo): Less hacky way of deferring change handlers for ready?
-    if (!this.scene) {
-      requestAnimationFrame(this.dataChange.bind(this));
-      return;
-    }
-
     // Make sure the element's size computations reflect the element boundaries.
     this.resizeHandler();
 
@@ -2010,12 +2004,6 @@ class FacetsDiveVizInternal {
    */
   filteredDataIndicesChange() {
     const filteredIndices = this.elem.filteredDataIndices;
-
-    // TODO(jimbo): Less hacky way of deferring change handlers for ready?
-    if (!this.scene || !this.items) {
-      requestAnimationFrame(this.filteredDataIndicesChange.bind(this));
-      return;
-    }
 
     const itemVisibility: boolean[] = [];
     if (filteredIndices) {
@@ -3297,12 +3285,23 @@ Polymer({
   },
 
   _dataChange(this: any, data: DataExample[]) {
+    // TODO(jimbo): Less hacky way of deferring change handlers for ready?
+    if (!this._backing.scene) {
+      requestAnimationFrame(this._dataChange.bind(this, data));
+      return;
+    }
     this._backing.dataChange();
     this._setKeys(this._backing.getKeys());
     this._setStats(this._backing.stats);
   },
 
   _filteredDataIndicesChange(this: any, filteredDataIndices: number[]) {
+    // TODO(jimbo): Less hacky way of deferring change handlers for ready?
+    if (!this._backing.scene || !this._backing.items) {
+      requestAnimationFrame(
+        this._filteredDataIndicesChange.bind(this, filteredDataIndices));
+      return;
+    }
     this._backing.filteredDataIndicesChange();
     this._setKeys(this._backing.getKeys());
     this._setStats(this._backing.stats);
