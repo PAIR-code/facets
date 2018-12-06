@@ -1929,6 +1929,7 @@ class FacetsDiveVizInternal {
     this.resizeHandler();
 
     // Produce stats for data.
+    debugger;
     this.stats = getStats(data);
     console.log(this.stats);
 
@@ -2056,6 +2057,7 @@ class FacetsDiveVizInternal {
     this.renderUntil(future);
 
     // TODO(jimbo): Computing stats is quite expensive, do less or incremental.
+    debugger;
     this.stats = getStats(filteredData);
     console.log('filtered stats');
     console.log(this.stats);
