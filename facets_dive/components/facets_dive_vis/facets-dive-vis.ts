@@ -3297,7 +3297,7 @@ Polymer({
 
   _filteredDataIndicesChange(this: any, filteredDataIndices: number[]) {
     // TODO(jimbo): Less hacky way of deferring change handlers for ready?
-    if (!this._backing.scene) {
+    if (!this._backing.scene || !this._backing.items) {
       requestAnimationFrame(
         this._filteredDataIndicesChange.bind(this, filteredDataIndices));
       return;
