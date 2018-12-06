@@ -1929,9 +1929,8 @@ class FacetsDiveVizInternal {
     this.resizeHandler();
 
     // Produce stats for data.
-    debugger;
     this.stats = getStats(data);
-    console.log(this.stats);
+    debugger;
 
     if (!this.items) {
       // Since this is the very first time that data is available, select nice
@@ -2057,10 +2056,8 @@ class FacetsDiveVizInternal {
     this.renderUntil(future);
 
     // TODO(jimbo): Computing stats is quite expensive, do less or incremental.
-    debugger;
     this.stats = getStats(filteredData);
-    console.log('filtered stats');
-    console.log(this.stats);
+    debugger;
     this.grid.items = filteredItems;
 
     this.updateGridFaceting();
@@ -3302,14 +3299,18 @@ Polymer({
   },
 
   _dataChange(this: any, data: DataExample[]) {
+    debugger;
     this._backing.dataChange();
     this._setKeys(this._backing.getKeys());
+    debugger;
     this._setStats(this._backing.stats);
   },
 
   _filteredDataIndicesChange(this: any, filteredDataIndices: number[]) {
+    debugger;
     this._backing.filteredDataIndicesChange();
     this._setKeys(this._backing.getKeys());
+    debugger;
     this._setStats(this._backing.stats);
   },
 
