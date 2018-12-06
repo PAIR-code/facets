@@ -1930,6 +1930,7 @@ class FacetsDiveVizInternal {
 
     // Produce stats for data.
     this.stats = getStats(data);
+    console.log(this.stats);
 
     if (!this.items) {
       // Since this is the very first time that data is available, select nice
@@ -2056,6 +2057,8 @@ class FacetsDiveVizInternal {
 
     // TODO(jimbo): Computing stats is quite expensive, do less or incremental.
     this.stats = getStats(filteredData);
+    console.log('filtered stats');
+    console.log(this.stats);
     this.grid.items = filteredItems;
 
     this.updateGridFaceting();
