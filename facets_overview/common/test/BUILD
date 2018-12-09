@@ -13,11 +13,12 @@ closure_js_library(
 
 tf_web_library(
     name = "test",
+    testonly = True,
     srcs = [
         "feature_statistics_generator_test.ts",
         "overview_data_model_test.ts",
-        "utils_test.ts",
         "test.html",
+        "utils_test.ts",
     ],
     clutz_entry_points = [
         "proto.featureStatistics.DatasetFeatureStatistics",
@@ -27,16 +28,15 @@ tf_web_library(
         "proto.featureStatistics.StringStatistics",
         "proto.featureStatistics.CommonStatistics",
         "proto.featureStatistics.Histogram",
-        "proto.featureStatistics.RankHistogram"
+        "proto.featureStatistics.RankHistogram",
     ],
     path = "/facets-overview/common/test",
     deps = [
         ":externs",
-        "//facets_overview/proto",
         "//facets_overview/common",
+        "//facets_overview/proto:feature_statistics_closure_proto",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:web_component_tester",
     ],
-    testonly = True
 )
 
 # Compiles standalone HTML file that tests facets-overview common files.

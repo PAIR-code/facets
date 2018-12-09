@@ -30,7 +30,7 @@ tf_web_library(
         "//facets_overview/common",
         "//facets_overview/components/facets_overview",
         "//facets_overview/functional_tests/test_helpers",
-        "//facets_overview/proto",
+        "//facets_overview/proto:feature_statistics_closure_proto",
         "@org_polymer_iron_demo_helpers",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:d3",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
