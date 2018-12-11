@@ -23,7 +23,7 @@ tf_web_library(
     path = "/facets-overview/components/facets-overview-chart",
     deps = [
         "//facets_overview/common",
-        "//facets_overview/proto",
+        "//facets_overview/proto:feature_statistics_closure_proto",
         "@org_polymer_iron_list",
         "@org_polymer_paper_button",
         "@org_polymer_paper_checkbox",

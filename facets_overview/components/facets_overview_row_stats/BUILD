@@ -23,7 +23,7 @@ tf_web_library(
     path = "/facets-overview/components/facets-overview-row-stats",
     deps = [
         "//facets_overview/common",
-        "//facets_overview/proto",
+        "//facets_overview/proto:feature_statistics_closure_proto",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:d3",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
     ],

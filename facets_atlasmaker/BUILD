@@ -6,8 +6,8 @@ py_binary(
     srcs_version = "PY2AND3",
     visibility = ["//visibility:public"],
     deps = [
-        ":convert",
         ":atlasmaker_io",
+        ":convert",
     ],
 )
 

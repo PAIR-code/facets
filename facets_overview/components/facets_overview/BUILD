@@ -7,9 +7,9 @@ licenses(["notice"])  # Apache 2.0
 tf_web_library(
     name = "facets_overview",
     srcs = [
-        "facets-overview-filter-validator.html",
         "facets-overview.html",
         "facets-overview.ts",
+        "facets-overview-filter-validator.html",
     ],
     clutz_entry_points = [
         "proto.featureStatistics.DatasetFeatureStatistics",
@@ -25,7 +25,7 @@ tf_web_library(
     deps = [
         "//facets_overview/common",
         "//facets_overview/components/facets_overview_table",
-        "//facets_overview/proto",
+        "//facets_overview/proto:feature_statistics_closure_proto",
         "@org_polymer_iron_list",
         "@org_polymer_iron_validator_behavior",
         "@org_polymer_paper_checkbox",

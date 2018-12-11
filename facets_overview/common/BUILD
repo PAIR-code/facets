@@ -20,11 +20,11 @@ tf_web_library(
         "proto.featureStatistics.StringStatistics",
         "proto.featureStatistics.CommonStatistics",
         "proto.featureStatistics.Histogram",
-        "proto.featureStatistics.RankHistogram"
+        "proto.featureStatistics.RankHistogram",
     ],
     path = "/facets-overview/common",
     deps = [
-        "//facets_overview/proto",
+        "//facets_overview/proto:feature_statistics_closure_proto",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:d3",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:plottable",
     ],

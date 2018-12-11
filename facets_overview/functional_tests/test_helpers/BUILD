@@ -33,6 +33,6 @@ tf_web_library(
     deps = [
         ":externs",
         "//facets_overview/common",
-        "//facets_overview/proto",
+        "//facets_overview/proto:feature_statistics_closure_proto",
     ],
 )

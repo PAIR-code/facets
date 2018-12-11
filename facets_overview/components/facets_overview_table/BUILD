@@ -18,7 +18,7 @@ tf_web_library(
         "proto.featureStatistics.StringStatistics",
         "proto.featureStatistics.CommonStatistics",
         "proto.featureStatistics.Histogram",
-        "proto.featureStatistics.RankHistogram"
+        "proto.featureStatistics.RankHistogram",
     ],
     path = "/facets-overview/components/facets-overview-table",
     deps = [
@@ -26,7 +26,7 @@ tf_web_library(
         "//facets_overview/components/facets_overview_chart",
         "//facets_overview/components/facets_overview_row_legend",
         "//facets_overview/components/facets_overview_row_stats",
-        "//facets_overview/proto",
+        "//facets_overview/proto:feature_statistics_closure_proto",
         "@org_polymer_iron_list",
         "@org_polymer_paper_dropdown_menu",
         "@org_polymer_paper_item",
