@@ -1,5 +1,21 @@
 workspace(name = "ai_google_pair_facets")
 
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Needed as a transitive dependency of rules_webtesting below.
+http_archive(
+    name = "bazel_skylib",
+    sha256 = "2b9af2de004d67725c9985540811835389b229c27874f2e15f5e319622a53a3b",
+    strip_prefix = "bazel-skylib-e9fc4750d427196754bebb0e2e1e38d68893490a",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/archive/e9fc4750d427196754bebb0e2e1e38d68893490a.tar.gz",
+        "https://github.com/bazelbuild/bazel-skylib/archive/e9fc4750d427196754bebb0e2e1e38d68893490a.tar.gz",
+    ],
+)
+
+load("@bazel_skylib//lib:versions.bzl", "versions")
+versions.check(minimum_bazel_version = "0.16.1")
+
 http_archive(
     name = "io_bazel_rules_closure",
     sha256 = "b29a8bc2cb10513c864cb1084d6f38613ef14a143797cea0af0f91cd385f5e8c",
@@ -7,6 +23,16 @@ http_archive(
     urls = [
         "https://mirror.bazel.build/github.com/bazelbuild/rules_closure/archive/0.8.0.tar.gz",
         "https://github.com/bazelbuild/rules_closure/archive/0.8.0.tar.gz",  # 2018-08-03
+    ],
+)
+
+http_archive(
+    name = "io_bazel_rules_webtesting",
+    sha256 = "89f041028627d801ba3b4ea1ef2211994392d46e25c1fc3501b95d51698e4a1e",
+    strip_prefix = "rules_webtesting-0.2.2",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_webtesting/archive/0.2.2.tar.gz",
+        "https://github.com/bazelbuild/rules_webtesting/archive/0.2.2.tar.gz",
     ],
 )
 
@@ -21,11 +47,11 @@ closure_repositories(
 
 http_archive(
     name = "org_tensorflow_tensorboard",
-    sha256 = "892999b71a8b51f20fecf52eb70ed357eb2db1f0834dec73d43de3b86aa761ef",
-    strip_prefix = "tensorboard-199cf2c94fa097ccc67aca71ebf5870eef4bc78d",
+    sha256 = "692e1d721d8a37cc410bac3390ed0b1590aaf30051a0949a98e9c047c5ab2d69",
+    strip_prefix = "tensorboard-280c5cc4ec878429c53817c64aec5d74257b5813",
     urls = [
-        "https://mirror.bazel.build/github.com/tensorflow/tensorboard/archive/199cf2c94fa097ccc67aca71ebf5870eef4bc78d.tar.gz",
-        "https://github.com/tensorflow/tensorboard/archive/199cf2c94fa097ccc67aca71ebf5870eef4bc78d.tar.gz",  # 2018-09-05
+        "https://mirror.bazel.build/github.com/tensorflow/tensorboard/archive/280c5cc4ec878429c53817c64aec5d74257b5813.tar.gz",
+        "https://github.com/tensorflow/tensorboard/archive/280c5cc4ec878429c53817c64aec5d74257b5813.tar.gz",  # 2019-01-13
     ],
 )
 
