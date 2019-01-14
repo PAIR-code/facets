@@ -19,7 +19,7 @@ import {FacetsDive} from '../components/facets-dive/facets-dive';
 const ss = document.querySelector('facets-dive') as FacetsDive;
 
 const loadDataset = (url: string) => {
-  d3.json(`${url}.json`, (data: Array<{}>) => {
+  (d3.json(`${url}.json`) as any).then((data: Array<{}>) => {
     ss.data = data;
     ss.atlasUrl = `${url}.png`;
   });
