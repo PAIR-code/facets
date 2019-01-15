@@ -26,6 +26,8 @@ import {FieldStats, getAllKeys, getStats} from '../../lib/stats';
 import * as sf from '../../lib/string-format';
 import * as wordtree from '../../lib/wordtree';
 
+declare var THREE: any;
+
 export type Cell = gridlib.Cell;
 export type Grid = gridlib.Grid;
 export type ItemPosition = gridlib.ItemPosition;
@@ -1954,7 +1956,7 @@ class FacetsDiveVizInternal {
    */
   initializeSpriteMesh() {
     if (this.spriteMesh) {
-      this.scene.remove(this.spriteMesh);
+      this.scene.remove(this.spriteMesh as any);
       this.spriteMesh.spriteAtlas.clearQueues();  // Abort outstanding draws.
       delete this.spriteMesh;
     }
@@ -1967,7 +1969,7 @@ class FacetsDiveVizInternal {
 
     this.spriteMesh =
         new SpriteMesh(itemCount, spriteImageWidth, spriteImageHeight);
-    this.scene.add(this.spriteMesh);
+    this.scene.add(this.spriteMesh as any);
     this.spriteMesh.spriteAtlas.onDrawFinished = () => this.queueRenderScene();
 
     // Create items which pair sprites and data, and initialize sprites.

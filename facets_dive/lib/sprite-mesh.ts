@@ -38,6 +38,8 @@ import {SpriteMaterial} from './sprite-material';
 
 export type SpriteImageData = SpriteImageData;
 
+declare var THREE: any;
+
 /**
  * The Sprite class acts as an object-oriented interface for interacting with
  * the underlying properties managed by the SpriteMesh.
