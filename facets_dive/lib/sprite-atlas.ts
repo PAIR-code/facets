@@ -20,6 +20,8 @@
  */
 import {TextFitter} from './text';
 
+declare var THREE: any;
+
 export interface SpriteImageData {
   /**
    * The type of data. E.g. 'image/png' or 'text'.

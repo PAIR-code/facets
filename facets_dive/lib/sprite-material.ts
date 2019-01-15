@@ -19,6 +19,8 @@
  */
 import {SpriteAtlas} from './sprite-atlas';
 
+declare var THREE: any;
+
 export class SpriteMaterial extends THREE.RawShaderMaterial {
   constructor(defaultTexture: THREE.Texture, spriteAtlas: SpriteAtlas) {
     super({
