@@ -1956,7 +1956,7 @@ class FacetsDiveVizInternal {
    */
   initializeSpriteMesh() {
     if (this.spriteMesh) {
-      this.scene.remove((this.spriteMesh as {}) as THREE.Object3D);
+      this.scene.remove(this.spriteMesh as any);
       this.spriteMesh.spriteAtlas.clearQueues();  // Abort outstanding draws.
       delete this.spriteMesh;
     }
@@ -1969,7 +1969,7 @@ class FacetsDiveVizInternal {
 
     this.spriteMesh =
         new SpriteMesh(itemCount, spriteImageWidth, spriteImageHeight);
-    this.scene.add((this.spriteMesh as {}) as THREE.Object3D);
+    this.scene.add(this.spriteMesh as any);
     this.spriteMesh.spriteAtlas.onDrawFinished = () => this.queueRenderScene();
 
     // Create items which pair sprites and data, and initialize sprites.
