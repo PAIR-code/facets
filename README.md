@@ -39,7 +39,7 @@ Details about Dive usage can be found in its [README](./facets_dive/README.md).
 ## Usage in Google Colabratory/Jupyter Notebooks
 
 Using Facets in [Google Colabratory](https://colab.research.google.com) and [Jupyter](http://jupyter.org) notebooks can be seen
-[in this notebook](https://colab.research.google.com/drive/1QrcuNHJnL3TBzcFV-0yw6y3wWmSWv_gM). These notebooks work without the need to first download/install this repository.
+[in this notebook](https://colab.research.google.com/github/PAIR-code/facets/blob/master/colab_facets.ipynb). These notebooks work without the need to first download/install this repository.
 
 Note that for using Facets Overview in a Jupyter notebook, there are two considerations:
 1. In the notebook, you will need to change the path that the Facets Overview python code is loaded from to the correct path given where your notebook kernel is run from.
