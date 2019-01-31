@@ -240,15 +240,12 @@ Polymer({
   },
 
   _updateCSSVars(this: any) {
-    this.customStyle['--grid-faceting-vertical-label-color'] =
-        this.gridFacetingVerticalLabelColor;
-    this.customStyle['--grid-faceting-horizontal-label-color'] =
-        this.gridFacetingHorizontalLabelColor;
-    this.customStyle['--item-positioning-vertical-label-color'] =
-        this.itemPositioningVerticalLabelColor;
-    this.customStyle['--item-positioning-horizontal-label-color'] =
-        this.itemPositioningHorizontalLabelColor;
-    this.updateStyles();
+    this.updateStyles({
+      '--grid-faceting-vertical-label-color': this.gridFacetingVerticalLabelColor,
+      '--grid-faceting-horizontal-label-color': this.gridFacetingHorizontalLabelColor,
+      '--item-positioning-vertical-label-color': this.itemPositioningVerticalLabelColor,
+      '--item-positioning-horizontal-label-color': this.itemPositioningHorizontalLabelColor
+    });
   },
 
   /**

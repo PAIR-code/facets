@@ -38,11 +38,11 @@ limitations under the License.
         height: 100%;
         width: 100%;
       }
-      ::content .labels {
+      .labels {
         @apply --paper-font-common-base;
         @apply --paper-font-headline;
       }
-      ::content .rotate {
+      .rotate {
         stroke-dasharray: 1.5, 0.5;
         animation: rotate 1s linear infinite;
       }
@@ -55,7 +55,9 @@ limitations under the License.
         }
       }
     </style>
-    <!-- Additional content filled in dynamically. -->
+    <div id="holder">
+      <!-- Additional content filled in dynamically. -->
+    </div>
   </template>
 </dom-module>
 

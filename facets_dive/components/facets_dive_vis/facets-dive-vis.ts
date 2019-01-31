@@ -836,6 +836,11 @@ class FacetsDiveVizInternal {
   ignoreChange: boolean;
 
   /**
+   * Div holding all dynamically created content in this element.
+   */
+  holder: HTMLElement;
+
+  /**
    * Capture Polymer element instance and prep internal state.
    */
   constructor(public elem: FacetsDiveVis) {
@@ -845,6 +850,7 @@ class FacetsDiveVizInternal {
     this.autoColorBy = false;
     this.verticalFacetInfo = null;
     this.horizontalFacetInfo = null;
+    this.holder = (this.elem as any).$.holder;
   }
 
   /**
@@ -855,8 +861,10 @@ class FacetsDiveVizInternal {
     // to fit within the viewport.
     this.layout = new Layout();
 
+    (this.elem as any).scopeSubtree(this.holder, true);
+
     // Insert background SVG used for cell backgrounds.
-    this.cellBackgroundSVG = d3.select(this.elem)
+    this.cellBackgroundSVG = d3.select(this.holder)
                                  .append<SVGSVGElement>('svg')
                                  .style('left', 0)
                                  .style('position', 'absolute')
@@ -882,7 +890,7 @@ class FacetsDiveVizInternal {
           .style('pointer-events', 'none')
           .style('position', 'absolute')
           .style('top', 0);
-      this.elem.appendChild(this.renderer.domElement);
+      this.holder.appendChild(this.renderer.domElement);
     } catch (err) {
       // An error will be displayed below.
     }
@@ -893,7 +901,7 @@ class FacetsDiveVizInternal {
     d3.select(this.elem).call(this.zoom);
 
     // Insert background SVG used for labels and axes.
-    this.labelsAndAxesSVG = d3.select(this.elem)
+    this.labelsAndAxesSVG = d3.select(this.holder)
                                 .append<SVGSVGElement>('svg')
                                 .style('left', 0)
                                 .style('position', 'absolute')
@@ -920,7 +928,7 @@ class FacetsDiveVizInternal {
     if (!this.renderer) {
       this.labelsAndAxesSVG.style('display', 'none');
       this.cellBackgroundSVG.style('display', 'none');
-      d3.select(this.elem)
+      d3.select(this.holder)
           .append('p')
           .attr('class', 'error')
           .style('color', 'darkred')

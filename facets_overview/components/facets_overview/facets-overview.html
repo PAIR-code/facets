@@ -28,7 +28,7 @@ limitations under the License.
   <template>
     <style>
       :host {
-        @apply(--paper-font-common-base)
+        @apply --paper-font-common-base
         font-size: 10pt;
       }
       .controls {
@@ -158,7 +158,7 @@ limitations under the License.
       /* Give min height to placeholder in paper-input to get around colab embedding
        * alignment issue.
        */
-      ::content paper-input-container > .floated-label-placeholder {
+      :host paper-input-container > .floated-label-placeholder {
         min-height: 20px;
       }
     </style>
