@@ -14,15 +14,18 @@ http_archive(
 )
 
 load("@bazel_skylib//lib:versions.bzl", "versions")
-versions.check(minimum_bazel_version = "0.16.1")
+
+versions.check(minimum_bazel_version = "0.22.0")
 
 http_archive(
     name = "io_bazel_rules_closure",
-    sha256 = "b29a8bc2cb10513c864cb1084d6f38613ef14a143797cea0af0f91cd385f5e8c",
-    strip_prefix = "rules_closure-0.8.0",
+    sha256 = "0e6de40666f2ebb2b30dc0339745a274d9999334a249b05a3b1f46462e489adf",
+    # The changes that we need for Bazel 0.23 compatibility are not in
+    # any release, so we pin to HEAD as of 2019-02-22.
+    strip_prefix = "rules_closure-87d24b1df8b62405de8dd059cb604fd9d4b1e395",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_closure/archive/0.8.0.tar.gz",
-        "https://github.com/bazelbuild/rules_closure/archive/0.8.0.tar.gz",  # 2018-08-03
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_closure/archive/87d24b1df8b62405de8dd059cb604fd9d4b1e395.tar.gz",
+        "https://github.com/bazelbuild/rules_closure/archive/87d24b1df8b62405de8dd059cb604fd9d4b1e395.tar.gz",  # 2019-02-22
     ],
 )
 
@@ -47,11 +50,11 @@ closure_repositories(
 
 http_archive(
     name = "org_tensorflow_tensorboard",
-    sha256 = "692e1d721d8a37cc410bac3390ed0b1590aaf30051a0949a98e9c047c5ab2d69",
-    strip_prefix = "tensorboard-280c5cc4ec878429c53817c64aec5d74257b5813",
+    sha256 = "5d04f587e4597b555f144dc128ddd5a0d8d1b26065d24dddc2b36ac82d9a85dd",
+    strip_prefix = "tensorboard-8de790143b2cb787a8b0f1168cb0dd8d64eb8dcf",
     urls = [
-        "https://mirror.bazel.build/github.com/tensorflow/tensorboard/archive/280c5cc4ec878429c53817c64aec5d74257b5813.tar.gz",
-        "https://github.com/tensorflow/tensorboard/archive/280c5cc4ec878429c53817c64aec5d74257b5813.tar.gz",  # 2019-01-13
+        "https://mirror.bazel.build/github.com/tensorflow/tensorboard/archive/8de790143b2cb787a8b0f1168cb0dd8d64eb8dcf.tar.gz",
+        "https://github.com/tensorflow/tensorboard/archive/8de790143b2cb787a8b0f1168cb0dd8d64eb8dcf.tar.gz",  # 2019-01-13
     ],
 )
 
