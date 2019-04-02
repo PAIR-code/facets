@@ -850,7 +850,6 @@ class FacetsDiveVizInternal {
     this.autoColorBy = false;
     this.verticalFacetInfo = null;
     this.horizontalFacetInfo = null;
-    this.holder = (this.elem as any).$.holder;
   }
 
   /**
@@ -860,7 +859,7 @@ class FacetsDiveVizInternal {
     // Layout object will be used for computing camera position and frustum to
     // to fit within the viewport.
     this.layout = new Layout();
-
+    this.holder = (this.elem as any).$.holder;
     (this.elem as any).scopeSubtree(this.holder, true);
 
     // Insert background SVG used for cell backgrounds.

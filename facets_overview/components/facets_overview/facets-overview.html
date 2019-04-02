@@ -166,7 +166,7 @@ limitations under the License.
       <div class$="[[_getControlsWrapperClass(_dataModel)]]">
         <div class="controls">
           <paper-dropdown-menu class="left-dropdown input-control" label="Sort by">
-            <paper-listbox class="dropdown-content" selected="{{_sortOrder}}">
+            <paper-listbox class="dropdown-content" selected="{{_sortOrder}}" slot="dropdown-content">
               <template is="dom-repeat" items="[[_sortOptions]]" as="option">
                 <paper-item>[[option.name]]</paper-item>
               </template>

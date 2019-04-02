@@ -17,6 +17,7 @@ tf_web_library(
         "//facets_dive/lib:stats",
         "//facets_dive/lib:string-format",
         "@org_polymer_iron_icons",
+        "@org_polymer_neon_animation",
         "@org_polymer_paper_checkbox",
         "@org_polymer_paper_dialog",
         "@org_polymer_paper_dropdown_menu",
