@@ -260,7 +260,7 @@ Polymer({
    */
   _maxBuckets(this: any, fieldName: string, bagOfWords: boolean): number {
     const defaultMax = 100;
-    const fieldStats: FieldStats = this.stats[fieldName];
+    const fieldStats: FieldStats = this.stats ? this.stats[fieldName] : null;
     if (!fieldStats) {
       return defaultMax;
     }
@@ -274,7 +274,7 @@ Polymer({
    * Return whether the chosen field has a usable word tree.
    */
   _hasWordTree(this: any, fieldName: string): boolean {
-    const fieldStats: FieldStats = this.stats[fieldName];
+    const fieldStats: FieldStats = this.stats ? this.stats[fieldName] : null;
     return !!fieldStats && !!fieldStats.wordTree &&
         fieldStats.wordTree.highestLevel > 1;
   },
