@@ -1,8 +1,14 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 
 licenses(["notice"])  # Apache 2.0
+
+closure_js_library(
+  name = "externs",
+  srcs = ["externs.js"],
+)
 
 tf_web_library(
     name = "facets_overview_chart",
@@ -22,6 +28,7 @@ tf_web_library(
     ],
     path = "/facets-overview/components/facets-overview-chart",
     deps = [
+        ":externs",
         "//facets_overview/common",
         "//facets_overview/proto:feature_statistics_closure_proto",
         "@org_polymer_iron_list",

@@ -10,6 +10,8 @@ tf_web_library(
         "common_bundle.html",
         "feature_statistics_generator.ts",
         "overview_data_model.ts",
+        "plottable_helpers.d.ts",
+        "plottable_helpers.js",
         "utils.ts",
     ],
     clutz_entry_points = [
