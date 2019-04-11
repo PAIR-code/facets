@@ -26,7 +26,7 @@ Polymer({
 
   properties: {
     dataModel: {type: Object, observer: '_handleResize'},
-    features: Array,
+    features: {type: Array, observer: '_handleResize'},
     featureSliceSelection: {type: Object, notify: true},
     numeric: {type: Boolean, value: false},
     compareMode: {type: Boolean, value: false},
@@ -51,7 +51,7 @@ Polymer({
     // but can shrink to accomodate feature tables with a small number of
     // features. Therefore we set the height here based on the number of
     // features to display and if the features are displayed expanded or not.
-    const ironList = this.$$('iron-list');
+    const ironList = this.shadowRoot.querySelector('iron-list');
     if (!ironList || !this._expandedRowHeight || !this._rowHeight ||
         !this._maxHeight || !this.features) {
       return;
