@@ -2765,11 +2765,11 @@ class FacetsDiveVizInternal {
   generateFacetingInfo(
       fieldName: string, buckets: number, bagOfWords: boolean,
       vertical: boolean): FacetingInfo {
-    // For unknown fields (including empty string), just lump everything
-    // together into the null bucket.
-    if (!(fieldName in this.stats)) {
+    // For unknown fields (including empty string), or if the number of buckets
+    // doesn't make sense, just lump everything together into a nameless bucket.
+    if (!(fieldName in this.stats) || isNaN(+buckets) || +buckets < 1) {
       return {
-        facetingFunction: item => null!,
+        facetingFunction: item => '',
         keyCompareFunction: (a: Key, b: Key) => 0,
         labelingFunction: DEFAULT_LABELING_FUNCTION,
       };
