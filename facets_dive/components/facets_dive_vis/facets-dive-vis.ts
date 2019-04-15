@@ -793,7 +793,6 @@ class FacetsDiveVizInternal {
 
   /**
    * D3 zoom behavior instance attached to the element for user interaction.
-   * TODO(jimbo): Update this when TypeScript typings catch up to d3 v4.
    */
   zoom: d3.ZoomBehavior<Element, {}>;
 
@@ -2941,7 +2940,29 @@ class FacetsDiveVizInternal {
   generateNumericFacetingInfo(fieldName: string, buckets: number):
       FacetingInfo {
     const fieldStats = this.stats[fieldName];
-    const denom = fieldStats.numberMax! - fieldStats.numberMin!;
+
+    // Use D3's nice() method to round the min and max to pleasing values.
+    const [numberMin, numberMax] =
+        d3.scaleLinear()
+            .domain([fieldStats.numberMin, fieldStats.numberMax])
+            .nice()
+            .domain();
+
+    const range = numberMax - numberMin;
+
+    let precision = 1;
+    for (let key = 0; key < buckets; key++) {
+      const lowIndex = key as number;
+      const highIndex = 1 + lowIndex;
+      const lowValue = lowIndex / buckets * range + numberMin;
+      const highValue = highIndex / buckets * range + numberMin;
+      if (lowValue !== highValue) {
+        precision = Math.max(
+            precision,
+            this.computeMinimumPrecision(lowValue, highValue, precision));
+      }
+    }
+
     return {
       /**
        * Numeric faceting consists of dividing the available range into the
@@ -2960,8 +2981,8 @@ class FacetsDiveVizInternal {
         if (isNaN(x)) {
           return x;
         }
-        const diff = x - fieldStats.numberMin!;
-        return Math.min(Math.floor(buckets * diff / denom), buckets - 1);
+        const diff = x - numberMin;
+        return Math.min(Math.floor(buckets * diff / range), buckets - 1);
       },
 
       keyCompareFunction: sorting.numberCompare,
@@ -2976,18 +2997,18 @@ class FacetsDiveVizInternal {
         }
         const lowIndex = key as number;
         const highIndex = 1 + lowIndex;
-        const range = fieldStats.numberMax! - fieldStats.numberMin!;
-        const lowValue = lowIndex / buckets * range + fieldStats.numberMin!;
-        const highValue = highIndex / buckets * range + fieldStats.numberMin!;
+        const lowValue = lowIndex / buckets * range + numberMin;
+        const highValue = highIndex / buckets * range + numberMin;
 
         // Bucket range labels should round to the nearest whole number if all
         // numeric values are integers.
         if (fieldStats.isInteger()) {
           return {
-            label: this.formatRange(Math.ceil(lowValue), Math.floor(highValue))
+            label: this.formatRange(
+                Math.ceil(lowValue), Math.floor(highValue), precision)
           };
         }
-        return {label: this.formatRange(lowValue, highValue)};
+        return {label: this.formatRange(lowValue, highValue, precision)};
       },
     };
   }
@@ -2995,21 +3016,42 @@ class FacetsDiveVizInternal {
   /**
    * Given a number used in a label, format it to a string.
    */
-  formatNumber(num: number|null): string {
+  formatNumber(num: number|null, precision = DEFAULT_NUMERIC_LABEL_PRECISION):
+      string {
     if (num === null) {
       return 'null';
     }
-    num = parseFloat(num.toPrecision(DEFAULT_NUMERIC_LABEL_PRECISION));
-    return Math.abs(num) >= 1000 ? d3.format('s')(num) : '' + num;
+    num = parseFloat(num.toPrecision(precision));
+    return Math.abs(num) >= 1000 ? d3.format(`.${precision}s`)(num) : `${num}`;
+  }
+
+  /**
+   * Given two numbers, compute the minimum precision necessary to distinguish
+   * them, greater than or equal to the starting precision value.
+   */
+  computeMinimumPrecision(low: number, high: number, start = 1) {
+    let precision = start;
+    // 100 is the maximum precision value allowed by browsers.
+    while (precision <= 100 &&
+           low.toPrecision(precision) === high.toPrecision(precision)) {
+      precision++;
+    }
+    return precision;
   }
 
   /**
    * Given a pair of low and high bounds, create a label string to describe
    * the range.
    */
-  formatRange(low: number, high: number) {
+  formatRange(
+      low: number, high: number, precision = DEFAULT_NUMERIC_LABEL_PRECISION) {
+    if (low === high) {
+      return this.formatNumber(low, precision);
+    }
+    precision = this.computeMinimumPrecision(low, high, precision);
     // U+2014 is the unicode symbol for an emdash.
-    return `${this.formatNumber(low)} \u2014 ${this.formatNumber(high)}`;
+    return `${this.formatNumber(low, precision)} \u2014 ${
+        this.formatNumber(high, precision)}`;
   }
 
   /**
@@ -3301,7 +3343,7 @@ Polymer({
     // TODO(jimbo): Less hacky way of deferring change handlers for ready?
     if (!this._backing.scene || !this._backing.items) {
       requestAnimationFrame(
-        this._filteredDataIndicesChange.bind(this, filteredDataIndices));
+          this._filteredDataIndicesChange.bind(this, filteredDataIndices));
       return;
     }
     this._backing.filteredDataIndicesChange();
