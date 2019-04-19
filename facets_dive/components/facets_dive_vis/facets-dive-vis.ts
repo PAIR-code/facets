@@ -1033,7 +1033,8 @@ class FacetsDiveVizInternal {
 
     // JOIN.
     const selectedElements =
-        this.selectedLayer.selectAll('.selected').data(selectedBoxes);
+        this.selectedLayer.selectAll<SVGGElement, ItemPosition>('.selected')
+            .data(selectedBoxes);
 
     // ENTER.
     const enterElements = selectedElements.enter()
@@ -1106,7 +1107,8 @@ class FacetsDiveVizInternal {
 
     // JOIN.
     const comparedElements =
-        this.comparedLayer.selectAll('.compared').data(comparedBoxes);
+        this.comparedLayer.selectAll<SVGGElement, ItemPosition>('.compared')
+            .data(comparedBoxes);
 
     // ENTER.
     const enterElements = comparedElements.enter()
@@ -1690,8 +1692,9 @@ class FacetsDiveVizInternal {
         this.grid.getCells().filter((cell: Cell) => cell.items.length);
 
     // JOIN.
-    const cellElements = this.cellBackgroundLayer.selectAll('.cell').data(
-        cells, (cell: Cell) => cell.compoundKey);
+    const cellElements =
+        this.cellBackgroundLayer.selectAll<SVGRectElement, Cell>('.cell').data(
+            cells, (cell: Cell) => cell.compoundKey);
 
     cellElements
         // ENTER.
@@ -1747,8 +1750,9 @@ class FacetsDiveVizInternal {
     }
 
     // JOIN.
-    const axisElements = this.axesLayer.selectAll('.axis').data(
-        axes, (axis: Axis) => axis.key());
+    const axisElements =
+        this.axesLayer.selectAll<SVGGElement, Axis>('.axis').data(
+            axes, (axis: Axis) => axis.key());
 
     // ENTER.
     const axisElementsEnter = axisElements.enter()
