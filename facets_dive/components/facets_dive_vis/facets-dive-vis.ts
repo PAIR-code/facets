@@ -1475,8 +1475,14 @@ class FacetsDiveVizInternal {
 
     // Format the start and end of range strings.
     const fieldStats = this.stats[this.elem.verticalPosition];
-    const startRange = this.formatNumber(fieldStats.numberMin);
-    const endRange = this.formatNumber(fieldStats.numberMax);
+
+    const [numberMin, numberMax] =
+        d3.scaleLinear()
+            .domain([fieldStats.numberMin, fieldStats.numberMax])
+            .nice()
+            .domain();
+    const startRange = this.formatNumber(numberMin);
+    const endRange = this.formatNumber(numberMax);
 
     // Compute an approximate midpoint to cap the start and end labels.
     const midPoint = (startRange.length + LABEL_LENGTH_PAD) /
@@ -1579,8 +1585,13 @@ class FacetsDiveVizInternal {
 
     // Format the start and end of range strings.
     const fieldStats = this.stats[this.elem.horizontalPosition];
-    const startRange = this.formatNumber(fieldStats.numberMin);
-    const endRange = this.formatNumber(fieldStats.numberMax);
+    const [numberMin, numberMax] =
+        d3.scaleLinear()
+            .domain([fieldStats.numberMin, fieldStats.numberMax])
+            .nice()
+            .domain();
+    const startRange = this.formatNumber(numberMin);
+    const endRange = this.formatNumber(numberMax);
 
     // Compute an approximate midpoint to cap the start and end labels.
     const midPoint = (startRange.length + LABEL_LENGTH_PAD) /
@@ -2390,9 +2401,9 @@ class FacetsDiveVizInternal {
 
     const nanColor = d3.rgb(PALETTE_NUMERIC.missing);
     const scale = d3.scaleLinear<string>();
-    scale.domain([fieldStats.numberMin!, fieldStats.numberMax!]).range([
-      PALETTE_NUMERIC.start, PALETTE_NUMERIC.end
-    ]);
+    scale.domain([fieldStats.numberMin!, fieldStats.numberMax!])
+        .range([PALETTE_NUMERIC.start, PALETTE_NUMERIC.end])
+        .nice();
 
     // Determine colors for items to be returned.
     const colors: d3.RGBColor[] = [];
@@ -2751,10 +2762,13 @@ class FacetsDiveVizInternal {
     if (!fieldStats || !fieldStats.isNumeric()) {
       return null;
     }
-    const range = fieldStats.numberMax! - fieldStats.numberMin!;
+    // Use D3's nice() method to round the min and max to pleasing values.
+    const scale = d3.scaleLinear()
+                      .domain([fieldStats.numberMin, fieldStats.numberMax])
+                      .nice();
+
     return (item: GridItem, index: number, cell: Cell, grid: Grid) =>
-               ((item.data[fieldName] as number) - fieldStats.numberMin!) /
-        range;
+               scale(item.data[fieldName] as number);
   }
 
   /**
