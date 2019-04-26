@@ -28,7 +28,6 @@ tf_web_library(
         "//facets_overview/components/facets_overview_row_stats",
         "//facets_overview/proto:feature_statistics_closure_proto",
         "@org_polymer_iron_list",
-        "@org_polymer_neon_animation",
         "@org_polymer_paper_dropdown_menu",
         "@org_polymer_paper_item",
         "@org_polymer_paper_listbox",

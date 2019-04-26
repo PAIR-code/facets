@@ -36,8 +36,6 @@ tf_web_library(
         "@org_polymer_paper_checkbox",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:d3",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:plottable",
-        # HACK: plottable.css from :plottable is not accessible. Should investigate.
-        "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:plottable_js_css",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
     ],
 )
