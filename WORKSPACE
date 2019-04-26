@@ -47,19 +47,14 @@ closure_repositories(
     #    omit_com_google_protobuf = True,
     omit_com_google_protobuf_js = True,
 )
-local_repository(
+http_archive(
     name = "org_tensorflow_tensorboard",
-    path = "/Users/jwexler/stephanlee/tensorboard"
+    sha256 = "cbfcd07a3361e8ad727717e5ffba77dc97f5c3a3606177db2b12e3c239de7ce2",
+    strip_prefix = "tensorboard-8837c95c5249ed7a643fd6bf5d47ba90125e6742",
+    urls = [
+        "https://github.com/stephanwlee/tensorboard/archive/8837c95c5249ed7a643fd6bf5d47ba90125e6742.tar.gz",  # 2019-01-13
+    ],
 )
-#http_archive(
-#    name = "org_tensorflow_tensorboard",
-#    sha256 = "5d04f587e4597b555f144dc128ddd5a0d8d1b26065d24dddc2b36ac82d9a85dd",
-#    strip_prefix = "tensorboard-8de790143b2cb787a8b0f1168cb0dd8d64eb8dcf",
-#    urls = [
-#        "https://mirror.bazel.build/github.com/tensorflow/tensorboard/archive/8de790143b2cb787a8b0f1168cb0dd8d64eb8dcf.tar.gz",
-#        "https://github.com/tensorflow/tensorboard/archive/8de790143b2cb787a8b0f1168cb0dd8d64eb8dcf.tar.gz",  # 2019-01-13
-#    ],
-#)
 
 load("@org_tensorflow_tensorboard//third_party:workspace.bzl", "tensorboard_workspace")
 
