@@ -19,6 +19,7 @@ The proto is used as input for the Overview visualization.
 
 import numpy as np
 import pandas as pd
+import sys
 
 
 class BaseGenericFeatureStatisticsGenerator(object):
@@ -273,7 +274,11 @@ class BaseGenericFeatureStatisticsGenerator(object):
                   printable_val = val[1]
                 else:
                   try:
-                    printable_val = val[1].decode('UTF-8', 'strict')
+                    if (sys.version_info.major < 3 or
+                        isinstance(data, (bytes, bytearray))):
+                      printable_val = val[1].decode('UTF-8', 'strict')
+                    else:
+                      printable_val = val[1]
                   except (UnicodeDecodeError, UnicodeEncodeError):
                     printable_val = '__BYTES_VALUE__'
                 bucket = featstats.rank_histogram.buckets.add(
