@@ -272,7 +272,7 @@ class BaseGenericFeatureStatisticsGenerator(object):
               for val_index, val in enumerate(sorted_vals):
                 try:
                   if (sys.version_info.major < 3 or
-                      isinstance(data, (bytes, bytearray))):
+                      isinstance(val[1], (bytes, bytearray))):
                     printable_val = val[1].decode('UTF-8', 'strict')
                   else:
                     printable_val = val[1]
