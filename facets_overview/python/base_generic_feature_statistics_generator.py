@@ -270,17 +270,14 @@ class BaseGenericFeatureStatisticsGenerator(object):
               sorted_vals = sorted(zip(counts, vals), reverse=True)
               sorted_vals = sorted_vals[:histogram_categorical_levels_count]
               for val_index, val in enumerate(sorted_vals):
-                if val[1].dtype.type is np.str_:
-                  printable_val = val[1]
-                else:
-                  try:
-                    if (sys.version_info.major < 3 or
-                        isinstance(data, (bytes, bytearray))):
-                      printable_val = val[1].decode('UTF-8', 'strict')
-                    else:
-                      printable_val = val[1]
-                  except (UnicodeDecodeError, UnicodeEncodeError):
-                    printable_val = '__BYTES_VALUE__'
+                try:
+                  if (sys.version_info.major < 3 or
+                      isinstance(data, (bytes, bytearray))):
+                    printable_val = val[1].decode('UTF-8', 'strict')
+                  else:
+                    printable_val = val[1]
+                except (UnicodeDecodeError, UnicodeEncodeError):
+                  printable_val = '__BYTES_VALUE__'
                 bucket = featstats.rank_histogram.buckets.add(
                     low_rank=val_index,
                     high_rank=val_index,
