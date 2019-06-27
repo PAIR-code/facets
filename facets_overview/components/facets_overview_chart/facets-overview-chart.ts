@@ -20,6 +20,8 @@ import RankHistogram from 'goog:proto.featureStatistics.RankHistogram';
 import {OverviewDataModel} from '../../common/overview_data_model';
 import * as utils from '../../common/utils';
 
+declare var plottable_helpers: any;
+
 Polymer({
   is: 'facets-overview-chart',
 
