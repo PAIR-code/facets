@@ -1897,7 +1897,7 @@ class FacetsDiveVizInternal {
 
     // ENTER + UPDATE.
     const updating =
-        labelElementsEnter.merge(labelElements)
+        labelElementsEnter.merge(labelElements as any)
             .transition()
             .duration(this.elem.tweenDuration)
             .attr(

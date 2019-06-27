@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 
-namespace plottable_helpers {
+declare namespace plottable_helpers {
   export class PointerInteraction extends Plottable.Interactions.Pointer {}
 }  // namespace plottable_helpers
