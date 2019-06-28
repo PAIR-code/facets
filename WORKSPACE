@@ -19,13 +19,13 @@ versions.check(minimum_bazel_version = "0.22.0")
 
 http_archive(
     name = "io_bazel_rules_closure",
-    sha256 = "0e6de40666f2ebb2b30dc0339745a274d9999334a249b05a3b1f46462e489adf",
-    # The changes that we need for Bazel 0.23 compatibility are not in
-    # any release, so we pin to HEAD as of 2019-02-22.
-    strip_prefix = "rules_closure-87d24b1df8b62405de8dd059cb604fd9d4b1e395",
+    sha256 = "b6936ecc0b5a1ef616b9d7e76694d414aa5605265c11322257a610fb256b1bf7",
+    # The changes that we need for Bazel 0.26 compatibility are not in
+    # any release, so we pin to HEAD as of 2019-06-04.
+    strip_prefix = "rules_closure-7434c41542ca9e1b05166d897b90073d1b8b2cf8",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_closure/archive/87d24b1df8b62405de8dd059cb604fd9d4b1e395.tar.gz",
-        "https://github.com/bazelbuild/rules_closure/archive/87d24b1df8b62405de8dd059cb604fd9d4b1e395.tar.gz",  # 2019-02-22
+        "http://mirror.tensorflow.org/github.com/bazelbuild/rules_closure/archive/7434c41542ca9e1b05166d897b90073d1b8b2cf8.tar.gz",
+        "https://github.com/bazelbuild/rules_closure/archive/7434c41542ca9e1b05166d897b90073d1b8b2cf8.tar.gz",  # 2019-06-04
     ],
 )
 
@@ -49,10 +49,10 @@ closure_repositories(
 )
 http_archive(
     name = "org_tensorflow_tensorboard",
-    sha256 = "cbfcd07a3361e8ad727717e5ffba77dc97f5c3a3606177db2b12e3c239de7ce2",
-    strip_prefix = "tensorboard-8837c95c5249ed7a643fd6bf5d47ba90125e6742",
+    sha256 = "09ced8f421fb9d4e73b3b0f8f44c91ee653251e7c2e2b953a4774a507c348a86",
+    strip_prefix = "tensorboard-b7dd0e369dfe51f6f08dbaf3e85fe0942dbaf64f",
     urls = [
-        "https://github.com/stephanwlee/tensorboard/archive/8837c95c5249ed7a643fd6bf5d47ba90125e6742.tar.gz",  # 2019-01-13
+        "https://github.com/stephanwlee/tensorboard/archive/b7dd0e369dfe51f6f08dbaf3e85fe0942dbaf64f.tar.gz",  # 2019-06-28
     ],
 )
 

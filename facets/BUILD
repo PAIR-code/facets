@@ -14,8 +14,7 @@ tf_web_library(
     deps = [
         "//facets_dive/components/facets_dive",
         "//facets_overview/components/facets_overview",
-        "@org_polymer_web_animations_js",
-        "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:webcomponentsjs",
+        "@org_tensorflow_tensorboard//tensorboard/components:polymer",
     ],
 )
 
