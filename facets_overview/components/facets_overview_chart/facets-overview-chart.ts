@@ -810,7 +810,8 @@ Polymer({
     return count;
   },
   // tslint:disable-next-line:no-any typescript/polymer temporary issue
-  _updateSelectionVisibility(this: any, selection: utils.FeatureSelection) {
+  _updateSelectionVisibility: function(
+      this: any, selection: utils.FeatureSelection) {
     if (!this._selectionElem) {
       return;
     }

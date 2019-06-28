@@ -45,7 +45,7 @@ Polymer({
     _rowHeight: {type: Number, value: 100, readOnly: true},
   },
   // tslint:disable-next-line:no-any typescript/polymer temporary issue
-  _handleResize(this: any) {
+  _handleResize: function(this: any) {
     // Iron-lists must be explicitly sized to operate correctly and effiencly,
     // per the documentation. But we want an iron-list that is max height 800px
     // but can shrink to accomodate feature tables with a small number of
@@ -155,7 +155,8 @@ Polymer({
     }
     return dataModel.getFeature(feature.getName()!, dataset.getName()!);
   },
-  _getChartData(dataModel: OverviewDataModel, feature: FeatureNameStatistics):
+  _getChartData: function(
+      dataModel: OverviewDataModel, feature: FeatureNameStatistics):
       utils.HistogramForDataset[] {
         if (!dataModel || !feature) {
           return [];

@@ -231,11 +231,11 @@ Polymer({
     return positionMode === 'scatter';
   },
 
-  _isKeyNumeric(this: any, key: string): boolean {
+  _isKeyNumeric: function(this: any, key: string): boolean {
     return this.stats && (key in this.stats) && this.stats[key].isNumeric();
   },
 
-  _isKeyCategorical(this: any, key: string): boolean {
+  _isKeyCategorical: function(this: any, key: string): boolean {
     return this.stats && (key in this.stats) && !this.stats[key].isNumeric();
   },
 
@@ -273,7 +273,7 @@ Polymer({
   /**
    * Return whether the chosen field has a usable word tree.
    */
-  _hasWordTree(this: any, fieldName: string): boolean {
+  _hasWordTree: function(this: any, fieldName: string): boolean {
     const fieldStats: FieldStats = this.stats ? this.stats[fieldName] : null;
     return !!fieldStats && !!fieldStats.wordTree &&
         fieldStats.wordTree.highestLevel > 1;
