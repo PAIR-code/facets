@@ -26,7 +26,7 @@ Polymer({
 
   properties: {
     dataModel: {type: Object, observer: '_handleResize'},
-    features: Array,
+    features: {type: Array, observer: '_handleResize'},
     featureSliceSelection: {type: Object, notify: true},
     numeric: {type: Boolean, value: false},
     compareMode: {type: Boolean, value: false},
@@ -45,13 +45,13 @@ Polymer({
     _rowHeight: {type: Number, value: 100, readOnly: true},
   },
   // tslint:disable-next-line:no-any typescript/polymer temporary issue
-  _handleResize(this: any) {
+  _handleResize: function(this: any) {
     // Iron-lists must be explicitly sized to operate correctly and effiencly,
     // per the documentation. But we want an iron-list that is max height 800px
     // but can shrink to accomodate feature tables with a small number of
     // features. Therefore we set the height here based on the number of
     // features to display and if the features are displayed expanded or not.
-    const ironList = this.$$('iron-list');
+    const ironList = this.shadowRoot.querySelector('iron-list');
     if (!ironList || !this._expandedRowHeight || !this._rowHeight ||
         !this._maxHeight || !this.features) {
       return;
@@ -155,7 +155,8 @@ Polymer({
     }
     return dataModel.getFeature(feature.getName()!, dataset.getName()!);
   },
-  _getChartData(dataModel: OverviewDataModel, feature: FeatureNameStatistics):
+  _getChartData: function(
+      dataModel: OverviewDataModel, feature: FeatureNameStatistics):
       utils.HistogramForDataset[] {
         if (!dataModel || !feature) {
           return [];

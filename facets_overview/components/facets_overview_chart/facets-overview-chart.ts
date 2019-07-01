@@ -20,6 +20,8 @@ import RankHistogram from 'goog:proto.featureStatistics.RankHistogram';
 import {OverviewDataModel} from '../../common/overview_data_model';
 import * as utils from '../../common/utils';
 
+declare var plottable_helpers: any;
+
 Polymer({
   is: 'facets-overview-chart',
 
@@ -705,8 +707,8 @@ Polymer({
       chartSelection
           .on('mouseenter',
               () => {
-                // Setup Interaction.Pointer for tooltip and attach to the plot.
-                this._onPointer = new Plottable.Interactions.Pointer();
+                // Setup pointer interaction for tooltip and attach to the plot.
+                this._onPointer = new plottable_helpers.PointerInteraction();
                 this._onPointerEnterFunction = (p: any) => {
                   // For line charts, give a tooltip for the closest point on
                   // any line. For other charts, give a tooltip for all entries
@@ -808,7 +810,8 @@ Polymer({
     return count;
   },
   // tslint:disable-next-line:no-any typescript/polymer temporary issue
-  _updateSelectionVisibility(this: any, selection: utils.FeatureSelection) {
+  _updateSelectionVisibility: function(
+      this: any, selection: utils.FeatureSelection) {
     if (!this._selectionElem) {
       return;
     }

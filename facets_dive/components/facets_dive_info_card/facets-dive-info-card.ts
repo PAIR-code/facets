@@ -41,9 +41,11 @@ Polymer({
       observer: '_updateSelected',
     },
   },
+  ready(this: any) {
+    this.scopeSubtree(this.$.holder, true);
+  },
   _updateSelected(this: any, selectedData: Object[]) {
-    const root = Polymer.dom(this.root);
-    root.innerHTML = '';
+    this.$.holder.innerHTML = '';
 
     if (!selectedData) {
       return;
@@ -56,7 +58,7 @@ Polymer({
 
       const div = document.createElement('div');
       div.style.width = '100%';
-      root.appendChild(div);
+      this.$.holder.appendChild(div);
 
       infoRenderer(selectedObject, div);
     }

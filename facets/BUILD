@@ -14,6 +14,7 @@ tf_web_library(
     deps = [
         "//facets_dive/components/facets_dive",
         "//facets_overview/components/facets_overview",
+        "@org_tensorflow_tensorboard//tensorboard/components:polymer",
     ],
 )
 

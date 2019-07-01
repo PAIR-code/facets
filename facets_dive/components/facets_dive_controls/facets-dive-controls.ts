@@ -231,24 +231,21 @@ Polymer({
     return positionMode === 'scatter';
   },
 
-  _isKeyNumeric(this: any, key: string): boolean {
+  _isKeyNumeric: function(this: any, key: string): boolean {
     return this.stats && (key in this.stats) && this.stats[key].isNumeric();
   },
 
-  _isKeyCategorical(this: any, key: string): boolean {
+  _isKeyCategorical: function(this: any, key: string): boolean {
     return this.stats && (key in this.stats) && !this.stats[key].isNumeric();
   },
 
   _updateCSSVars(this: any) {
-    this.customStyle['--grid-faceting-vertical-label-color'] =
-        this.gridFacetingVerticalLabelColor;
-    this.customStyle['--grid-faceting-horizontal-label-color'] =
-        this.gridFacetingHorizontalLabelColor;
-    this.customStyle['--item-positioning-vertical-label-color'] =
-        this.itemPositioningVerticalLabelColor;
-    this.customStyle['--item-positioning-horizontal-label-color'] =
-        this.itemPositioningHorizontalLabelColor;
-    this.updateStyles();
+    this.updateStyles({
+      '--grid-faceting-vertical-label-color': this.gridFacetingVerticalLabelColor,
+      '--grid-faceting-horizontal-label-color': this.gridFacetingHorizontalLabelColor,
+      '--item-positioning-vertical-label-color': this.itemPositioningVerticalLabelColor,
+      '--item-positioning-horizontal-label-color': this.itemPositioningHorizontalLabelColor
+    });
   },
 
   /**
@@ -263,7 +260,7 @@ Polymer({
    */
   _maxBuckets(this: any, fieldName: string, bagOfWords: boolean): number {
     const defaultMax = 100;
-    const fieldStats: FieldStats = this.stats[fieldName];
+    const fieldStats: FieldStats = this.stats ? this.stats[fieldName] : null;
     if (!fieldStats) {
       return defaultMax;
     }
@@ -276,8 +273,8 @@ Polymer({
   /**
    * Return whether the chosen field has a usable word tree.
    */
-  _hasWordTree(this: any, fieldName: string): boolean {
-    const fieldStats: FieldStats = this.stats[fieldName];
+  _hasWordTree: function(this: any, fieldName: string): boolean {
+    const fieldStats: FieldStats = this.stats ? this.stats[fieldName] : null;
     return !!fieldStats && !!fieldStats.wordTree &&
         fieldStats.wordTree.highestLevel > 1;
   },

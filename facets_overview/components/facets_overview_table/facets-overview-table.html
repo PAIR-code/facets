@@ -27,6 +27,9 @@ limitations under the License.
 <dom-module id='facets-overview-table'>
   <template>
     <style>
+      [hidden] {
+        display: none !important;
+      }
       .feature-name {
         font-weight: 500;
         max-width: 480px;
@@ -125,7 +128,7 @@ limitations under the License.
         <div class="table-cell chart-column header-cell">
           <div class="control-holder">
             <paper-dropdown-menu label="Chart to show">
-              <paper-listbox class="dropdown-content" selected="{{_chartSelection}}" attr-for-selected="value">
+              <paper-listbox class="dropdown-content" selected="{{_chartSelection}}" attr-for-selected="value" slot="dropdown-content">
                 <template is="dom-repeat" items="[[_chartSelectionTypes]]">
                   <paper-item value="[[item]]">[[item]]</paper-item>
                 </template>

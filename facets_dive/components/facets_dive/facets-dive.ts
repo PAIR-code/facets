@@ -412,7 +412,7 @@ Polymer({
     this._updateHeight();
   },
 
-  _updateHeight(this: any, height: number) {
+  _updateHeight: function(this: any, height: number) {
     if (this.height !== null) {
       this.style.height =
           typeof this.height === 'number' ? this.height + 'px' : this.height;

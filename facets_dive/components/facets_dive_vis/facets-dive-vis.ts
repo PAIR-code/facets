@@ -835,6 +835,11 @@ class FacetsDiveVizInternal {
   ignoreChange: boolean;
 
   /**
+   * Div holding all dynamically created content in this element.
+   */
+  holder: HTMLElement;
+
+  /**
    * Capture Polymer element instance and prep internal state.
    */
   constructor(public elem: FacetsDiveVis) {
@@ -853,9 +858,11 @@ class FacetsDiveVizInternal {
     // Layout object will be used for computing camera position and frustum to
     // to fit within the viewport.
     this.layout = new Layout();
+    this.holder = (this.elem as any).$.holder;
+    (this.elem as any).scopeSubtree(this.holder, true);
 
     // Insert background SVG used for cell backgrounds.
-    this.cellBackgroundSVG = d3.select(this.elem)
+    this.cellBackgroundSVG = d3.select(this.holder)
                                  .append<SVGSVGElement>('svg')
                                  .style('left', 0)
                                  .style('position', 'absolute')
@@ -881,7 +888,7 @@ class FacetsDiveVizInternal {
           .style('pointer-events', 'none')
           .style('position', 'absolute')
           .style('top', 0);
-      this.elem.appendChild(this.renderer.domElement);
+      this.holder.appendChild(this.renderer.domElement);
     } catch (err) {
       // An error will be displayed below.
     }
@@ -892,7 +899,7 @@ class FacetsDiveVizInternal {
     d3.select(this.elem).call(this.zoom);
 
     // Insert background SVG used for labels and axes.
-    this.labelsAndAxesSVG = d3.select(this.elem)
+    this.labelsAndAxesSVG = d3.select(this.holder)
                                 .append<SVGSVGElement>('svg')
                                 .style('left', 0)
                                 .style('position', 'absolute')
@@ -919,7 +926,7 @@ class FacetsDiveVizInternal {
     if (!this.renderer) {
       this.labelsAndAxesSVG.style('display', 'none');
       this.cellBackgroundSVG.style('display', 'none');
-      d3.select(this.elem)
+      d3.select(this.holder)
           .append('p')
           .attr('class', 'error')
           .style('color', 'darkred')
@@ -1890,7 +1897,7 @@ class FacetsDiveVizInternal {
 
     // ENTER + UPDATE.
     const updating =
-        labelElementsEnter.merge(labelElements)
+        labelElementsEnter.merge(labelElements as any)
             .transition()
             .duration(this.elem.tweenDuration)
             .attr(
