@@ -16,8 +16,8 @@ tf_web_library(
     deps = [
         "//facets_dive/components/facets_dive",
         "//facets_dive/lib/test:externs",
-        "@org_tensorflow_tensorboard//tensorboard/components:polymer",
         "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:d3",
+        "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
     ],
 )
 
