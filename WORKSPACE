@@ -49,10 +49,10 @@ closure_repositories(
 )
 http_archive(
     name = "org_tensorflow_tensorboard",
-    sha256 = "09ced8f421fb9d4e73b3b0f8f44c91ee653251e7c2e2b953a4774a507c348a86",
-    strip_prefix = "tensorboard-b7dd0e369dfe51f6f08dbaf3e85fe0942dbaf64f",
+    sha256 = "1534836f297ae70d089379bc8f91e8817bd7911066bd8a93088f095bd05797e5",
+    strip_prefix = "tensorboard-dcf27c0496348349f9d905d09ed80717f421cdfe",
     urls = [
-        "https://github.com/stephanwlee/tensorboard/archive/b7dd0e369dfe51f6f08dbaf3e85fe0942dbaf64f.tar.gz",  # 2019-06-28
+        "https://github.com/stephanwlee/tensorboard/archive/dcf27c0496348349f9d905d09ed80717f421cdfe.tar.gz",  # 2019-07-12
     ],
 )
 
