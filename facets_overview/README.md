@@ -23,7 +23,9 @@ These custom stats will be displayed alongside the standard statistics.
 
 # Feature Statistics Generation
 
-The feature statistics protocol buffer can be created for datasets by the python code provided in the facets_overview/python directory.
+The feature statistics protocol buffer can be created for datasets by the python code provided in the facets_overview/facets-overview directory.
+This code can be installed through `pip install facets-overview`. TensorFlow should also be installed but is not included as a
+pip dependency, so as to allow a user to depend on either the tensorflow or tensorflow-gpu package as necessary.
 Datasets can be analyzed either from a TfRecord files of tensorflow Example protocol buffers, or from pandas DataFrames.
 
 To create the proto from a pandas DataFrame, use the `ProtoFromDataFrames` method of the [GenericFeatureStatisticsGenerator class](./python/generic_feature_statistics_generator.py).
@@ -34,7 +36,7 @@ See those files for further documentation.
 
 Example code:
 ```python
-from generic_feature_statistics_generator import GenericFeatureStatisticsGenerator
+from facets_overview.generic_feature_statistics_generator import GenericFeatureStatisticsGenerator
 import pandas as pd
 df =  pd.DataFrame({'num' : [1, 2, 3, 4], 'str' : ['a', 'a', 'b', None]})
 proto = GenericFeatureStatisticsGenerator().ProtoFromDataFrames([{'name': 'test', 'table': df}])
@@ -127,7 +129,17 @@ There are multiple demos of Overview that can be used as functional tests to ens
 These demos are all found under facets_overview/functional_tests.
 To run one, for example the “simple” test, run ```bazel run facets_overview/functional_tests/simple:devserver``` and then navigate your browser to "localhost:6006/facets-overview/functional-tests/simple/index.html” to see the resulting visualization.
  
-# Running Unit Tests
+# Running Visualization Unit Tests
 
 Run ```bazel run facets_overview/common/test:devserver``` and then navigate your browser to “localhost:6006/facets-overview/facets-overview/common/test/runner.html”.
 The output from the tests can be seen in the developer console.
+
+# Building the facets-overview Pip Package
+
+1) Update the version number in setup.py and commit it to GitHub.
+2) From this directory run `python setup.py bdist_wheel --universal`
+3) From this directory run `twine upload dist/*` to upload it to PyPI.
+
+# Running Python Unit Tests
+
+After installing the python package, run `python -m feature_statistics_generator_test` and `python -m generic_feature_statistics_generator_test`.

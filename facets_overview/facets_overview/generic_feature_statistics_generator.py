@@ -17,38 +17,14 @@
 The proto is used as input for the Overview visualization.
 """
 
-import warnings
-from base_generic_feature_statistics_generator import BaseGenericFeatureStatisticsGenerator
-import feature_statistics_pb2 as fs
+from facets_overview.base_generic_feature_statistics_generator import BaseGenericFeatureStatisticsGenerator
+import facets_overview.feature_statistics_pb2 as fs
 
 
 class GenericFeatureStatisticsGenerator(BaseGenericFeatureStatisticsGenerator):
   """Generator of stats proto from generic data."""
 
   def __init__(self):
-    warnings.warn(
-      'Code in this directory is deprecated. Use the facets-overview pip package instead.',
-      DeprecationWarning
-    )
     BaseGenericFeatureStatisticsGenerator.__init__(
         self, fs.FeatureNameStatistics, fs.DatasetFeatureStatisticsList,
         fs.Histogram)
-
-
-def ProtoFromDataFrames(dataframes):
-  """Creates a feature statistics proto from a set of pandas dataframes.
-
-  Args:
-    dataframes: A list of dicts describing tables for each dataset for the
-        proto. Each entry contains a 'table' field of the dataframe of the
-          data
-        and a 'name' field to identify the dataset in the proto.
-
-  Returns:
-    The feature statistics proto for the provided tables.
-  """
-  warnings.warn(
-    'Code in this directory is deprecated. Use the facets-overview pip package instead.',
-    DeprecationWarning
-  )
-  return GenericFeatureStatisticsGenerator().ProtoFromDataFrames(dataframes)

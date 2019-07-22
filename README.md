@@ -23,6 +23,8 @@ Key aspects of the visualization are outlier detection and distribution comparis
 Interesting values (such as a high proportion of missing data, or very different distributions of a feature across multiple datasets) are highlighted in red.
 Features can be sorted by values of interest such as the number of missing values or the skew between the different datasets.
 
+The python code to generate the statistics for visualization can be installed through `pip install facets-overview`.
+
 Details about Overview usage can be found in its [README](./facets_overview/README.md).
 
 ## Facets Dive

@@ -18,8 +18,7 @@ The proto is used as input for the Overview visualization.
 """
 
 from functools import partial
-import warnings
-from base_generic_feature_statistics_generator import BaseGenericFeatureStatisticsGenerator
+from facets_overview.base_generic_feature_statistics_generator import BaseGenericFeatureStatisticsGenerator
 import tensorflow as tf
 
 
@@ -68,10 +67,6 @@ class BaseFeatureStatisticsGenerator(BaseGenericFeatureStatisticsGenerator):
     Returns:
       The feature statistics proto for the provided files.
     """
-    warnings.warn(
-      'Code in this directory is deprecated. Use the facets-overview pip package instead.',
-      DeprecationWarning
-    )
     datasets = []
     for entry in files:
       entries, size = self._GetTfRecordEntries(entry['path'], max_entries,

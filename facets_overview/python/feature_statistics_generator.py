@@ -59,7 +59,8 @@ def ProtoFromTfRecordFiles(files,
     The feature statistics proto for the provided files.
   """
   warnings.warn(
-      'Use GenericFeatureStatisticsGenerator class method instead.',
-      DeprecationWarning)
+    'Code in this directory is deprecated. Use the facets-overview pip package instead.',
+    DeprecationWarning
+  )
   return FeatureStatisticsGenerator().ProtoFromTfRecordFiles(
       files, max_entries, features, is_sequence, iterator_options)

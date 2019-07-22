@@ -20,7 +20,6 @@ The proto is used as input for the Overview visualization.
 import numpy as np
 import pandas as pd
 import sys
-import warnings
 
 
 class BaseGenericFeatureStatisticsGenerator(object):
@@ -47,10 +46,6 @@ class BaseGenericFeatureStatisticsGenerator(object):
     Returns:
       The feature statistics proto for the provided tables.
     """
-    warnings.warn(
-      'Code in this directory is deprecated. Use the facets-overview pip package instead.',
-      DeprecationWarning
-    )
     datasets = []
     for dataframe in dataframes:
       table = dataframe['table']
