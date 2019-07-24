@@ -26,6 +26,10 @@ class GenericFeatureStatisticsGenerator(BaseGenericFeatureStatisticsGenerator):
   """Generator of stats proto from generic data."""
 
   def __init__(self):
+    warnings.warn(
+      'Code in this directory is deprecated. Use the facets-overview pip package instead.',
+      DeprecationWarning
+    )
     BaseGenericFeatureStatisticsGenerator.__init__(
         self, fs.FeatureNameStatistics, fs.DatasetFeatureStatisticsList,
         fs.Histogram)
@@ -44,6 +48,7 @@ def ProtoFromDataFrames(dataframes):
     The feature statistics proto for the provided tables.
   """
   warnings.warn(
-      'Use GenericFeatureStatisticsGenerator class method instead.',
-      DeprecationWarning)
+    'Code in this directory is deprecated. Use the facets-overview pip package instead.',
+    DeprecationWarning
+  )
   return GenericFeatureStatisticsGenerator().ProtoFromDataFrames(dataframes)
