@@ -20,7 +20,7 @@ with open(path.join(package_dir, 'README.md')) as f:
     long_description = f.read()
 
 setup(name='facets-overview',
-      version='0.9',
+      version='1.0.0',
       description='Python code to support the Facets Overview visualization',
       long_description=long_description,
       long_description_content_type='text/markdown',

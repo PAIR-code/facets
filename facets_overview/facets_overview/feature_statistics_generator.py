@@ -17,7 +17,7 @@
 The proto is used as input for the Overview visualization.
 """
 
-from base_feature_statistics_generator import BaseFeatureStatisticsGenerator
+from facets_overview.base_feature_statistics_generator import BaseFeatureStatisticsGenerator
 import facets_overview.feature_statistics_pb2 as fs
 
 
