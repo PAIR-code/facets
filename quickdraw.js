@@ -18,7 +18,7 @@
 var fd = document.querySelector('facets-dive');
 
 var loadDataset = function(url) {
-  d3.json(`${url}.json`, function(data) {
+  d3.json(`${url}.json`).then(function(data) {
     fd.data = data;
     fd.atlasUrl = `${url}.png`;
   });

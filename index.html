@@ -40,7 +40,7 @@
 
   <!-- JS includes -->
 
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.3.3/webcomponents-lite.js"></script>
   <link rel="import" href="facets.html" >
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
    </head>
@@ -196,9 +196,9 @@
     </div>
 
     <div class="subhead facets-quickdraw full-width">
-      <p><a href="https://pair-code.github.io/facets/quickdraw.html" target="_blank">Explore the Quick, Draw! dataset on Dive.</a><span class="superscript">2</span></p>
+      <p><a href="quickdraw.html" target="_blank">Explore the Quick, Draw! dataset on Dive.</a><span class="superscript">2</span></p>
     </div>
-    <div class="desc-copy facets-quickdraw"><a href="https://pair-code.github.io/facets/quickdraw.html" target="_blank"><img src="images/FacetsDive_Quickdraw@2x.jpg" alt="Facets Dive x Quickdraw" style="cursor:pointer;"></a></div>
+    <div class="desc-copy facets-quickdraw"><a href="quickdraw.html" target="_blank"><img src="images/FacetsDive_Quickdraw@2x.jpg" alt="Facets Dive x Quickdraw" style="cursor:pointer;"></a></div>
   </div>
     <div class="references" id="references">
       <div class="separator"><!-- separating line --></div>
@@ -288,7 +288,12 @@
   });
   </script>
   <script>
+  setupComplete = false;
   window.addEventListener('WebComponentsReady', function() {
+    if (setupComplete) {
+      return;
+    }
+    setupComplete = true;
     var link = document.createElement("link");
     link.rel = "import";
     link.href = "facets.html";
