@@ -104,12 +104,11 @@ The `test.html` and `test.ts` files under `components/facets_dive` include a sim
 
 ### Navigating the Dive Controls
 
-Dive is divided into three panels.
-From left-to-right they are the control panel, the main visualization, and the info panel.
+Dive has three regions. The control toolbar on top, the main visualization, and the datapoint information panel.
 
-Once data has been loaded into the visualization, users drive exploration by manipulating the controls in the control panel.
+Once data has been loaded into the visualization, users drive exploration by manipulating the controls in the toolbar.
 There are four sections, each of which expand when clicked.
-They are Faceting, Positioning, Color, and Display.
+They are Faceting, Color, Display, and Positioning.
 
 #### Faceting Controls
 
