@@ -4,7 +4,11 @@ import io
 import json
 import os
 import time
-from urllib.parse import urlparse
+import sys
+if sys.version_info[0] == 2:
+  from urlparse import urlparse
+else:
+  from urllib.parse import urlparse
 from absl import logging
 from PIL import Image
 import requests
