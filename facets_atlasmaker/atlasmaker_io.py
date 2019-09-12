@@ -4,7 +4,7 @@ import io
 import json
 import os
 import time
-from urlparse import urlparse
+from urllib.parse import urlparse
 from absl import logging
 from PIL import Image
 import requests
