@@ -30,6 +30,7 @@ Polymer({
     featureSliceSelection: {type: Object, notify: true},
     numeric: {type: Boolean, value: false},
     compareMode: {type: Boolean, value: false},
+    datasetCheckboxes: Array,
     _logScale: {type: Boolean, value: false},
     _expandCharts: {type: Boolean, value: false, observer: '_handleResize'},
     _showWeighted: {type: Boolean, value: false},
@@ -38,7 +39,7 @@ Polymer({
     _enableLogScale: {type: Boolean, value: true},
     _chartSelectionTypes: {
       type: Array,
-      computed: '_computeChartSelectionTypes(numeric, dataModel, features)'
+      computed: '_computeChartSelectionTypes(numeric, dataModel, features, datasetCheckboxes)'
     },
     _maxHeight: {type: Number, value: 800, readOnly: true},
     _expandedRowHeight: {type: Number, value: 330, readOnly: true},
@@ -66,13 +67,13 @@ Polymer({
   // tslint:disable-next-line:no-any typescript/polymer temporary issue
   _computeChartSelectionTypes(
       this: any, isNumeric: boolean, dataModel: OverviewDataModel,
-      features: FeatureNameStatistics[]) {
+      features: FeatureNameStatistics[], datasetCheckboxes: boolean[]) {
     const types = [utils.CHART_SELECTION_STANDARD];
     if (isNumeric) {
       types.push(utils.CHART_SELECTION_QUANTILES);
     }
     if (features.length !== 0 &&
-        utils.hasListQuantiles(this._getChartData(dataModel, features[0]))) {
+        utils.hasListQuantiles(this._getChartData(dataModel, features[0], datasetCheckboxes))) {
       types.push(utils.CHART_SELECTION_LIST_QUANTILES);
     }
     if (dataModel.doesContainFeatureListLengthData()) {
@@ -156,12 +157,27 @@ Polymer({
     return dataModel.getFeature(feature.getName()!, dataset.getName()!);
   },
   _getChartData: function(
-      dataModel: OverviewDataModel, feature: FeatureNameStatistics):
+      dataModel: OverviewDataModel, feature: FeatureNameStatistics,
+      datasetCheckboxes: boolean[]):
       utils.HistogramForDataset[] {
         if (!dataModel || !feature) {
           return [];
         }
-        return dataModel.getDatasetHistogramsForFeature(feature.getName()!);
+        let histograms = dataModel.getDatasetHistogramsForFeature(feature.getName()!);
+        const datasetNames = dataModel.getDatasetNames();
+        console.log(histograms);
+        histograms = histograms.filter(histogram => {
+          const datasetIndex = datasetNames.indexOf(histogram.name);
+          if (datasetCheckboxes == null) {
+            return true;
+          }
+          console.log(datasetCheckboxes);
+          console.log(datasetIndex);
+          console.log(datasetCheckboxes[datasetIndex]);
+          return datasetCheckboxes[datasetIndex];
+        });
+        console.log(histograms);
+        return histograms;
       },
   _getFeatureCountText(
       dataModel: OverviewDataModel, numeric: boolean,
@@ -176,7 +192,7 @@ Polymer({
       return false;
     }
     return utils.hasWeightedHistogram(
-        this._getChartData(this.dataModel, features[0]));
+        this._getChartData(this.dataModel, features[0], this.datasetCheckboxes));
   },
   _getChartClass(expandCharts: boolean) {
     let classes = 'chart-column ';
@@ -190,5 +206,12 @@ Polymer({
   },
   _getTableRowClass(numeric: boolean) {
     return numeric ? 'numeric-row' : 'categorical-row';
-  }
+  },
+  _shouldShowDataset(datasetIndex: number, datasetCheckboxes: boolean[]) {
+    if (datasetCheckboxes == null || datasetCheckboxes.length <= datasetIndex) {
+      return true;
+    } else {
+      return datasetCheckboxes[datasetIndex];
+    }
+  },
 });
