@@ -88,10 +88,7 @@ Polymer({
     }
     // Dataset checkboxes have IDs that match the dataset index they
     // represent in order to easily keep track of what checkbox has changed
-    // on the click-callback.
-    const newDatasetCheckboxes: boolean[] = [];
-
-    // Parse the dataset index out of the ID string.
+    // on the click-callback. Parse the dataset index out of the ID string.
     const updatedIndex = +(event.target.id.substring(7));
 
     // Update the dataset checkboxes with the new information.
