@@ -167,16 +167,12 @@ Polymer({
         const datasetNames = dataModel.getDatasetNames();
         console.log(histograms);
         histograms = histograms.filter(histogram => {
-          const datasetIndex = datasetNames.indexOf(histogram.name);
           if (datasetCheckboxes == null) {
             return true;
           }
-          console.log(datasetCheckboxes);
-          console.log(datasetIndex);
-          console.log(datasetCheckboxes[datasetIndex]);
+          const datasetIndex = datasetNames.indexOf(histogram.name);
           return datasetCheckboxes[datasetIndex];
         });
-        console.log(histograms);
         return histograms;
       },
   _getFeatureCountText(
@@ -187,12 +183,14 @@ Polymer({
     return utils.filteredElementCountString(features.length, numFeatures);
   },
   // tslint:disable-next-line:no-any typescript/polymer temporary issue
-  _hasWeightedHistogram(this: any, features: FeatureNameStatistics[]) {
+  _hasWeightedHistogram(
+    this: any, features: FeatureNameStatistics[],
+    datasetCheckboxes: boolean[]) {
     if (features.length === 0) {
       return false;
     }
     return utils.hasWeightedHistogram(
-        this._getChartData(this.dataModel, features[0], this.datasetCheckboxes));
+        this._getChartData(this.dataModel, features[0], datasetCheckboxes));
   },
   _getChartClass(expandCharts: boolean) {
     let classes = 'chart-column ';

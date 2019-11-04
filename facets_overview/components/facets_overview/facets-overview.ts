@@ -88,6 +88,8 @@ Polymer({
       // represent in order to easily keep track of what checkbox has changed
       // on the click-callback.
       const newDatasetCheckboxes: boolean[] = [];
+
+      // Parse the dataset index out of the ID string.
       const updatedIndex = +(event.target.id.substring(7));
       const checkboxes: boolean[] = [];
       for (let i = 0; i < this._dataModel.getDatasetNames().length; i++) {
