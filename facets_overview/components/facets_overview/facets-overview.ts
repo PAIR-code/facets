@@ -83,24 +83,21 @@ Polymer({
   },
   // tslint:disable-next-line:no-any typescript/polymer temporary issue
   _datasetCheck(this: any, event: any) {
-    if (event && this._dataModel != null) {
-      // Dataset checkboxes have IDs that match the dataset index they
-      // represent in order to easily keep track of what checkbox has changed
-      // on the click-callback.
-      const newDatasetCheckboxes: boolean[] = [];
-
-      // Parse the dataset index out of the ID string.
-      const updatedIndex = +(event.target.id.substring(7));
-      const checkboxes: boolean[] = [];
-      for (let i = 0; i < this._dataModel.getDatasetNames().length; i++) {
-        if (i == updatedIndex) {
-          checkboxes.push(event.target.checked);
-        } else {
-          checkboxes.push(this._datasetCheckboxes[i]);
-        }
-      }
-      this._datasetCheckboxes = checkboxes;
+    if (!event || this._dataModel == null) {
+      return;
     }
+    // Dataset checkboxes have IDs that match the dataset index they
+    // represent in order to easily keep track of what checkbox has changed
+    // on the click-callback.
+    const newDatasetCheckboxes: boolean[] = [];
+
+    // Parse the dataset index out of the ID string.
+    const updatedIndex = +(event.target.id.substring(7));
+
+    // Update the dataset checkboxes with the new information.
+    this._datasetCheckboxes = this._datasetCheckboxes.map(
+      (value: boolean, index: number) =>
+        index === updatedIndex ? event.target.checked : value);
   },
   _getDatasetId(index: number): string {
     return 'dataset' + String(index);

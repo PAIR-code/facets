@@ -165,14 +165,12 @@ Polymer({
         }
         let histograms = dataModel.getDatasetHistogramsForFeature(feature.getName()!);
         const datasetNames = dataModel.getDatasetNames();
-        console.log(histograms);
-        histograms = histograms.filter(histogram => {
-          if (datasetCheckboxes == null) {
-            return true;
-          }
-          const datasetIndex = datasetNames.indexOf(histogram.name);
-          return datasetCheckboxes[datasetIndex];
-        });
+        if (datasetCheckboxes != null) {
+          histograms = histograms.filter(histogram => {
+            const datasetIndex = datasetNames.indexOf(histogram.name);
+            return datasetCheckboxes[datasetIndex];
+          });
+        }
         return histograms;
       },
   _getFeatureCountText(
@@ -206,10 +204,6 @@ Polymer({
     return numeric ? 'numeric-row' : 'categorical-row';
   },
   _shouldShowDataset(datasetIndex: number, datasetCheckboxes: boolean[]) {
-    if (datasetCheckboxes == null || datasetCheckboxes.length <= datasetIndex) {
-      return true;
-    } else {
-      return datasetCheckboxes[datasetIndex];
-    }
+    return datasetCheckboxes == null || datasetCheckboxes[datasetIndex];
   },
 });
