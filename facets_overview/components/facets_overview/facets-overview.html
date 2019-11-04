@@ -141,6 +141,7 @@ limitations under the License.
       }
       .legend-holder {
         display: flex;
+        flex-wrap: wrap;
         margin: 8px 0 0 38px;
       }
       .legend-box {
@@ -200,18 +201,25 @@ limitations under the License.
         <div class="legend-holder">
           <template is="dom-repeat" items="[[_getDatasets(_dataModel)]]" as="dataset" index-as="datasetIndex">
             <div class="legend-row">
-              <div class="legend-box" style="[[_getLegendBoxStyle(_dataModel, datasetIndex)]]"></div>
-              <div class="legend-name">[[_getDatasetName(_dataModel, datasetIndex)]]</div>
+                <paper-checkbox noink checked="true" class="feature-checkbox"
+                                style="[[_getLegendBoxStyle(_dataModel, datasetIndex)]]"
+                                id="[[_getDatasetId(datasetIndex)]]" on-change="_datasetCheck">
+                                [[_getDatasetName(_dataModel, datasetIndex)]]
+                </paper-checkbox>
             </div>
           </template>
         </div>
       </template>
       <div class=table-holder>
         <facets-overview-table features="[[_getNumericFeatureListItems(_dataModel, searchString, _sortOrder, _reverseOrder, _featureSpecCheckboxes)]]"
-                         data-model="[[_dataModel]]" feature-slice-selection="{{featureSliceSelection}}" numeric="true" class="table-left" compare-mode="[[compareMode]]">
+                         data-model="[[_dataModel]]" feature-slice-selection="{{featureSliceSelection}}"
+                         dataset-checkboxes="[[_datasetCheckboxes]]"
+                         numeric="true" class="table-left" compare-mode="[[compareMode]]">
         </facets-overview-table>
         <facets-overview-table features="[[_getNonNumericFeatureListItems(_dataModel, searchString, _sortOrder, _reverseOrder, _featureSpecCheckboxes)]]"
-                         data-model="[[_dataModel]]" feature-slice-selection="{{featureSliceSelection}}" class="table-right" compare-mode="[[compareMode]]">
+                         data-model="[[_dataModel]]" feature-slice-selection="{{featureSliceSelection}}"
+                         dataset-checkboxes="[[_datasetCheckboxes]]"
+                         class="table-right" compare-mode="[[compareMode]]">
         </facets-overview-table>
       </div>
     </template>

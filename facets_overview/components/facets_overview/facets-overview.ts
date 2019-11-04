@@ -45,10 +45,11 @@ Polymer({
     // so always show a legend even if there is currently only one dataset being
     // displayed.
     compareMode: {type: Boolean, value: false},
-    _dataModel: {type: Object, value: null},
+    _dataModel: {type: Object, value: null, observer: '_setDatasetCheckboxes'},
     _featureSpecArray:
         {type: Array, computed: '_getFeatureSpecArray(_dataModel)'},
     _featureSpecCheckboxes: Array,
+    _datasetCheckboxes: Array,
   },
   // tslint:disable-next-line:no-any typescript/polymer temporary issue
   _getFeatureSpecArray(this: any, dataModel: OverviewDataModel):
@@ -72,6 +73,31 @@ Polymer({
   },
   _getSpecCheckboxId(specAndList: utils.FeatureSpecAndList): string {
     return String(specAndList.spec);
+  },
+  _setDatasetCheckboxes(dataModel: OverviewDataModel) {
+    const checkboxes: boolean[] = [];
+    for (let i = 0; dataModel != null && i < dataModel.getDatasetNames().length; i++) {
+      checkboxes.push(true);
+    }
+    this._datasetCheckboxes = checkboxes;
+  },
+  // tslint:disable-next-line:no-any typescript/polymer temporary issue
+  _datasetCheck(this: any, event: any) {
+    if (!event || this._dataModel == null) {
+      return;
+    }
+    // Dataset checkboxes have IDs that match the dataset index they
+    // represent in order to easily keep track of what checkbox has changed
+    // on the click-callback. Parse the dataset index out of the ID string.
+    const updatedIndex = +(event.target.id.substring(7));
+
+    // Update the dataset checkboxes with the new information.
+    this._datasetCheckboxes = this._datasetCheckboxes.map(
+      (value: boolean, index: number) =>
+        index === updatedIndex ? event.target.checked : value);
+  },
+  _getDatasetId(index: number): string {
+    return 'dataset' + String(index);
   },
   // tslint:disable-next-line:no-any typescript/polymer temporary issue
   _featureSpecCheck(this: any, event: any) {
@@ -281,7 +307,7 @@ Polymer({
     return dataModel.getDatasetNames()[index];
   },
   _getLegendBoxStyle(dataModel: OverviewDataModel, index: number) {
-    return 'background-color:' + dataModel.getChartColorString(index);
+    return '--paper-checkbox-checked-color:' + dataModel.getChartColorString(index);
   },
   _getDatasets(dataModel: OverviewDataModel) {
     if (!dataModel) {

@@ -137,7 +137,7 @@ limitations under the License.
             <div class="checkbox-holder">
               <paper-checkbox class="chart-checkbox" id="logbox" checked="{{_logScale}}">log</paper-checkbox>
               <paper-checkbox class="chart-checkbox"  id="expandbox" checked="{{_expandCharts}}">expand</paper-checkbox>
-              <template is="dom-if" if="[[_hasWeightedHistogram(features)]]">
+              <template is="dom-if" if="[[_hasWeightedHistogram(features, datasetCheckboxes)]]">
                 <paper-checkbox class="chart-checkbox"  id="weightbox" checked="{{_showWeighted}}">weighted</paper-checkbox>
               </template>
               <template is="dom-if" if="[[_hasMultipleDatasets(dataModel)]]">
@@ -155,21 +155,23 @@ limitations under the License.
             <div class="table-cell">
               <div class="feature-name">[[_getFeatureName(feature)]]</div>
               <template is="dom-repeat" items="[[_getDatasets(dataModel)]]" as="dataset" index-as="datasetIndex">
-                <div>
-                  <facets-overview-row-stats
-                                       stats="[[_getStats(dataModel, dataset, feature)]]"
-                                       custom-stats="[[_getAllCustomStats(dataModel, feature)]]"
-                                       show-weighted="[[_showWeighted]]"
-                                       has-custom="[[_hasCustomStats(dataModel)]]"
-                                       data-model="[[dataModel]]"
-                                       dataset-index="[[datasetIndex]]"
-                                       compare-mode="[[compareMode]]">
-                  </facets-overview-row-stats>
-                </div>
+                <template is="dom-if" if="[[_shouldShowDataset(datasetIndex, datasetCheckboxes)]]">
+                  <div>
+                    <facets-overview-row-stats
+                                        stats="[[_getStats(dataModel, dataset, feature)]]"
+                                        custom-stats="[[_getAllCustomStats(dataModel, feature)]]"
+                                        show-weighted="[[_showWeighted]]"
+                                        has-custom="[[_hasCustomStats(dataModel)]]"
+                                        data-model="[[dataModel]]"
+                                        dataset-index="[[datasetIndex]]"
+                                        compare-mode="[[compareMode]]">
+                    </facets-overview-row-stats>
+                  </div>
+                </template>
               </template>
             </div>
             <div class$="[[_getChartClass(_expandCharts)]]">
-              <facets-overview-chart data="[[_getChartData(dataModel, feature)]]"
+              <facets-overview-chart data="[[_getChartData(dataModel, feature, datasetCheckboxes)]]"
                                data-model="[[dataModel]]"
                                feature="[[_getFeatureName(feature)]]"
                                selection="{{featureSliceSelection}}"
