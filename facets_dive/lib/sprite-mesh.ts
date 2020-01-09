@@ -36,7 +36,7 @@ import {SpriteAtlas, SpriteImageData} from './sprite-atlas';
 
 import {SpriteMaterial} from './sprite-material';
 
-export type SpriteImageData = SpriteImageData;
+export {SpriteImageData};
 
 declare var THREE: any;
 
