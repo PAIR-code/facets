@@ -57,7 +57,9 @@ Example code (continued from above example):
 from IPython.core.display import display, HTML
 import base64
 protostr = base64.b64encode(proto.SerializeToString()).decode("utf-8")
-HTML_TEMPLATE = """<link rel="import" href="/nbextensions/facets-dist/facets-jupyter.html" >
+HTML_TEMPLATE = """
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.3.3/webcomponents-lite.js"></script>
+        <link rel="import" href="/nbextensions/facets-dist/facets-jupyter.html" >
         <facets-overview id="elem"></facets-overview>
         <script>
           document.querySelector("#elem").protoInput = "{protostr}";
