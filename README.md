@@ -43,6 +43,8 @@ Details about Dive usage can be found in its [README](./facets_dive/README.md).
 Using Facets in [Google Colabratory](https://colab.research.google.com) and [Jupyter](http://jupyter.org) notebooks can be seen
 [in this notebook](https://colab.research.google.com/github/PAIR-code/facets/blob/master/colab_facets.ipynb). These notebooks work without the need to first download/install this repository.
 
+Both Facets visualizations make use of HTML imports. So in order to use them, you must first load the appropriate polyfill, through `<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.3.3/webcomponents-lite.js"></script>`, as shown in the demo notebooks in this repo.
+
 Note that for using Facets Overview in a Jupyter notebook, there are two considerations:
 1. In the notebook, you will need to change the path that the Facets Overview python code is loaded from to the correct path given where your notebook kernel is run from.
 2. You must also have the Protocol Buffers python runtime library installed: https://github.com/google/protobuf/tree/master/python. If you used pip or anaconda to install Jupyter, you can use the same tool to install the runtime library.
