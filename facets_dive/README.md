@@ -92,6 +92,8 @@ Provided you've loaded the `<facets-dive>` Polymer element, you can insert an in
 <facets-dive></facets-dive>
 ```
 
+Facets Dive makes use of HTML imports. So in order to use it, you must first load the appropriate polyfill, through `<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.3.3/webcomponents-lite.js"></script>`, as shown in the demo notebooks in this repo.
+
 To set the data, you'll need to add a little JavaScript.
 In your code, first get a reference to this DOM element, then assign your array of objects to the `data` attribute.
 
