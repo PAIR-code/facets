@@ -69,7 +69,7 @@ If you make code changes to the visualization and would like to rebuild them, fo
 
 If you want to use the visualizations you built locally in a Jupyter notebook, follow these directions:
 
-1. Move the resulting vulcanized html file from the build step into the facets-dist directory.
+1. Move the resulting vulcanized html file from the build step into the facets-dist directory: ```cp -f bazel-bin/facets/facets-jupyter.html facets-dist/```
 2. Install the visualizations into Jupyter as an nbextension.
   * If jupyter was installed with pip, you can use ```jupyter nbextension install facets-dist/ ``` if jupyter was installed system-wide or ```jupyter nbextension install facets-dist/ --user``` if installed per-user (run from the facets top-level directory). You do not need to run any follow-up ```jupyter nbextension enable``` command for this extension.
   * Alternatively, you can manually install the nbextension by finding your jupyter installation's ```share/jupyter/nbextensions``` folder and copying the facets-dist directory into it.
