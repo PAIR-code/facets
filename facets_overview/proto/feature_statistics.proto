@@ -240,6 +240,7 @@ message CommonStatistics {
   // the length of the feature list for this feature in an example (where each
   // feature list can contain multiple values).
   Histogram feature_list_length_histogram = 9;
+  reserved 10, 11;
 }
 
 // The data used to create a histogram of a numeric feature for a dataset.
