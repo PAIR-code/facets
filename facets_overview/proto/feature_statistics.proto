@@ -115,6 +115,7 @@ message CustomStatistic {
     string str = 3;
     Histogram histogram = 4;
     RankHistogram rank_histogram = 5;
+    reserved 6;
   }
 }
 
