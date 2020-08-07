@@ -43,3 +43,31 @@ genrule(
     outs = ["facets-jupyter.html"],
     cmd = "sed 's|<!doctype html>|<!doctype html><script>define=undefined</script>|' $(location :facets) > $@",
 )
+
+tf_web_library(
+    name = "colab",
+    srcs = [
+        "colab.html",
+    ],
+    path = "/facets",
+    deps = [
+        "//facets_dive/components/facets_dive",
+        "//facets_overview/components/facets_overview",
+        "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
+    ],
+)
+
+# Compiles standalone HTML for Facets in colab.
+#
+# NOTE: This runs TensorBoard Vulcanize.java to inline HTML imports and
+#       runs the Closure Compiler on the JavaScript outputted by the
+#       TypeScript Compiler, in order to remove ES6 imports, which don't
+#       work in web browsers. Otherwise we'd `bazel run` tf_web_library.
+tensorboard_html_binary(
+    name = "facets_colab",
+    compile = True,
+    input_path = "/facets/colab.html",
+    output_path = "/all/colab.html",
+    deps = [":colab"],
+)
+
