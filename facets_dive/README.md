@@ -82,6 +82,8 @@ In that case, you'll also have to set the `crossOrigin` property (or `cross-orig
 To correctly slice up the sprite atlas, Dive needs to know the width and height in pixels of each sprite.
 You can set these with the `spriteImageWidth` and `spriteImageHeight` properties (`sprite-image-width` and `sprite-image-height` when setting them in HTML), respectively.
 
+An example how to use an already-generated sprite atlas in Facets Dive inside of a colab notebook can be found [in this notebook](https://colab.research.google.com/github/PAIR-code/facets/blob/master/facets_dive/colab_dive_atlas_demo.ipynb).
+
 ### Embedding Dive in Your Page
 
 The project is built with [Bazel](https://www.bazel.build/). 
