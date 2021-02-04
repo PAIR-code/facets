@@ -209,6 +209,8 @@ message BytesStatistics {
   float min_num_bytes = 4;
   // The maximum number of bytes in a value
   float max_num_bytes = 5;
+  // Reserved for field `max_num_bytes_int`
+  reserved 6;
 }
 
 // Statistics for a struct feature in a dataset.
