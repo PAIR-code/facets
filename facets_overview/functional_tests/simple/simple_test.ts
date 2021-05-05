@@ -89,7 +89,7 @@ function create(): DatasetFeatureStatisticsList {
   ]);
   featureStats = stats.getFeaturesList()[0];
   const customStats = [th.makeCustomStatistic('customHist', customHist),
-                       th.makeCustomStatistic('customNum', 13.1),
+                       th.makeCustomStatistic('customNum-reallylongname_testingoverflow', 13.1),
                        th.makeCustomStatistic('customRankHist', customRankHist),
                        th.makeCustomStatistic('customStr', 'cust')];
   featureStats.setCustomStatsList(customStats);
