@@ -5,3 +5,4 @@ nose
 pillow
 pylint
 requests
+scikit-image
