@@ -91,7 +91,10 @@ function create(): DatasetFeatureStatisticsList {
   const customStats = [th.makeCustomStatistic('customHist', customHist),
                        th.makeCustomStatistic('customNum-reallylongname_testingoverflow', 13.1),
                        th.makeCustomStatistic('customRankHist', customRankHist),
-                       th.makeCustomStatistic('customStr', 'cust')];
+                       th.makeCustomStatistic('customStr', 'cust'),
+                       th.makeCustomStatistic('cStr2', '2021-07-01'),
+                       th.makeCustomStatistic('cStr3', '2021-07-02')
+                      ];
   featureStats.setCustomStatsList(customStats);
   stats.setName('eval');
   data.getDatasetsList().push(stats);
