@@ -45,6 +45,33 @@ genrule(
 )
 
 tf_web_library(
+    name = "visualizations-overview",
+    srcs = [
+        "visualizations-overview.html",
+    ],
+    path = "/facets",
+    deps = [
+        "//facets_overview/components/facets_overview",
+        "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
+    ],
+)
+
+tensorboard_html_binary(
+    name = "facets-overview",
+    compile = True,
+    input_path = "/facets/visualizations-overview.html",
+    output_path = "/all/visualizations-overview.html",
+    deps = [":visualizations-overview"],
+)
+
+genrule(
+    name = "facets-overview_jupyter",
+    srcs = [":facets-overview"],
+    outs = ["facets-overview-jupyter.html"],
+    cmd = "sed 's|<!doctype html>|<!doctype html><script>define=undefined</script>|' $(location :facets-overview) > $@",
+)
+
+tf_web_library(
     name = "colab",
     srcs = [
         "colab.html",
