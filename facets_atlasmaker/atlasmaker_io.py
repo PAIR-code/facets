@@ -109,7 +109,7 @@ def read_src_list_csvfile(filepath, handle_dups='ignore'):
   """
   logging.debug('Reading images list from %s.' % filepath)
   try:
-    with tf.gfile.GFile(filepath) as input_file:
+    with tf.io.gfile.GFile(filepath) as input_file:
       return _check_src_list_dups(input_file.read().splitlines(), handle_dups)
   except NameError:
     with open(filepath) as input_file:
@@ -160,7 +160,7 @@ def get_image(location, request_timeout=60, http_max_retries=2,
     return Image.open(image_data)
   else:
     try:
-      with tf.gfile.GFile(location) as input_file:
+      with tf.io.gfile.GFile(location, 'rb') as input_file:
         return Image.open(input_file)
     except NameError:
       return Image.open(location)
