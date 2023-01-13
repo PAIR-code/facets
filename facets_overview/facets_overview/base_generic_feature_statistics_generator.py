@@ -208,11 +208,11 @@ class BaseGenericFeatureStatisticsGenerator(object):
             commonstats = featstats.common_stats
             if has_data:
               nums = value['vals']
-              featstats.std_dev = np.asscalar(np.std(nums))
-              featstats.mean = np.asscalar(np.mean(nums))
-              featstats.min = np.asscalar(np.min(nums))
-              featstats.max = np.asscalar(np.max(nums))
-              featstats.median = np.asscalar(np.median(nums))
+              featstats.std_dev = np.std(nums).item()
+              featstats.mean = np.mean(nums).item()
+              featstats.min = np.min(nums).item()
+              featstats.max = np.max(nums).item()
+              featstats.median = np.median(nums).item()
               featstats.num_zeros = len(nums) - np.count_nonzero(nums)
 
               nums = np.array(nums)
