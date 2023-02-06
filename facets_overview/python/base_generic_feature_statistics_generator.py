@@ -237,7 +237,7 @@ class BaseGenericFeatureStatisticsGenerator(object):
                 bucket = hist.buckets.add(
                     low_value=buckets[bucket_count],
                     high_value=buckets[bucket_count + 1],
-                    sample_count=np.asscalar(counts[bucket_count]))
+                    sample_count=counts[bucket_count].item())
                 # Add any negative or positive infinities to the first and last
                 # buckets in the histogram.
                 if bucket_count == 0 and num_neginf > 0:
@@ -286,7 +286,7 @@ class BaseGenericFeatureStatisticsGenerator(object):
                 bucket = featstats.rank_histogram.buckets.add(
                     low_rank=val_index,
                     high_rank=val_index,
-                    sample_count=np.asscalar(val[0]),
+                    sample_count=val[0].item(),
                     label=printable_val)
                 if val_index < 2:
                   featstats.top_values.add(
