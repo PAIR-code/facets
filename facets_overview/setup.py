@@ -20,7 +20,7 @@ with open(path.join(package_dir, 'README.md')) as f:
     long_description = f.read()
 
 setup(name='facets-overview',
-      version='1.0.3',
+      version='1.1.0',
       description='Python code to support the Facets Overview visualization',
       long_description=long_description,
       long_description_content_type='text/markdown',
@@ -32,5 +32,5 @@ setup(name='facets-overview',
       install_requires= [
           'numpy>=1.16.0',
           'pandas>=0.22.0',
-          'protobuf>=3.19.0',
+          'protobuf>=3.20.0',
       ])
