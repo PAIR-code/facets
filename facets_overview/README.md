@@ -27,6 +27,7 @@ The feature statistics protocol buffer can be created for datasets by the python
 This code can be installed through `pip install facets-overview`. TensorFlow should also be installed but is not included as a
 pip dependency, so as to allow a user to depend on either the tensorflow or tensorflow-gpu package as necessary.
 Datasets can be analyzed either from a TfRecord files of tensorflow Example protocol buffers, or from pandas DataFrames.
+As of version 1.1.0, the `facets-overview` package requires a version of `protobuf` at version 3.20.0 or later.
 
 To create the proto from a pandas DataFrame, use the `ProtoFromDataFrames` method of the [GenericFeatureStatisticsGenerator class](./python/generic_feature_statistics_generator.py).
 To create the proto from a TfRecord file, use the `ProtoFromTfRecordFiles` method of the [FeatureStatisticsGenerator class](./python/feature_statistics_generator.py).

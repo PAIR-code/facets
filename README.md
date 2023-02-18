@@ -24,6 +24,7 @@ Interesting values (such as a high proportion of missing data, or very different
 Features can be sorted by values of interest such as the number of missing values or the skew between the different datasets.
 
 The python code to generate the statistics for visualization can be installed through `pip install facets-overview`.
+As of version 1.1.0, the `facets-overview` package requires a version of `protobuf` at version 3.20.0 or later.
 
 Details about Overview usage can be found in its [README](./facets_overview/README.md).
 
