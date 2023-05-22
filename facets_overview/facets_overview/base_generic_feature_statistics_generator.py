@@ -65,7 +65,7 @@ class BaseGenericFeatureStatisticsGenerator(object):
     """Converts a Numpy dtype to the FeatureNameStatistics.Type proto enum."""
     if dtype.char in np.typecodes['AllFloat']:
       return self.fs_proto.FLOAT
-    elif (dtype.char in np.typecodes['AllInteger'] or dtype == np.bool or
+    elif (dtype.char in np.typecodes['AllInteger'] or dtype == bool or
           np.issubdtype(dtype, np.datetime64) or
           np.issubdtype(dtype, np.timedelta64)):
       return self.fs_proto.INT
