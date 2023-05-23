@@ -79,7 +79,7 @@ class GenericFeatureStatisticsGeneratorTest(googletest.TestCase):
                      self.gfsg.DtypeToType(np.dtype(np.int32)))
     # Boolean and time types treated as int
     self.assertEqual(self.gfsg.fs_proto.INT,
-                     self.gfsg.DtypeToType(np.dtype(np.bool)))
+                     self.gfsg.DtypeToType(np.dtype(bool)))
     self.assertEqual(self.gfsg.fs_proto.INT,
                      self.gfsg.DtypeToType(np.dtype(np.datetime64)))
     self.assertEqual(self.gfsg.fs_proto.INT,
@@ -87,7 +87,7 @@ class GenericFeatureStatisticsGeneratorTest(googletest.TestCase):
     self.assertEqual(self.gfsg.fs_proto.FLOAT,
                      self.gfsg.DtypeToType(np.dtype(np.float32)))
     self.assertEqual(self.gfsg.fs_proto.STRING,
-                     self.gfsg.DtypeToType(np.dtype(np.str)))
+                     self.gfsg.DtypeToType(np.dtype(str)))
     # Unsupported types treated as string for now
     self.assertEqual(self.gfsg.fs_proto.STRING,
                      self.gfsg.DtypeToType(np.dtype(np.void)))
